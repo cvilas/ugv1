@@ -7,7 +7,6 @@ Objective: Teleoperation within the local wireless network
 	- tablet stand
 	- ABC fire extinguisher
 	- Mounting box for Uno
-
 - Grape/IPort interface class
 - Grape/SerialPort class 
 - IoBoard driver interface class
