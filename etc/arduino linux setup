@@ -1,0 +1,24 @@
+Arduino IDE setup guide for Ubuntu 12.04
+
+1. Install the following software and associated dependancies using synaptic
+
+a. openjdk-6-jre
+b. gcc-avr
+c. avr-libc
+
+2. Plug in the Arduino board. dmesg should report something like below:
+
+[ 2043.864112] usb 2-6.1.4: new full-speed USB device number 11 using ehci_hcd
+[ 2044.005312] cdc_acm 2-6.1.4:1.0: ttyACM0: USB ACM device
+[ 2044.005877] usbcore: registered new interface driver cdc_acm
+[ 2044.005879] cdc_acm: USB Abstract Control Model driver for USB modems and ISDN adapters
+
+3. Ensure user has read/write permission for the associated serial port (ttyACM0 from above)
+
+$ ls -l /dev/ttyUSB0
+crw-rw---- 1 root dialout 188, 0 2009-07-04 15:23 /dev/ttyUSB0
+$ sudo usermod -aG dialout <mylogin>
+
+4. Get the Arduino IDE for Linux from http://arduino.cc/en/Main/Software
+
+5. Run it!
