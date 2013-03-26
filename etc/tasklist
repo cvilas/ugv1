@@ -3,7 +3,7 @@ Tasklist for UGV1 MakerFaire demo
 Objective: Teleoperation within the local wireless network
 
 - purchases: 
-	- Samsung Galaxy2 USB otg
+	- USB to Serial that works on Samsung Galaxy2
 	- Mounting box for Uno
 - IoBoard driver interface class
 - IoMessage adapters (command builder and reply interpreter)
