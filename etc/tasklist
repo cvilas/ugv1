@@ -4,11 +4,7 @@ Objective: Teleoperation within the local wireless network
 
 - purchases: 
 	- Samsung Galaxy2 USB otg
-	- tablet stand
-	- ABC fire extinguisher
 	- Mounting box for Uno
-- Grape/IPort interface class
-- Grape/SerialPort class 
 - IoBoard driver interface class
 - IoMessage adapters (command builder and reply interpreter)
 - IoMessageServer class (serial/tcp port server to send/reply IoMessage objects)
@@ -25,7 +21,7 @@ Objective: Teleoperation within the local wireless network
 - Wire up bumper switches (buy extender cables)
 - JoystickNode (server)
 - Joystick client
-- Josytick simulator
+- Joystick simulator
 - Deploy on tablet and test mobile system
 
 - Controller phone interface
