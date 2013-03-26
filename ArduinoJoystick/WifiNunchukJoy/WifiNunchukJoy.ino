@@ -1,6 +1,9 @@
 /*
 WifiNunchukJoy - Wifi enabled Nunchuk joystick
 
+Data format:
+['J', 'S', x (0-0xff), y (0-0xff), bz, bc, checksum] 
+
 Sequence of events:
 - Power up
 - Set wifi connection params
@@ -23,7 +26,7 @@ char ssid[] = "NishVil";
 char pass[] = "d789a6f879";
 
 // server parameters
-IPAddress server(192,168,0,1);
+IPAddress server(172,16,17,118);
 int port = 1234;
 
 int loopCount = 0;
@@ -49,25 +52,24 @@ void setup()
   
   // connect to wifi
   connectToWiFi();
-  connectToServer();
+  //connectToServer();
 }
 
 //-----------------------------------------------------------------
 void loop() 
 //-----------------------------------------------------------------
 { 
-  int joyX = 0;
-  int joyY = 0;
-  byte butZ = 0;
-  byte butC = 0;
-  
+  uint8_t jdata[7] = {'J', 'S', 0, 0, 0, 0, 0};
+   
+  /*
   // stop if server disconnected
   if( !wifiClient.connected() )
   {
     Serial.println("Disconnected from Server. Stopping.");
     wifiClient.stop();
     while(true); // do nothing forever
-  }
+    //todo: try soft reset
+  }*/
   
   // read nunchuck every 100 ms
   if( loopCount > 100 ) 
@@ -75,37 +77,36 @@ void loop()
     loopCount = 0;
 
     nunchuck_get_data();
-    joyX = nunchuck_joyx();
-    joyY = nunchuck_joyy();
-    butZ = nunchuck_zbutton();
-    butC = nunchuck_cbutton(); 
+    jdata[2] = 0xFF & nunchuck_joyx();
+    jdata[3] = 0xFF & nunchuck_joyy();
+    jdata[4] = 0xFF & nunchuck_zbutton();
+    jdata[5] = 0xFF & nunchuck_cbutton(); 
+    jdata[6] = checksum(jdata, 6);
+     
+    //wifiClient.write(jdata,7);   
     
-    // todo: scale data to range [-128,0,127]
-  
-    wifiClient.print((int)joyX, DEC);
-    Serial.print((int)joyX, DEC);
-  
-    wifiClient.print(" ");
-    Serial.print(" ");
-
-    wifiClient.print((int)joyY, DEC);
-    Serial.print((int)joyY, DEC);
-
-    wifiClient.print(" ");
-    Serial.print(" ");
-
-    wifiClient.print((int)butZ, DEC);
-    Serial.print((int)butZ, DEC);
-
-    wifiClient.print(" ");
-    Serial.print(" ");
-
-    wifiClient.println((int)butC, DEC);    
-    Serial.println((int)butC, DEC);    
+    for(int i = 0; i < 7;++i)
+    {
+      Serial.print(jdata[i], HEX);
+      Serial.print(" ");
+    }
+    Serial.println("");
   }
   
   loopCount++;
   delay(1);
+}
+
+//-----------------------------------------------------------------
+uint8_t checksum(uint8_t* jdata, int n)
+//-----------------------------------------------------------------
+{
+  int sum = 0;
+  for(int i = 0; i < n; ++i)
+  {
+    sum += (int)(jdata[i]);
+  }
+  return (sum&0xff);
 }
 
 //-----------------------------------------------------------------
@@ -164,3 +165,4 @@ void printWifiStatus()
   Serial.print(rssi);
   Serial.println(" dBm");
 }
+
