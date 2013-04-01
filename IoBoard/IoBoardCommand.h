@@ -16,6 +16,7 @@ namespace Ugv1
 class UGV1_DLL_API IoBoardCommand : public IoBoardMessage
 {
 public:
+    static const int MAX_COMMAND_LENGTH = 50; //!< arbitrary, but commands never bigger than this
 
     enum Command
     {
@@ -60,10 +61,10 @@ public:
     }
 }; // SetServoModeCommand
 
-class UGV1_DLL_API SetDioMode : public IoBoardCommand
+class UGV1_DLL_API SetDioModeCommand : public IoBoardCommand
 {
 public:
-    SetDioMode(char highIO, char lowIO) : IoBoardCommand(8)
+    SetDioModeCommand(char highIO, char lowIO) : IoBoardCommand(8)
     {
         push_back(0x02);
         push_back(SET_DIO_DIOMODE);

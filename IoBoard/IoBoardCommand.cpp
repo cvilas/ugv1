@@ -16,7 +16,7 @@ IoBoardCommand::IoBoardCommand(int nBytes)
 {
     if( nBytes > 0 )
     {
-        reserve(std::min(nBytes, 100));
+        reserve(std::min(nBytes, MAX_COMMAND_LENGTH));
     }
 
     assignHeader();
