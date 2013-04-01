@@ -6,10 +6,32 @@
 
 #include "IoBoardCommand.h"
 
-namespace Ugv1 {
-
-IoBoardCommand::IoBoardCommand()
+namespace Ugv1
 {
+
+//=============================================================================
+IoBoardCommand::IoBoardCommand(int nBytes)
+//=============================================================================
+    : IoBoardMessage()
+{
+    if( nBytes > 0 )
+    {
+        reserve(std::min(nBytes, 100));
+    }
+
+    assignHeader();
+}
+
+//-----------------------------------------------------------------------------
+IoBoardCommand::~IoBoardCommand()
+//-----------------------------------------------------------------------------
+{}
+
+//-----------------------------------------------------------------------------
+void IoBoardCommand::assignHeader()
+//-----------------------------------------------------------------------------
+{
+    assign(IoBoardMessage::MESSAGE_HEADER, IoBoardMessage::MESSAGE_HEADER+3);
 }
 
 } // Ugv1

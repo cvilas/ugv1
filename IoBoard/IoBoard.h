@@ -8,8 +8,8 @@
 #ifndef UGV1_IOBOARD_H
 #define UGV1_IOBOARD_H
 
-#include "ugv1_common.h"
-#include "io/IPort.h"
+#include "IoBoardReply.h"
+#include "IPort.h"
 
 namespace Ugv1
 {
@@ -23,6 +23,9 @@ public:
 
     bool send(IoBoardCommand& cmd, IoBoardReply& reply);
     bool send(IoBoardCommand& cmd);
+private:
+    IoBoard(const IoBoard&); // disable copy
+    IoBoard& operator=(const IoBoard&); // disable assignment
 }; //IoBoard
 
 } // namespace Ugv1

@@ -23,30 +23,28 @@ build_pass:CONFIG(debug, release|debug) {
 }
 
 # target directories
-DESTDIR = ../lib
-DLLDESTDIR = ../bin/
+DESTDIR = $${PWD}/lib
+DLLDESTDIR = $${PWD}/bin/
 
 DEFINES +=
 win32: DEFINES += GRAPE_DLL UGV_DLL UGV_DLL_EXPORT _UNICODE _CRT_SECURE_NO_WARNINGS
 CONFIG(debug, release|debug) {
     DEFINES += _DEBUG
-    win32:LIBS += -lws2_32 -lUser32 -lGrapeIod
+    win32:LIBS += -lws2_32 -lUser32 -lGrapeIod0
     else:unix: LIBS += -lGrapeIod
 } else {
-    win32:LIBS += -lws2_32 -lUser32 -lGrapeIo
+    win32:LIBS += -lws2_32 -lUser32 -lGrapeIo0
     else:unix: LIBS += -lGrapeIo
 }
 
 # don't want linking against qtmain.lib
 QMAKE_LIBS_QT_ENTRY=
-INCLUDEPATH += ./
-win32:INCLUDEPATH += $${GRAPE_DIR} \
-                     ../ThirdParty/pthreads-w32-2-8-0/include
-
+INCLUDEPATH += $${PWD} \
+                $${PWD}/common \
+                $${GRAPE_DIR}/core \
+                $${GRAPE_DIR}/io
 
 DEPENDPATH += ./
 
-LIBS += -L../lib/ #-llcm
-win32:LIBS += -L../Grape/lib \
-              -L../ThirdParty/pthreads-w32-2-8-0/lib
+LIBS += -L$${PWD}/lib/ -L$${GRAPE_DIR}/lib
 

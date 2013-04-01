@@ -8,12 +8,12 @@
 #ifndef UGV1_IOBOARDREPLY_H
 #define UGV1_IOBOARDREPLY_H
 
-#include "ugv1_common.h"
+#include "IoBoardCommand.h"
 
 namespace Ugv1
 {
 
-class UGV1_DLL_API IoBoardReply
+class UGV1_DLL_API IoBoardReply : public IoBoardMessage
 {
 public:
     IoBoardReply();
