@@ -39,7 +39,7 @@ class NunStick // wrapper class for nunchuck driver
   
   void init();        // initialise
   void calibrate();   // hold both buttons and wiggle the stick across full range of motion
-  bool update();      // read the nunchuk and update internal state
+  void update();      // read the nunchuk and update internal state
   const struct NunData& getData() const { return _jsData; } // access to state
   bool isZBtn() const { return (_jsData.btn >> Z_BTN_MAP) & 1; } // convenience function. True if Z button was pressed during last update()
   bool isCBtn() const { return (_jsData.btn >> C_BTN_MAP) & 1; } // convenience function. True if C button was pressed during last update()
@@ -49,10 +49,10 @@ class NunStick // wrapper class for nunchuck driver
   
  private:
   struct NunData _jsData;
-  int _minJX;
-  int _minJY;
-  int _maxJX;
-  int _maxJY;
+  uint8_t _minJX;
+  uint8_t _minJY;
+  uint8_t _maxJX;
+  uint8_t _maxJY;
 };
 
 //-----------------------------------------------------------------
@@ -76,53 +76,55 @@ void NunStick::init()
 void NunStick::calibrate()
 //-----------------------------------------------------------------
 {
-  int minX = 255;
-  int minY = 255;
-  int maxX = 0;
-  int maxY = 0;
+  uint8_t minX = 255;
+  uint8_t minY = 255;
+  uint8_t maxX = 0;
+  uint8_t maxY = 0;
   
-  while( update() && ((_jsData.btn >> Z_BTN_MAP)&1) &&((_jsData.btn >> C_BTN_MAP)&1) )
+  // get ranges
+  do
   {
-    int x = nunchuck_joyx();
-    int y = nunchuck_joyy();
+    delay(10);
+    nunchuck_get_data();
     
-    if( x > maxX ) maxX = x;
-    if( x < minX ) minX = x;
-    if( y > maxY ) maxY = y;
-    if( y < minY ) minY = y;
-  }
-  _minJX = minX;
-  _maxJX = maxX;
-  _minJY = minY;
-  _maxJY = maxY;
+    uint8_t x = nunchuck_joyx();
+    uint8_t y = nunchuck_joyy();
+    
+    if( x > maxX ) { maxX = x; }
+    if( x < minX ) { minX = x; }
+    if( y > maxY ) { maxY = y; }
+    if( y < minY ) { minY = y; }
+       
+  } while( nunchuck_zbutton() && nunchuck_cbutton() );
+  
+  // set ranges. if error (exited above loop too early), set safe defaults
+  ( minX < 50 ) ? (_minJX = minX) : (_minJX = 0);
+  ( maxX > 200) ? (_maxJX = maxX) : (_maxJX = 255);
+  ( minY < 50 ) ? (_minJY = minY) : (_minJY = 0);
+  ( maxY > 200) ? (_maxJY = maxY) : (_maxJY = 255);
 }
 
 //-----------------------------------------------------------------
-bool NunStick::update()
+void NunStick::update()
 //-----------------------------------------------------------------
 {
-    if( nunchuck_get_data() != 1 )
-    {
-      return false;
-    }
+    nunchuck_get_data();
     
-    int x = nunchuck_joyx();
-    int y = nunchuck_joyy();
+    uint8_t x = nunchuck_joyx();
+    uint8_t y = nunchuck_joyy();
     
     if( x > _maxJX ) _maxJX = x;
     if( x < _minJX ) _minJX = x;
     if( y > _maxJY ) _maxJY = y;
     if( y < _minJY ) _minJY = y;
     
-    _jsData.jx = (((x - _minJX) * 255)/(_maxJX - _minJX)) - 128;
-    _jsData.jy = (((y - _minJY) * 255)/(_maxJY - _minJY)) - 128;
+    _jsData.jx = (int8_t)(((unsigned int)(x - _minJX)*255)/(_maxJX - _minJX))-128;
+    _jsData.jy = (int8_t)(((unsigned int)(y - _minJY)*255)/(_maxJY - _minJY))-128;
     _jsData.ax = 0xFF & nunchuck_accelx();
     _jsData.ay = 0xFF & nunchuck_accely();
     _jsData.btn = 0;
     _jsData.btn = (nunchuck_zbutton() << Z_BTN_MAP) + (nunchuck_cbutton() << C_BTN_MAP);
     _jsData.rawData[7] = checksum();
-    
-    return true;
 }
 
 //-----------------------------------------------------------------

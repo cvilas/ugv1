@@ -16,8 +16,10 @@ class NunchuckController
   
  private:
   void setDirectPowerMode();
-  void setMotorPower(int w1, int w2);
+  void drive(int fwd, int turn); // range -127 to +127 for each param
   bool getEncoders(int& w1, int& w2); 
+  int computeWheelLeft(int f, int t);
+  int computeWheelRight(int f, int t);
   
  private:
   static const uint8_t _ugvCmdSetDirectPowerMode[7]; 
@@ -47,38 +49,154 @@ NunchuckController::~NunchuckController()
 bool NunchuckController::init()
 //---------------------------------------------------------------------------
 {
-  // init joystick
+  _js.init();
+  Serial.println("Press and hold both buttons to calibrate.");
+  while(!_js.isZBtn() || !_js.isCBtn())
+  {
+    Serial.print(".");
+    _js.update();
+    delay(100);
+  }
+  Serial.println("");
+  
+  Serial.println("Calibrating joystick. Move the analog stick about it's full range");
+  _js.calibrate();
+  Serial.println("Joystick calibration done");
+  
   // read encoders to confirm we have comms
+  int w1, w2;
+  if( !getEncoders(w1, w2) )
+  {
+    return false;
+  }
+  
   // set ugv in direct mode
+  Serial.print("Set direct power mode...");
+  setDirectPowerMode();
+  Serial.println("done");
+  
+  delay(1000);
+  
+  
+  drive(0,0);
+  
+  return true;
 }
 
 //---------------------------------------------------------------------------
 bool NunchuckController::update()
 //---------------------------------------------------------------------------
 {
-  // read nunchuck
+  int w1, w2;
+  const struct NunData& js = _js.getData(); 
+
+  if( getEncoders(w1, w2) )
+  {
+    _js.update();
+    drive(js.jy, js.jx);
+  }
   
-  // consruct drive command
-  
-  // send drive command
+  return true;
 }
 
 //---------------------------------------------------------------------------
 void NunchuckController::setDirectPowerMode()
 //---------------------------------------------------------------------------
 {
+  _transport.write(_ugvCmdSetDirectPowerMode, 7);
 }
 
 //---------------------------------------------------------------------------
-void NunchuckController::setMotorPower(int w1, int w2)
+void NunchuckController::drive(int f, int t)
 //---------------------------------------------------------------------------
 {
+  static int c = 0;
+  Serial.print(c);
+  Serial.print(" ");
+  ++c;
+  
+  int w1 = computeWheelLeft(f,t);
+  int w2 = computeWheelRight(f,t);
+  
+  uint8_t cmd[8];
+  cmd[0] = 0x55;
+  cmd[1] = 0xAA;
+  cmd[2] = 0x10;
+  cmd[3] = 0x02;
+  cmd[4] = 0x11;
+  cmd[5] = w2;
+  cmd[6] = w1;
+  int s = 0;
+  for(int i = 0; i < 7; ++i)
+  {
+    s += cmd[i];
+  }
+  cmd[7] = s & 0xFF;
+  for(int i = 0; i < 8; ++i)
+  {
+    Serial.print(cmd[i], HEX);
+    Serial.print(" ");
+  }
+  Serial.println("");
+  _transport.write(cmd, 8);
+}
+
+//---------------------------------------------------------------------------
+int NunchuckController::computeWheelLeft(int f, int t)
+//---------------------------------------------------------------------------
+{
+  int af = abs(f);
+  int sgn = 1;
+  if( af < 1)
+    sgn = 1;
+  else
+    sgn = f/af;
+  
+  int d = af;
+  if( t < 0 )
+  {
+    d += t;
+  }
+  
+  return (((sgn*d) + 127)*200)/255;
+}
+
+//---------------------------------------------------------------------------
+int NunchuckController::computeWheelRight(int f, int t)
+//---------------------------------------------------------------------------
+{
+  int af = abs(f);
+  int sgn = 1;
+  if( af < 1)
+    sgn = 1;
+  else
+    sgn = f/af;
+  
+  int d = af;
+  if( t > 0 )
+  {
+    d -= t;
+  }
+  
+  return (((sgn*d) + 127)*200)/255;
 }
 
 //---------------------------------------------------------------------------
 bool NunchuckController::getEncoders(int& w1, int& w2)
 //---------------------------------------------------------------------------
 {
+  _transport.write(_ugvCmdReadEncoders, 6);
+  
+  // wait for reply
+  int count = 0;
+  while( (_transport.available() < 1) && (count < 1000) )
+  {
+    delay(1);
+    count++;
+    Serial.println(count);
+  }
+  
+  return (count < 1000);
 }
 
 

@@ -28,11 +28,11 @@ WiFiClient wifiClient;
 NunchuckController controller(wifiClient);
 
 // wifi parameters
-char ssid[] = "VilasPhone";
+char ssid[] = "NishVil";
 char pass[] = "";
 
 // server parameters
-IPAddress ugvAddress(192,168,43,69);
+IPAddress ugvAddress(172,16,17,69);
 int ugvPort = 2000;
 
 int loopCount = 0;
@@ -52,9 +52,12 @@ void setup()
     while(true);
   } 
    
-  // connect to wifi
   connectToWiFi();
-  connectToUgv();
+   
+  if( !connectToUgv() )
+  {
+    while(true);
+  }
   
   // initialise controller and ugv
   if( !controller.init() )
@@ -63,6 +66,8 @@ void setup()
     wifiClient.stop();
     while(true);
   }
+  
+  Serial.println("Initialised UGV");
 }
 
 //-----------------------------------------------------------------
@@ -80,7 +85,7 @@ void loop()
   }
   
   // do control every 100 ms
-  if( loopCount > 100 ) 
+  //if( loopCount > 100 ) 
   {
     loopCount = 0;
     if( !controller.update() )
@@ -116,20 +121,22 @@ void connectToWiFi()
 }
 
 //-----------------------------------------------------------------
-void connectToUgv()
+bool connectToUgv()
 //-----------------------------------------------------------------
 {
   if( wifiClient.connect(ugvAddress, ugvPort) )
   {
-    Serial.print("connected to ");
+    Serial.print("connected to UGV ");
     Serial.print(ugvAddress);
     Serial.print(" on port ");
     Serial.println(ugvPort);
+    return true;
   }
   else
   {
     Serial.println("connection failed");
     wifiClient.stop();
+    return false;
   }
 }
 
