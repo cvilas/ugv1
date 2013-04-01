@@ -22,36 +22,5 @@ IoBoardMessage::~IoBoardMessage()
 //-----------------------------------------------------------------------------
 {}
 
-//-----------------------------------------------------------------------------
-bool IoBoardMessage::verifyChecksum()
-//-----------------------------------------------------------------------------
-{
-    const_iterator itCSum = end() - 2; // checksum is second last character
-
-    int csum = 0;
-    const_iterator it = begin();
-    while( it != itCSum )
-    {
-        csum += (int)(*it);
-        ++it;
-    }
-
-    return ( (*itCSum) == (csum&0xFF) );
-
-}
-
-//-----------------------------------------------------------------------------
-void IoBoardMessage::addChecksum()
-//-----------------------------------------------------------------------------
-{
-    int csum = 0;
-    const_iterator it = begin();
-    while( it != end() )
-    {
-        csum += (int)(*it);
-        ++it;
-    }
-    push_back( (char)(csum&0xFF));
-}
 
 } // Ugv1

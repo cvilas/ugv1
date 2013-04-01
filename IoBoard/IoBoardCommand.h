@@ -13,11 +13,12 @@
 namespace Ugv1
 {
 
+/// \class IoBoardCommand
+/// \ingroup vehicle
+/// \brief IO board command message builder
 class UGV1_DLL_API IoBoardCommand : public IoBoardMessage
 {
 public:
-    static const int MAX_COMMAND_LENGTH = 50; //!< arbitrary, but commands never bigger than this
-
     enum Command
     {
         SET_DIO_SERVOMODE       = 0x01, //!< Configure digital IO pins as servo outputs
@@ -42,37 +43,48 @@ public:
     };
 
 protected:
-    IoBoardCommand(int length = -1);
-    void assignHeader();
-    virtual ~IoBoardCommand();
+    IoBoardCommand() {}
+    virtual ~IoBoardCommand() {}
+    void createCommand(Command cmd, int nPayloadBytes, char* pPayloadData);
+    char computeChecksum();
 
 }; // IoBoardCommand
 
 
-class UGV1_DLL_API SetServoModeCommand : public IoBoardCommand
+class UGV1_DLL_API SetDIOServoModeCommand : public IoBoardCommand
 {
 public:
-    SetServoModeCommand(char bitmask) : IoBoardCommand(7)
+    SetDIOServoModeCommand()
     {
-        std::vector<char>::push_back(0x01);             // length of payload
-        std::vector<char>::push_back(SET_DIO_DIOMODE);  // command type
-        std::vector<char>::push_back(bitmask);          // payload
-        addChecksum();
+        createCommand(SET_DIO_SERVOMODE,1,NULL);
     }
+
+    SetDIOServoModeCommand(char bitmask)
+    {
+        createCommand(SET_DIO_SERVOMODE, 1, &bitmask);
+    }
+
+    void setServoMode(unsigned int channel, bool isServo)
+    {
+        char mask = (1<<channel)&0xFF;
+        if( isServo )
+        {
+            this->operator [](5) |= mask;
+        }
+        else
+        {
+            this->operator [](5) &= ~mask;
+        }
+        this->operator [](6) = computeChecksum();
+    }
+
+    bool isServoModeSet(unsigned int channel)
+    {
+        return (this->operator [](5)>>channel)&0x1;
+    }
+
 }; // SetServoModeCommand
 
-class UGV1_DLL_API SetDioModeCommand : public IoBoardCommand
-{
-public:
-    SetDioModeCommand(char highIO, char lowIO) : IoBoardCommand(8)
-    {
-        push_back(0x02);
-        push_back(SET_DIO_DIOMODE);
-        push_back(highIO);
-        push_back(lowIO);
-        addChecksum();
-    }
-}; // SetDioMode
 
 } // Ugv1
 

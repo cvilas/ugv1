@@ -18,6 +18,7 @@ class UGV1_DLL_API IoBoardReply : public IoBoardMessage
 public:
     IoBoardReply();
     virtual ~IoBoardReply();
+    bool verifyChecksum();
 }; // IoBoardReply
 
 } // namespace Ugv1

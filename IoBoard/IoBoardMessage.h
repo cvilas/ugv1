@@ -14,17 +14,17 @@
 namespace Ugv1
 {
 
+/// \class IoBoardMessage
+/// \ingroup vehicle
+/// \brief Base class for UGV1 I/O board messages
 class UGV1_DLL_API IoBoardMessage : public std::vector<char>
 {
 public:
-    IoBoardMessage();
-    virtual ~IoBoardMessage();
-    bool verifyChecksum();
-protected:
-    void addChecksum();
-
-protected:
     static const char MESSAGE_HEADER[3];
+
+public:
+    IoBoardMessage();
+    virtual ~IoBoardMessage();    
 };
 
 } // Ugv1
