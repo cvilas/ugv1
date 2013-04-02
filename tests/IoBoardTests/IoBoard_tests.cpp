@@ -2,32 +2,50 @@
 #include <QtTest>
 #include <IoBoardCommand.h>
 
-class IoBoardTests : public QObject
+//=============================================================================
+/// \class Test class for IoBoard messages
+//=============================================================================
+class IoBoardMessageTests : public QObject
 {
     Q_OBJECT
 
 public:
-    IoBoardTests();
+    IoBoardMessageTests();
     
 private Q_SLOTS:
     void test_IoBoardCommand_create();
-    void test_IoBoardCommand_create_data();
+    //void test_IoBoardCommand_create_data();
 
     void test_IoBoardCommand_setServoMode();
 };
 
-IoBoardTests::IoBoardTests()
+//=============================================================================
+IoBoardMessageTests::IoBoardMessageTests()
+//=============================================================================
 {
 }
 
-void IoBoardTests::test_IoBoardCommand_create()
+//-----------------------------------------------------------------------------
+void IoBoardMessageTests::test_IoBoardCommand_create()
+//-----------------------------------------------------------------------------
+{
+    char SetServoModeCommand_result[7] = {0x55, 0xaa, 0x10, 0x01, 0x01, 0x7F, 0x90};
+    Ugv1::SetDIOServoModeCommand SetServoModeCommand_command(0x7F);
+    for(int i = 0; i < 7; ++i)
+    {
+        QVERIFY(SetServoModeCommand_command[i] == SetServoModeCommand_result[i]);
+    }
+}
+
+/*
+void IoBoardMessageTests::test_IoBoardCommand_create()
 {
     QFETCH(char, command);
     QFETCH(char, result);
     QCOMPARE(command, result);
 }
 
-void IoBoardTests::test_IoBoardCommand_create_data()
+void IoBoardMessageTests::test_IoBoardCommand_create_data()
 {
     QTest::addColumn<char>("command");
     QTest::addColumn<char>("result");
@@ -43,8 +61,11 @@ void IoBoardTests::test_IoBoardCommand_create_data()
     QTest::newRow("SetDIOServoModeCommand_payload") << SetServoModeCommand_command[5] << SetServoModeCommand_result[5];
     QTest::newRow("SetDIOServoModeCommand_checksum") << SetServoModeCommand_command[6] << SetServoModeCommand_result[6];
 }
+*/
 
-void IoBoardTests::test_IoBoardCommand_setServoMode()
+//-----------------------------------------------------------------------------
+void IoBoardMessageTests::test_IoBoardCommand_setServoMode()
+//-----------------------------------------------------------------------------
 {
     Ugv1::SetDIOServoModeCommand cmd;
     for(int i = 0; i < 7; ++i)
@@ -57,6 +78,6 @@ void IoBoardTests::test_IoBoardCommand_setServoMode()
     }
 }
 
-QTEST_APPLESS_MAIN(IoBoardTests)
+QTEST_APPLESS_MAIN(IoBoardMessageTests)
 
 #include "IoBoard_tests.moc"

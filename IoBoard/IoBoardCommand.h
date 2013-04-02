@@ -15,7 +15,9 @@ namespace Ugv1
 
 /// \class IoBoardCommand
 /// \ingroup vehicle
-/// \brief IO board command message builder
+/// \brief IO board command message builder. Base class for all IoBoard commands.
+/// \see IoBoardReply, IoBoardMessage
+/// \todo Mechanism to force updating checksum automatically when a command is modified.
 class UGV1_DLL_API IoBoardCommand : public IoBoardMessage
 {
 public:
@@ -45,45 +47,45 @@ public:
 protected:
     IoBoardCommand() {}
     virtual ~IoBoardCommand() {}
+
+    /// Create command message given message code and payload
+    /// message format: [header(3)][payload length(1)][cmd(1)][payload(n)][checksum(1)]
+    /// \param cmd Command code (\see IoBoardCommand::Command)
+    /// \param nPayloadBytes Number of bytes in the payload (0-255).
+    /// \param pPayloadData Pointer to array containing payload data. If set to null,
+    ///                     payload data is set to 0.
     void createCommand(Command cmd, int nPayloadBytes, char* pPayloadData);
+
+    /// Computes message checksum. Derived classes must call this every time the message
+    /// is modified in any way, and set the checksum.
     char computeChecksum();
 
 }; // IoBoardCommand
 
-
+/// \class SetDIOServoModeCommand
+/// \ingroup vehicle
+/// \brief Command to configure digital outputs as PWM servo drives
 class UGV1_DLL_API SetDIOServoModeCommand : public IoBoardCommand
 {
 public:
-    SetDIOServoModeCommand()
-    {
-        createCommand(SET_DIO_SERVOMODE,1,NULL);
-    }
 
-    SetDIOServoModeCommand(char bitmask)
-    {
-        createCommand(SET_DIO_SERVOMODE, 1, &bitmask);
-    }
+    /// Default constructor. Doesn't set any digital output as PWM drive.
+    SetDIOServoModeCommand();
 
-    void setServoMode(unsigned int channel, bool isServo)
-    {
-        char mask = (1<<channel)&0xFF;
-        if( isServo )
-        {
-            this->operator [](5) |= mask;
-        }
-        else
-        {
-            this->operator [](5) &= ~mask;
-        }
-        this->operator [](6) = computeChecksum();
-    }
+    /// Construct the command with digital outputs configured as PWM drives
+    /// \param bitmask 8 bit mask to set digital IO0 (lsb) to IO7 (msb) as PWM servo
+    ///                 output (1) or not (0)
+    SetDIOServoModeCommand(char bitmask);
 
-    bool isServoModeSet(unsigned int channel)
-    {
-        return (this->operator [](5)>>channel)&0x1;
-    }
+    /// Set a specific channel (0 - 7) as PWM servo output
+    /// \param channel Channel number 0 - 7 for digital IO0-IO7
+    /// \param isServo set this to true to set as PWM output.
+    void setServoMode(unsigned int channel, bool isServo);
 
-}; // SetServoModeCommand
+    /// \return true if the specified channel is set to be PWM servo output
+    bool isServoModeSet(unsigned int channel);
+
+}; // SetDIOServoModeCommand
 
 
 } // Ugv1

@@ -6,14 +6,17 @@
 #-------------------------------------------------
 
 QT       += testlib
-
 QT       -= gui
 
 TARGET = IoBoardTests
+
 CONFIG   += console
 CONFIG   -= app_bundle
 
 TEMPLATE = app
+
+DESTDIR = $${PWD}/../../lib
+DLLDESTDIR = $${PWD}/../../bin/
 
 win32: DEFINES += GRAPE_DLL UGV1_DLL
 
