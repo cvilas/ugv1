@@ -75,12 +75,17 @@ bool SetDioIoModeCommand::isModeOutput(int channel)
 //=============================================================================
 WriteDioOutCommand::WriteDioOutCommand()
 //=============================================================================
-{}
+    : IoBoardCommand()
+{
+    createCommand(SET_DIO_IOMODE,2,NULL);
+}
 
 //-----------------------------------------------------------------------------
 WriteDioOutCommand::WriteDioOutCommand(int bitmask)
 //-----------------------------------------------------------------------------
-{}
+{
+
+}
 
 //-----------------------------------------------------------------------------
 void WriteDioOutCommand::setChannel(int channel, bool high)
@@ -92,6 +97,13 @@ bool WriteDioOutCommand::getChannel(int channel)
 //-----------------------------------------------------------------------------
 {
     return false;
+}
+
+//=============================================================================
+ReadDioInCommand::ReadDioInCommand()
+//=============================================================================
+{
+    createCommand(READ_DIO,0,NULL);
 }
 
 } // Ugv1

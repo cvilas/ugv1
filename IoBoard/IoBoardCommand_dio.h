@@ -78,12 +78,11 @@ public:
 
 /// \class ReadDioInCommand
 /// \ingroup comms
-/// \brief Command to read digital inputs
+/// \brief Command a read of digital lines configured as inputs
 class UGV1_DLL_API ReadDioInCommand : public IoBoardCommand
 {
 public:
     ReadDioInCommand();
-
 }; // ReadDioInCommand
 
 } // Ugv1
