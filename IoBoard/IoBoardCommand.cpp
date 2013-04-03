@@ -4,8 +4,7 @@
 // File     : IoBoardCommand.cpp
 //==============================================================================
 
-#include "IoBoardCommand_servo.h"
-#include "IoBoardCommand_dio.h"
+#include "IoBoardCommand.h"
 #include <cstddef>
 
 namespace Ugv1
