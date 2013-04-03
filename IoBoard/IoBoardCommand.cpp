@@ -4,7 +4,8 @@
 // File     : IoBoardCommand.cpp
 //==============================================================================
 
-#include "IoBoardCommand.h"
+#include "IoBoardCommand_servo.h"
+#include "IoBoardCommand_dio.h"
 #include <cstddef>
 
 namespace Ugv1
@@ -70,7 +71,7 @@ SetDioServoModeCommand::SetDioServoModeCommand(char bitmask)
 }
 
 //-----------------------------------------------------------------------------
-void SetDioServoModeCommand::setServoMode(unsigned int channel, bool setServo)
+void SetDioServoModeCommand::setModeServo(unsigned int channel, bool setServo)
 //-----------------------------------------------------------------------------
 {
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
@@ -88,7 +89,7 @@ void SetDioServoModeCommand::setServoMode(unsigned int channel, bool setServo)
 }
 
 //-----------------------------------------------------------------------------
-bool SetDioServoModeCommand::isServoModeSet(unsigned int channel)
+bool SetDioServoModeCommand::isModeServo(unsigned int channel)
 //-----------------------------------------------------------------------------
 {
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
@@ -107,44 +108,54 @@ SetDioIoModeCommand::SetDioIoModeCommand()
 SetDioIoModeCommand::SetDioIoModeCommand(int bitmask)
 //-----------------------------------------------------------------------------
 {
-    char bm[2] = { (char)(bitmask&0xFF), (char)((bitmask>>8)&0x7)};
+    char bm[2] = { (char)((bitmask>>8)&0x7), (char)(bitmask&0xFF)};
     createCommand(SET_DIO_IOMODE,2, bm);
 }
 
 //-----------------------------------------------------------------------------
-void SetDioIoModeCommand::setInputMode(int channel, bool setInput)
+void SetDioIoModeCommand::setModeInput(int channel, bool setInput)
 //-----------------------------------------------------------------------------
 {
-    setOutputMode(channel, !setInput);
+    setModeOutput(channel, !setInput);
 }
 
 //-----------------------------------------------------------------------------
-bool SetDioIoModeCommand::isInputModeSet(int channel)
+bool SetDioIoModeCommand::isModeInput(int channel)
 //-----------------------------------------------------------------------------
 {
-    return !isOutputModeSet(channel);
+    return !isModeOutput(channel);
 }
 
 //-----------------------------------------------------------------------------
-void SetDioIoModeCommand::setOutputMode(int channel, bool setOutput)
+void SetDioIoModeCommand::setModeOutput(int channel, bool setOutput)
 //-----------------------------------------------------------------------------
 {
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
+    unsigned int bm = ((((unsigned int)(*it))&0x7)<<8) + ((unsigned int)(*(it+1))&0xFF);
+    unsigned int mask = (1<<channel);
 
-    // todo
+    if(setOutput)
+    {
+        bm |= mask;
+    }
+    else
+    {
+        bm &= ~mask;
+    }
+
+    *it = (char)((bm>>8)&0x7);
+    *(it+1) = (char)(bm&0xFF);
 
     setCommandModified();
 }
 
 //-----------------------------------------------------------------------------
-bool SetDioIoModeCommand::isOutputModeSet(int channel)
+bool SetDioIoModeCommand::isModeOutput(int channel)
 //-----------------------------------------------------------------------------
 {
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
-
-    // todo
-
-    //return (bm>>channel)&0x1;
+    unsigned int bm = ((((unsigned int)(*it))&0x7)<<8) + ((unsigned int)(*(it+1))&0xFF);
+    return (bm>>channel)&0x1;
 }
 
 

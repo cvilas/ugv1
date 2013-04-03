@@ -41,7 +41,7 @@ public:
         SET_PID_GAINS           = 0x0F, //!< Configure motor controller PID gains
         SET_MOTOR_DRIVEMODE     = 0x10, //!< Set direct drive or PID mode for motor controller
         WRITE_MOTOR_POWER       = 0x11, //!< Set motor power
-        READ_ENCODERS           = 0x12, //!< Read motor drive encoders
+        READ_MOTOR_ENCODERS     = 0x12, //!< Read motor drive encoders
         READ_BOARD_VERSION      = 0xFF  //!< Get version information
     };
 
@@ -65,67 +65,6 @@ private:
     char computeChecksum();
 
 }; // IoBoardCommand
-
-/// \class SetDIOServoModeCommand
-/// \ingroup comms
-/// \brief Command to configure digital outputs as PWM servo drives
-class UGV1_DLL_API SetDioServoModeCommand : public IoBoardCommand
-{
-public:
-
-    /// Default constructor. Doesn't set any digital output as PWM drive.
-    SetDioServoModeCommand();
-
-    /// Construct the command with digital outputs configured as PWM drives
-    /// \param bitmask 8 bit mask of digital IO0 (lsb) - IO7 (msb) to set as PWM servo
-    ///                 output (1) or not (0)
-    SetDioServoModeCommand(char bitmask);
-
-    /// Set a specific channel (0 - 7) as PWM servo output
-    /// \param channel Channel number 0 - 7 for digital IO0-IO7
-    /// \param setServo set this to true to set as PWM output.
-    void setServoMode(unsigned int channel, bool setServo);
-
-    /// \return true if the specified channel is set to be PWM servo output
-    bool isServoModeSet(unsigned int channel);
-
-}; // SetDIOServoModeCommand
-
-/// \class SetDioIoModeCommand
-/// \ingroup comms
-/// \brief Configure IO pins as digital inputs and outputs
-class UGV1_DLL_API SetDioIoModeCommand : public IoBoardCommand
-{
-public:
-    /// Default constructor. Sets all digital pins as inputs.
-    SetDioIoModeCommand();
-
-    /// Constructs command where specified pins are set as digital output
-    /// \param bitmask Bitmask to specify digital pins that are to be configured
-    ///                 as outputs. There are only 11 IO lines on the board.
-    ///                 Therefore only the 11 least significant bits are considered.
-    ///                 Bit 0 is IO0.
-    SetDioIoModeCommand(int bitmask);
-
-    /// Set specified channel as digital input
-    /// \param channel The channel number in range (0 - 10)
-    /// \param setInput Set this to true to configure IO pin as input
-    /// \see setOutputMode, isInputModeSet
-    void setInputMode(int channel, bool setInput);
-
-    /// \return true if the specified channel (0 - 10) is set to be digital input
-    bool isInputModeSet(int channel);
-
-    /// Set specified channel as digital output
-    /// \param channel The channel number in range (0 - 10)
-    /// \param setInput Set this to true to configure IO pin as output
-    /// \see setInputMode, isOutputModeSet
-    void setOutputMode(int channel, bool setOutput);
-
-    /// \return true if the specified channel (0 - 10) is set to be digital output
-    bool isOutputModeSet(int channel);
-
-}; // SetDioIoModeCommand
 
 } // Ugv1
 

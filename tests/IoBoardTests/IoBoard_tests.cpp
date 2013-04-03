@@ -1,6 +1,7 @@
 #include <QString>
 #include <QtTest>
-#include <IoBoardCommand.h>
+#include <IoBoardCommand_servo.h>
+#include <IoBoardCommand_dio.h>
 
 //=============================================================================
 /// \class Test class for IoBoard messages
@@ -77,8 +78,8 @@ void IoBoardMessageTests::test_IoBoardCommand_setServoMode()
     // toggle each bit to true one at a time
     for(int i = 0; i < 7; ++i)
     {
-        cmd.setServoMode(i, true);
-        QVERIFY2(cmd.isServoModeSet(i), "set/get failed for setServoMode(true)");
+        cmd.setModeServo(i, true);
+        QVERIFY2(cmd.isModeServo(i), "set/get failed for setServoMode(true)");
         csum += (1<<i);
         QVERIFY2((char)(csum&0xFF) == *(cmd.end()-1), "checksum incorrect after setServoMode(true)");
     }
@@ -87,8 +88,8 @@ void IoBoardMessageTests::test_IoBoardCommand_setServoMode()
     csum = *(cmd.end()-1);
     for(int i = 0; i < 7; ++i)
     {
-        cmd.setServoMode(i, false);
-        QVERIFY2(!cmd.isServoModeSet(i), "set/get failed for setServoMode(false)");
+        cmd.setModeServo(i, false);
+        QVERIFY2(!cmd.isModeServo(i), "set/get failed for setServoMode(false)");
         csum -= (1<<i);
         QVERIFY2((char)(csum&0xFF) == *(cmd.end()-1), "checksum incorrect after setServoMode(true)");
     }
@@ -107,18 +108,18 @@ void IoBoardMessageTests::test_IoBoardCommand_setDioOutMode()
     // toggle each bit to true one at a time
     for(int i = 0; i < 11; ++i)
     {
-        cmd.setOutputMode(i, true);
-        QVERIFY2(cmd.isOutputModeSet(i), "set/get failed for setOutputMode(true)");
+        cmd.setModeOutput(i, true);
+        QVERIFY2(cmd.isModeOutput(i), "set/get failed for setOutputMode(true)");
         csum += (1<<(i%8));
         QVERIFY2((char)(csum&0xFF) == *(cmd.end()-1), "checksum incorrect after setOutputMode(true)");
     }
 
-    // and toggle them back to false, one at a time
+    // and toggle them back to false (equivalent to setting inputmode), one at a time
     csum = *(cmd.end()-1);
     for(int i = 0; i < 7; ++i)
     {
-        cmd.setInputMode(i, true);
-        QVERIFY2(cmd.isInputModeSet(i), "set/get failed for setInputMode(true)");
+        cmd.setModeInput(i, true);
+        QVERIFY2(cmd.isModeInput(i), "set/get failed for setInputMode(true)");
         csum -= (1<<(i%8));
         QVERIFY2((char)(csum&0xFF) == *(cmd.end()-1), "checksum incorrect after setInputMode(true)");
     }

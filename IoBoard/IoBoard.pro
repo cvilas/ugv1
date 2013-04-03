@@ -14,6 +14,12 @@ DEPENDPATH +=
 
 HEADERS += IoBoard.h \ 
     IoBoardCommand.h \
+    IoBoardCommand_servo.h \
+    IoBoardCommand_dio.h \
+    IoBoardCommand_analog.h \
+    IoBoardCommand_rs485.h \
+    IoBoardCommand_i2c.h \
+    IoBoardCommand_motor.h \
     IoBoardReply.h \
     IoBoardMessage.h
 SOURCES += IoBoard.cpp \
