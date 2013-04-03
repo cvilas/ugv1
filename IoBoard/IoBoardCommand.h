@@ -14,17 +14,18 @@ namespace Ugv1
 {
 
 /// \class IoBoardCommand
-/// \ingroup vehicle
+/// \ingroup comms
 /// \brief IO board command message builder. Base class for all IoBoard commands.
+/// See Sensor/Motor Drive Board - Version 2.2 (SKU:DFR0057) Wiki for command format:
+/// http://www.dfrobot.com/wiki/index.php?title=Sensor/Motor_Drive_Board_-_Version_2.2_(SKU:DFR0057)
 /// \see IoBoardReply, IoBoardMessage
-/// \todo Mechanism to force updating checksum automatically when a command is modified.
 class UGV1_DLL_API IoBoardCommand : public IoBoardMessage
 {
 public:
     enum Command
     {
         SET_DIO_SERVOMODE       = 0x01, //!< Configure digital IO pins as servo outputs
-        SET_DIO_DIOMODE         = 0x02, //!< Configure digital IO pins as digital inputs or outputs
+        SET_DIO_IOMODE         = 0x02, //!< Configure digital IO pins as digital inputs or outputs
         WRITE_DIO               = 0x03, //!< Write digital outputs
         READ_DIO                = 0x04, //!< Read digital inputs
         WRITE_SERVO             = 0x05, //!< Write servo output
@@ -50,43 +51,81 @@ protected:
 
     /// Create command message given message code and payload
     /// message format: [header(3)][payload length(1)][cmd(1)][payload(n)][checksum(1)]
-    /// \param cmd Command code (\see IoBoardCommand::Command)
+    /// \param cmd Command code (IoBoardCommand::Command)
     /// \param nPayloadBytes Number of bytes in the payload (0-255).
     /// \param pPayloadData Pointer to array containing payload data. If set to null,
     ///                     payload data is set to 0.
     void createCommand(Command cmd, int nPayloadBytes, char* pPayloadData);
 
-    /// Computes message checksum. Derived classes must call this every time the message
-    /// is modified in any way, and set the checksum.
+    /// Derived classes must always call this method whenever it modifies the command
+    /// message buffer in any way.
+    void setCommandModified();
+
+private:
     char computeChecksum();
 
 }; // IoBoardCommand
 
 /// \class SetDIOServoModeCommand
-/// \ingroup vehicle
+/// \ingroup comms
 /// \brief Command to configure digital outputs as PWM servo drives
-class UGV1_DLL_API SetDIOServoModeCommand : public IoBoardCommand
+class UGV1_DLL_API SetDioServoModeCommand : public IoBoardCommand
 {
 public:
 
     /// Default constructor. Doesn't set any digital output as PWM drive.
-    SetDIOServoModeCommand();
+    SetDioServoModeCommand();
 
     /// Construct the command with digital outputs configured as PWM drives
-    /// \param bitmask 8 bit mask to set digital IO0 (lsb) to IO7 (msb) as PWM servo
+    /// \param bitmask 8 bit mask of digital IO0 (lsb) - IO7 (msb) to set as PWM servo
     ///                 output (1) or not (0)
-    SetDIOServoModeCommand(char bitmask);
+    SetDioServoModeCommand(char bitmask);
 
     /// Set a specific channel (0 - 7) as PWM servo output
     /// \param channel Channel number 0 - 7 for digital IO0-IO7
-    /// \param isServo set this to true to set as PWM output.
-    void setServoMode(unsigned int channel, bool isServo);
+    /// \param setServo set this to true to set as PWM output.
+    void setServoMode(unsigned int channel, bool setServo);
 
     /// \return true if the specified channel is set to be PWM servo output
     bool isServoModeSet(unsigned int channel);
 
 }; // SetDIOServoModeCommand
 
+/// \class SetDioIoModeCommand
+/// \ingroup comms
+/// \brief Configure IO pins as digital inputs and outputs
+class UGV1_DLL_API SetDioIoModeCommand : public IoBoardCommand
+{
+public:
+    /// Default constructor. Sets all digital pins as inputs.
+    SetDioIoModeCommand();
+
+    /// Constructs command where specified pins are set as digital output
+    /// \param bitmask Bitmask to specify digital pins that are to be configured
+    ///                 as outputs. There are only 11 IO lines on the board.
+    ///                 Therefore only the 11 least significant bits are considered.
+    ///                 Bit 0 is IO0.
+    SetDioIoModeCommand(int bitmask);
+
+    /// Set specified channel as digital input
+    /// \param channel The channel number in range (0 - 10)
+    /// \param setInput Set this to true to configure IO pin as input
+    /// \see setOutputMode, isInputModeSet
+    void setInputMode(int channel, bool setInput);
+
+    /// \return true if the specified channel (0 - 10) is set to be digital input
+    bool isInputModeSet(int channel);
+
+    /// Set specified channel as digital output
+    /// \param channel The channel number in range (0 - 10)
+    /// \param setInput Set this to true to configure IO pin as output
+    /// \see setInputMode, isOutputModeSet
+    void setOutputMode(int channel, bool setOutput);
+
+    /// \return true if the specified channel (0 - 10) is set to be digital output
+    bool isOutputModeSet(int channel);
+
+}; // SetDioIoModeCommand
 
 } // Ugv1
 

@@ -29,7 +29,11 @@
  * 
  * \defgroup vehicle Vehicle
  * Vehicle on-board systems
- * 
+ *
+ * \defgroup comms Comms
+ * \ingroup vehicle
+ * Control messages
+ *
  * \defgroup remote Remote
  * Remote systems
  * 

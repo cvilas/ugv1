@@ -12,7 +12,7 @@
 
 namespace Ugv1
 {
-
+/// \ingroup comms
 class UGV1_DLL_API IoBoardReply : public IoBoardMessage
 {
 public:

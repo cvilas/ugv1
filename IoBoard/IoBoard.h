@@ -14,6 +14,7 @@
 namespace Ugv1
 {
 
+/// \ingroup vehicle
 class UGV1_DLL_API IoBoard
 {
 

@@ -15,12 +15,17 @@ namespace Ugv1
 {
 
 /// \class IoBoardMessage
-/// \ingroup vehicle
+/// \ingroup comms
 /// \brief Base class for UGV1 I/O board messages
 class UGV1_DLL_API IoBoardMessage : public std::vector<char>
 {
 public:
+
+    /// header bytes common to all messages
     static const char MESSAGE_HEADER[3];
+
+    /// 0 based index to first element in payload part of the message
+    static const unsigned int MESSAGE_PAYLOAD_INDEX = 5;
 
 public:
     IoBoardMessage();

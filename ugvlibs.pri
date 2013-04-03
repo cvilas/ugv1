@@ -1,6 +1,6 @@
 # Common settings for UGV1 project libraries
 
-GRAPE_DIR = ../../Grape
+GRAPE_DIR = ../../grape
 
 TEMPLATE = lib
 

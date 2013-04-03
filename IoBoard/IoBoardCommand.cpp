@@ -5,6 +5,7 @@
 //==============================================================================
 
 #include "IoBoardCommand.h"
+#include <cstddef>
 
 namespace Ugv1
 {
@@ -31,6 +32,13 @@ void IoBoardCommand::createCommand(Command cmd, int nPayloadBytes, char* payload
 }
 
 //-----------------------------------------------------------------------------
+void IoBoardCommand::setCommandModified()
+//-----------------------------------------------------------------------------
+{
+    *(end()-1) = computeChecksum();
+}
+
+//-----------------------------------------------------------------------------
 char IoBoardCommand::computeChecksum()
 //-----------------------------------------------------------------------------
 {
@@ -46,42 +54,97 @@ char IoBoardCommand::computeChecksum()
 }
 
 //=============================================================================
-SetDIOServoModeCommand::SetDIOServoModeCommand()
+SetDioServoModeCommand::SetDioServoModeCommand()
 //=============================================================================
+    : IoBoardCommand()
 {
     createCommand(SET_DIO_SERVOMODE,1,NULL);
 }
 
 //-----------------------------------------------------------------------------
-SetDIOServoModeCommand::SetDIOServoModeCommand(char bitmask)
+SetDioServoModeCommand::SetDioServoModeCommand(char bitmask)
 //-----------------------------------------------------------------------------
+    : IoBoardCommand()
 {
     createCommand(SET_DIO_SERVOMODE, 1, &bitmask);
 }
 
 //-----------------------------------------------------------------------------
-void SetDIOServoModeCommand::setServoMode(unsigned int channel, bool isServo)
+void SetDioServoModeCommand::setServoMode(unsigned int channel, bool setServo)
 //-----------------------------------------------------------------------------
 {
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
     char mask = (1<<channel)&0xFF;
-    if( isServo )
+    if( setServo )
     {
-        this->operator [](5) |= mask;
+        *it |= mask;
     }
     else
     {
-        this->operator [](5) &= ~mask;
+        *it &= ~mask;
     }
 
-    /// \todo: mechanism to make this happen automatically
-    this->operator [](6) = computeChecksum();
+    setCommandModified();
 }
 
 //-----------------------------------------------------------------------------
-bool SetDIOServoModeCommand::isServoModeSet(unsigned int channel)
+bool SetDioServoModeCommand::isServoModeSet(unsigned int channel)
 //-----------------------------------------------------------------------------
 {
-    return (this->operator [](5)>>channel)&0x1;
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
+    return ((*it)>>channel)&0x1;
+}
+
+//=============================================================================
+SetDioIoModeCommand::SetDioIoModeCommand()
+//=============================================================================
+    : IoBoardCommand()
+{
+    createCommand(SET_DIO_IOMODE,2,NULL);
+}
+
+//-----------------------------------------------------------------------------
+SetDioIoModeCommand::SetDioIoModeCommand(int bitmask)
+//-----------------------------------------------------------------------------
+{
+    char bm[2] = { (char)(bitmask&0xFF), (char)((bitmask>>8)&0x7)};
+    createCommand(SET_DIO_IOMODE,2, bm);
+}
+
+//-----------------------------------------------------------------------------
+void SetDioIoModeCommand::setInputMode(int channel, bool setInput)
+//-----------------------------------------------------------------------------
+{
+    setOutputMode(channel, !setInput);
+}
+
+//-----------------------------------------------------------------------------
+bool SetDioIoModeCommand::isInputModeSet(int channel)
+//-----------------------------------------------------------------------------
+{
+    return !isOutputModeSet(channel);
+}
+
+//-----------------------------------------------------------------------------
+void SetDioIoModeCommand::setOutputMode(int channel, bool setOutput)
+//-----------------------------------------------------------------------------
+{
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
+
+    // todo
+
+    setCommandModified();
+}
+
+//-----------------------------------------------------------------------------
+bool SetDioIoModeCommand::isOutputModeSet(int channel)
+//-----------------------------------------------------------------------------
+{
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
+
+    // todo
+
+    //return (bm>>channel)&0x1;
 }
 
 
