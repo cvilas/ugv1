@@ -15,7 +15,7 @@ namespace Ugv1
 
 /// \class SetDioIoModeCommand
 /// \ingroup comms
-/// \brief Configure IO pins as digital inputs and outputs
+/// \brief Configure digital IO pins as inputs and outputs
 class UGV1_DLL_API SetDioIoModeCommand : public IoBoardCommand
 {
 public:
@@ -48,6 +48,43 @@ public:
     bool isModeOutput(int channel);
 
 }; // SetDioIoModeCommand
+
+/// \class WriteDioOutCommand
+/// \ingroup comms
+/// \brief Command to write digital outputs
+class UGV1_DLL_API WriteDioOutCommand : public IoBoardCommand
+{
+public:
+    /// Default constructor. Creates command with all output pins set to low.
+    WriteDioOutCommand();
+
+    /// Constructs command where pins are set to specified outputs
+    /// \param bitmask  Set bits in this mask to 0 or 1 to set corresponding pin low or high, respectively.
+    ///                 There are only 11 IO lines on the board. Therefore only the 11 least significant bits
+    ///                 are considered. Bit 0 is IO0. If one of the DIO is configured as Digital Input Mode,
+    ///                 the command to set its output will be invalid.
+    WriteDioOutCommand(int bitmask);
+
+    /// Set a specific digital output high or low. If the specified channel is configured as a digital
+    /// input, the command is invalid.
+    /// \param channel  Pin number in range 0 - 10
+    /// \param high     Value. Set to true for high.
+    void setChannel(int channel, bool high);
+
+    /// \return The output set for the specified channel
+    bool getChannel(int channel);
+
+}; // WriteDioOutCommand
+
+/// \class ReadDioInCommand
+/// \ingroup comms
+/// \brief Command to read digital inputs
+class UGV1_DLL_API ReadDioInCommand : public IoBoardCommand
+{
+public:
+    ReadDioInCommand();
+
+}; // ReadDioInCommand
 
 } // Ugv1
 

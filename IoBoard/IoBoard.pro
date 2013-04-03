@@ -25,7 +25,9 @@ HEADERS += IoBoard.h \
 SOURCES += IoBoard.cpp \
     IoBoardCommand.cpp \
     IoBoardReply.cpp \
-    IoBoardMessage.cpp
+    IoBoardMessage.cpp \
+    IoBoardCommand_dio.cpp \
+    IoBoardCommand_servo.cpp
 win32:SOURCES += 
 unix:SOURCES += 
 win32:LIBS += 
