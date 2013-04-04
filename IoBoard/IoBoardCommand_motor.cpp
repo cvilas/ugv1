@@ -15,7 +15,7 @@ SetMotorParametersCommand::SetMotorParametersCommand()
 //=============================================================================
     : IoBoardCommand()
 {
-    createCommand(SET_MOTOR_PARAM,6,NULL);
+    initialise(SET_MOTOR_PARAM,6,NULL);
     setGearRatio(640);
     setWheelPerimeter(502);
 }
@@ -86,7 +86,7 @@ WriteMotorSpeedCommand::WriteMotorSpeedCommand()
 //=============================================================================
     : IoBoardCommand()
 {
-    createCommand(WRITE_MOTOR_SPEED,5,NULL);
+    initialise(WRITE_MOTOR_SPEED,5,NULL);
 }
 
 //-----------------------------------------------------------------------------
@@ -181,7 +181,7 @@ SetMotorPidGainsCommand::SetMotorPidGainsCommand()
 //=============================================================================
     : IoBoardCommand()
 {
-    createCommand(SET_MOTOR_PID_GAINS,3,NULL);
+    initialise(SET_MOTOR_PID_GAINS,3,NULL);
 }
 
 //-----------------------------------------------------------------------------
@@ -240,7 +240,7 @@ SetMotorDriveModeCommand::SetMotorDriveModeCommand()
 //=============================================================================
     : IoBoardCommand()
 {
-    createCommand(SET_MOTOR_DRIVEMODE,1,NULL);
+    initialise(SET_MOTOR_DRIVEMODE,1,NULL);
 }
 
 //-----------------------------------------------------------------------------
@@ -282,7 +282,7 @@ WriteMotorPowerCommand::WriteMotorPowerCommand()
 //=============================================================================
     : IoBoardCommand()
 {
-    createCommand(WRITE_MOTOR_POWER,2,NULL);
+    initialise(WRITE_MOTOR_POWER,2,NULL);
 }
 
 //-----------------------------------------------------------------------------

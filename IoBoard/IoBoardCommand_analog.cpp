@@ -15,7 +15,7 @@ ReadAnalogInCommand::ReadAnalogInCommand()
 //=============================================================================
     : IoBoardCommand()
 {
-    createCommand(READ_ANALOG,0,NULL);
+    initialise(READ_ANALOG,0,NULL);
 }
 
 } //Ugv1

@@ -15,7 +15,7 @@ SetDioIoModeCommand::SetDioIoModeCommand()
 //=============================================================================
     : IoBoardCommand()
 {
-    createCommand(SET_DIO_IOMODE,2,NULL);
+    initialise(SET_DIO_IOMODE,2,NULL);
 }
 
 //-----------------------------------------------------------------------------
@@ -23,7 +23,7 @@ SetDioIoModeCommand::SetDioIoModeCommand(int bitmask)
 //-----------------------------------------------------------------------------
 {
     char bm[2] = { (char)((bitmask>>8)&0x7), (char)(bitmask&0xFF)};
-    createCommand(SET_DIO_IOMODE,2, bm);
+    initialise(SET_DIO_IOMODE,2, bm);
 }
 
 //-----------------------------------------------------------------------------
@@ -77,7 +77,7 @@ WriteDioOutCommand::WriteDioOutCommand()
 //=============================================================================
     : IoBoardCommand()
 {
-    createCommand(WRITE_DIO,2,NULL);
+    initialise(WRITE_DIO,2,NULL);
 }
 
 //-----------------------------------------------------------------------------
@@ -85,7 +85,7 @@ WriteDioOutCommand::WriteDioOutCommand(int bitmask)
 //-----------------------------------------------------------------------------
 {
     char bm[2] = { (char)((bitmask>>8)&0x7), (char)(bitmask&0xFF)};
-    createCommand(WRITE_DIO,2,bm);
+    initialise(WRITE_DIO,2,bm);
 }
 
 //-----------------------------------------------------------------------------
@@ -125,7 +125,7 @@ ReadDioInCommand::ReadDioInCommand()
 //=============================================================================
     : IoBoardCommand()
 {
-    createCommand(READ_DIO,0,NULL);
+    initialise(READ_DIO,0,NULL);
 }
 
 } // Ugv1

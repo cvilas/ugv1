@@ -79,7 +79,7 @@ class UGV1_DLL_API ReadMotorSpeedCommand : public IoBoardCommand
 public:
     ReadMotorSpeedCommand() : IoBoardCommand()
     {
-        createCommand(READ_MOTOR_SPEED,0,NULL);
+        initialise(READ_MOTOR_SPEED,0,NULL);
     }
 };
 
@@ -91,7 +91,7 @@ class UGV1_DLL_API ReadMotorCurrentCommand : public IoBoardCommand
 public:
     ReadMotorCurrentCommand() : IoBoardCommand()
     {
-        createCommand(READ_MOTOR_CURRENT,0,NULL);
+        initialise(READ_MOTOR_CURRENT,0,NULL);
     }
 };
 
@@ -161,7 +161,19 @@ class UGV1_DLL_API ReadMotorEncodersCommand : public IoBoardCommand
 public:
     ReadMotorEncodersCommand() : IoBoardCommand()
     {
-        createCommand(READ_MOTOR_ENCODERS,0,NULL);
+        initialise(READ_MOTOR_ENCODERS,0,NULL);
+    }
+};
+
+/// \class ResetMotorEncodersCommand
+/// \ingroup comms
+/// \brief command to reset motor encoder counters
+class UGV1_DLL_API ResetMotorEncodersCommand : public IoBoardCommand
+{
+public:
+    ResetMotorEncodersCommand() : IoBoardCommand()
+    {
+        initialise(RESET_MOTOR_ENCODERS,0,NULL);
     }
 };
 

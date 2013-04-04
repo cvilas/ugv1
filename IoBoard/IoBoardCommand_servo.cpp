@@ -15,7 +15,7 @@ SetDioServoModeCommand::SetDioServoModeCommand()
 //=============================================================================
     : IoBoardCommand()
 {
-    createCommand(SET_DIO_SERVOMODE,1,NULL);
+    initialise(SET_DIO_SERVOMODE,1,NULL);
 }
 
 //-----------------------------------------------------------------------------
@@ -23,7 +23,7 @@ SetDioServoModeCommand::SetDioServoModeCommand(char bitmask)
 //-----------------------------------------------------------------------------
     : IoBoardCommand()
 {
-    createCommand(SET_DIO_SERVOMODE, 1, &bitmask);
+    initialise(SET_DIO_SERVOMODE, 1, &bitmask);
 }
 
 //-----------------------------------------------------------------------------
@@ -57,7 +57,7 @@ WriteServoOutCommand::WriteServoOutCommand()
 //=============================================================================
     : IoBoardCommand()
 {
-    createCommand(WRITE_SERVO, 16, NULL);
+    initialise(WRITE_SERVO, 16, NULL);
 }
 
 //-----------------------------------------------------------------------------

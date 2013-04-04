@@ -11,7 +11,7 @@ namespace Ugv1
 {
 
 //=============================================================================
-void IoBoardCommand::createCommand(Command cmd, int nPayloadBytes, char* payload)
+void IoBoardCommand::initialise(MessageID cmd, int nPayloadBytes, char* payload)
 //=============================================================================
 {
     // message format: [header(3)][payload length(1)][cmd(1)][payload(n)][checksum(1)]
