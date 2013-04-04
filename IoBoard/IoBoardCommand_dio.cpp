@@ -27,21 +27,21 @@ SetDioIoModeCommand::SetDioIoModeCommand(int bitmask)
 }
 
 //-----------------------------------------------------------------------------
-void SetDioIoModeCommand::setModeInput(int channel, bool setInput)
+void SetDioIoModeCommand::setModeInput(unsigned int channel, bool setInput)
 //-----------------------------------------------------------------------------
 {
     setModeOutput(channel, !setInput);
 }
 
 //-----------------------------------------------------------------------------
-bool SetDioIoModeCommand::isModeInput(int channel)
+bool SetDioIoModeCommand::isModeInput(unsigned int channel)
 //-----------------------------------------------------------------------------
 {
     return !isModeOutput(channel);
 }
 
 //-----------------------------------------------------------------------------
-void SetDioIoModeCommand::setModeOutput(int channel, bool setOutput)
+void SetDioIoModeCommand::setModeOutput(unsigned int channel, bool setOutput)
 //-----------------------------------------------------------------------------
 {
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
@@ -64,7 +64,7 @@ void SetDioIoModeCommand::setModeOutput(int channel, bool setOutput)
 }
 
 //-----------------------------------------------------------------------------
-bool SetDioIoModeCommand::isModeOutput(int channel)
+bool SetDioIoModeCommand::isModeOutput(unsigned int channel)
 //-----------------------------------------------------------------------------
 {
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
@@ -77,31 +77,53 @@ WriteDioOutCommand::WriteDioOutCommand()
 //=============================================================================
     : IoBoardCommand()
 {
-    createCommand(SET_DIO_IOMODE,2,NULL);
+    createCommand(WRITE_DIO,2,NULL);
 }
 
 //-----------------------------------------------------------------------------
 WriteDioOutCommand::WriteDioOutCommand(int bitmask)
 //-----------------------------------------------------------------------------
 {
-
+    char bm[2] = { (char)((bitmask>>8)&0x7), (char)(bitmask&0xFF)};
+    createCommand(WRITE_DIO,2,bm);
 }
 
 //-----------------------------------------------------------------------------
-void WriteDioOutCommand::setChannel(int channel, bool high)
-//-----------------------------------------------------------------------------
-{}
-
-//-----------------------------------------------------------------------------
-bool WriteDioOutCommand::getChannel(int channel)
+void WriteDioOutCommand::setChannel(unsigned int channel, bool high)
 //-----------------------------------------------------------------------------
 {
-    return false;
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
+    unsigned int bm = ((((unsigned int)(*it))&0x7)<<8) + ((unsigned int)(*(it+1))&0xFF);
+    unsigned int mask = (1<<channel);
+
+    if(high)
+    {
+        bm |= mask;
+    }
+    else
+    {
+        bm &= ~mask;
+    }
+
+    *it = (char)((bm>>8)&0x7);
+    *(it+1) = (char)(bm&0xFF);
+
+    setCommandModified();
+}
+
+//-----------------------------------------------------------------------------
+bool WriteDioOutCommand::getChannel(unsigned int channel)
+//-----------------------------------------------------------------------------
+{
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
+    unsigned int bm = ((((unsigned int)(*it))&0x7)<<8) + ((unsigned int)(*(it+1))&0xFF);
+    return (bm>>channel)&0x1;
 }
 
 //=============================================================================
 ReadDioInCommand::ReadDioInCommand()
 //=============================================================================
+    : IoBoardCommand()
 {
     createCommand(READ_DIO,0,NULL);
 }

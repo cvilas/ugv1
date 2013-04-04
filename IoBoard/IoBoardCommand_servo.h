@@ -38,6 +38,29 @@ public:
 
 }; // SetDIOServoModeCommand
 
+/// \class WriteServoOutCommand
+/// \ingroup comms
+/// \brief Command to set servo output position and speed.
+/// After configuring the DIO0-7 to Servo control mode, this command is used to play the Servo
+/// with position and speed control.
+class UGV1_DLL_API WriteServoOutCommand : public IoBoardCommand
+{
+public:
+    /// Default constructor creates a command with all positions and speeds set to 0.
+    WriteServoOutCommand();
+
+    /// Set position and speed for a servo channel
+    /// \param channel  Servo channel in range 0 - 7.
+    /// \param position Position value of the servo in range 0 to 180. Center position is 90.
+    /// \param speed    Speed value of the servo from 0 to 0xFF.
+    void setChannel(unsigned int channel, unsigned char position, unsigned char speed);
+
+    /// Get the position and speed setting for a servo channel
+    /// \param channel  Servo channel in range 0 - 7. Method returns doing nothing if channel is invalid.
+    void getChannel(unsigned int channel, unsigned char& position, unsigned char& speed);
+
+}; // WriteServoOutCommand
+
 } // Ugv1
 
 #endif // UGV1_IOBOARDCOMMAND_SERVO_H

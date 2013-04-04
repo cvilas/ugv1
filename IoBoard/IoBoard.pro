@@ -27,7 +27,9 @@ SOURCES += IoBoard.cpp \
     IoBoardReply.cpp \
     IoBoardMessage.cpp \
     IoBoardCommand_dio.cpp \
-    IoBoardCommand_servo.cpp
+    IoBoardCommand_servo.cpp \
+    IoBoardCommand_analog.cpp \
+    IoBoardCommand_motor.cpp
 win32:SOURCES += 
 unix:SOURCES += 
 win32:LIBS += 

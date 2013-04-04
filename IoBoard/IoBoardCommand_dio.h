@@ -33,19 +33,19 @@ public:
     /// \param channel  The channel number in range (0 - 10)
     /// \param option   Set this to true to configure IO pin as input
     /// \see setModeOutput, isModeInput
-    void setModeInput(int channel, bool option);
+    void setModeInput(unsigned int channel, bool option);
 
     /// \return true if the specified channel (0 - 10) is set to be digital input
-    bool isModeInput(int channel);
+    bool isModeInput(unsigned int channel);
 
     /// Set specified channel as digital output
     /// \param channel  The channel number in range (0 - 10)
     /// \param option   Set this to true to configure IO pin as output
     /// \see setModeInput, isModeOutput
-    void setModeOutput(int channel, bool option);
+    void setModeOutput(unsigned int channel, bool option);
 
     /// \return true if the specified channel (0 - 10) is set to be digital output
-    bool isModeOutput(int channel);
+    bool isModeOutput(unsigned int channel);
 
 }; // SetDioIoModeCommand
 
@@ -69,10 +69,10 @@ public:
     /// input, the command is invalid.
     /// \param channel  Pin number in range 0 - 10
     /// \param high     Value. Set to true for high.
-    void setChannel(int channel, bool high);
+    void setChannel(unsigned int channel, bool high);
 
     /// \return The output set for the specified channel
-    bool getChannel(int channel);
+    bool getChannel(unsigned int channel);
 
 }; // WriteDioOutCommand
 

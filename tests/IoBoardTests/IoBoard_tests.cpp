@@ -2,6 +2,7 @@
 #include <QtTest>
 #include <IoBoardCommand_servo.h>
 #include <IoBoardCommand_dio.h>
+#include <IoBoardCommand_motor.h>
 
 //=============================================================================
 /// \class Test class for IoBoard messages
@@ -16,7 +17,13 @@ public:
 private Q_SLOTS:
     void test_IoBoardCommand_format();
     void test_IoBoardCommand_setServoMode();
+    void test_IoBoardCommand_writeServoOut();
     void test_IoBoardCommand_setDioOutMode();
+    void test_IoBoardCommand_setMotorParams();
+    void test_IoBoardCommand_setMotorSpeed();
+    void test_IoBoardCommand_setMotorPIDGains();
+    void test_IoBoardCommand_setMotorDriveMode();
+    void test_IoBoardCommand_setMotorPower();
 };
 
 //=============================================================================
@@ -96,6 +103,25 @@ void IoBoardMessageTests::test_IoBoardCommand_setServoMode()
 }
 
 //-----------------------------------------------------------------------------
+void IoBoardMessageTests::test_IoBoardCommand_writeServoOut()
+//-----------------------------------------------------------------------------
+{
+    // 1. Set a servo output speed and position in command
+    // 2. Verify it is set
+    for(int i = 0; i < 7; ++i)
+    {
+        Ugv1::WriteServoOutCommand cmd;
+        unsigned char pos = (unsigned char)((double)qrand()*180.0/RAND_MAX);
+        unsigned char speed = (unsigned char)((double)qrand()*255/RAND_MAX);
+        unsigned char pos2, speed2;
+        cmd.setChannel(i, pos, speed);
+        cmd.getChannel(i, pos2, speed2);
+        QVERIFY2(pos == pos2, "Position set failed");
+        QVERIFY2(speed == speed2, "Speed set failed");
+    }
+}
+
+//-----------------------------------------------------------------------------
 void IoBoardMessageTests::test_IoBoardCommand_setDioOutMode()
 //-----------------------------------------------------------------------------
 {
@@ -122,6 +148,100 @@ void IoBoardMessageTests::test_IoBoardCommand_setDioOutMode()
         QVERIFY2(cmd.isModeInput(i), "set/get failed for setInputMode(true)");
         csum -= (1<<(i%8));
         QVERIFY2((char)(csum&0xFF) == *(cmd.end()-1), "checksum incorrect after setInputMode(true)");
+    }
+}
+
+//-----------------------------------------------------------------------------
+void IoBoardMessageTests::test_IoBoardCommand_setMotorParams()
+//-----------------------------------------------------------------------------
+{
+    // 1. Set/verify encoder ppr
+    // 2. set/verify gear ratio
+    // 3. set/verify perimenter
+
+    Ugv1::SetMotorParametersCommand cmd;
+
+    cmd.setEncoderPPR(200);
+    QVERIFY2(200 == cmd.getEncoderPPR(), "Encoder PPR get/set failed");
+
+    cmd.setGearRatio(800);
+    QVERIFY2(800 == cmd.getGearRatio(), "Gear ratio get/set failed");
+
+    cmd.setWheelPerimeter(1000);
+    QVERIFY2(1000 == cmd.getWheelPerimeter(), "Wheel perimeter get/set failed");
+}
+
+//-----------------------------------------------------------------------------
+void IoBoardMessageTests::test_IoBoardCommand_setMotorSpeed()
+//-----------------------------------------------------------------------------
+{
+    // 1. set/verify motor 1 speed
+    // 2. set/verify motor 2 speed
+
+    int speed1 = 600;
+    int speed2 = -800;
+    Ugv1::WriteMotorSpeedCommand cmd;
+
+    cmd.setMotor1Speed(speed1);
+    QVERIFY2(speed1 == cmd.getMotor1Speed(), "Set/get fwd speed on motor 1 failed");
+
+    cmd.setMotor1Speed(speed2);
+    QVERIFY2(speed2 == cmd.getMotor1Speed(), "Set/get rev speed on motor 1 failed");
+
+    cmd.setMotor2Speed(speed1);
+    QVERIFY2(speed1 == cmd.getMotor2Speed(), "Set/get fwd speed on motor 2 failed");
+
+    cmd.setMotor2Speed(speed2);
+    QVERIFY2(speed2 == cmd.getMotor2Speed(), "Set/get rev speed on motor 2 failed");
+}
+
+//-----------------------------------------------------------------------------
+void IoBoardMessageTests::test_IoBoardCommand_setMotorPIDGains()
+//-----------------------------------------------------------------------------
+{
+    Ugv1::SetMotorPidGainsCommand cmd;
+
+    cmd.setProportionalGain(100);
+    QVERIFY2(100 == cmd.getProportionalGain(), "set/get prop gain failed");
+
+    cmd.setDerivativeGain(200);
+    QVERIFY2(200 == cmd.getDerivativeGain(), "set/get derivative gain failed");
+
+    cmd.setIntegralGain(50);
+    QVERIFY2(50 == cmd.getIntegralGain(), "set/get integral gain failed");
+}
+
+//-----------------------------------------------------------------------------
+void IoBoardMessageTests::test_IoBoardCommand_setMotorDriveMode()
+//-----------------------------------------------------------------------------
+{
+    Ugv1::SetMotorDriveModeCommand cmd;
+
+    cmd.setModePidControl();
+    QVERIFY2(cmd.isModePidControl(), "set/get pid control failed");
+    QVERIFY2(!cmd.isModeDirectPower(), "incorrect mode set (expected pid mode)");
+
+    cmd.setModeDirectPower();
+    QVERIFY2(cmd.isModeDirectPower(), "set/get direct control failed");
+    QVERIFY2(!cmd.isModePidControl(), "incorrect mode set (expected direct mode)");
+}
+
+//-----------------------------------------------------------------------------
+void IoBoardMessageTests::test_IoBoardCommand_setMotorPower()
+//-----------------------------------------------------------------------------
+{
+    Ugv1::WriteMotorPowerCommand cmd;
+
+    int power[5] = {-100, -50, 0, 50, 100};
+    for(int i = 0; i < 5; ++i)
+    {
+        cmd.setPower1(power[i]);
+        QVERIFY2(cmd.getPower1() == power[i], "set/get power on motor 1 failed");
+    }
+    for(int i = 0; i < 5; ++i)
+    {
+        cmd.setPower2(power[i]);
+        QVERIFY2(cmd.getPower2() == power[i], "set/get power on motor 1 failed");
     }
 }
 

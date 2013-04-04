@@ -52,6 +52,44 @@ bool SetDioServoModeCommand::isModeServo(unsigned int channel)
     return ((*it)>>channel)&0x1;
 }
 
+//=============================================================================
+WriteServoOutCommand::WriteServoOutCommand()
+//=============================================================================
+    : IoBoardCommand()
+{
+    createCommand(WRITE_SERVO, 16, NULL);
+}
+
+//-----------------------------------------------------------------------------
+void WriteServoOutCommand::setChannel(unsigned int channel, unsigned char position, unsigned char speed)
+//-----------------------------------------------------------------------------
+{
+    if(channel > 7)
+    {
+        return;
+    }
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (2 * channel);
+
+    if(position > 180) position = 180;
+
+    *it = position;
+    *(it+1) = speed;
+
+    setCommandModified();
+}
+
+//-----------------------------------------------------------------------------
+void WriteServoOutCommand::getChannel(unsigned int channel, unsigned char& position, unsigned char& speed)
+//-----------------------------------------------------------------------------
+{
+    if(channel > 7)
+    {
+        return;
+    }
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (2 * channel);
+    position = *it;
+    speed = *(it+1);
+}
 
 } // Ugv1
 

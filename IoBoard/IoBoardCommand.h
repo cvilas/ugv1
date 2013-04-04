@@ -16,8 +16,6 @@ namespace Ugv1
 /// \class IoBoardCommand
 /// \ingroup comms
 /// \brief IO board command message builder. Base class for all IoBoard commands.
-/// See Sensor/Motor Drive Board - Version 2.2 (SKU:DFR0057) Wiki for command format:
-/// http://www.dfrobot.com/wiki/index.php?title=Sensor/Motor_Drive_Board_-_Version_2.2_(SKU:DFR0057)
 /// \see IoBoardReply, IoBoardMessage
 class UGV1_DLL_API IoBoardCommand : public IoBoardMessage
 {
@@ -25,10 +23,10 @@ public:
     enum Command
     {
         SET_DIO_SERVOMODE       = 0x01, //!< Configure digital IO pins as servo outputs
-        SET_DIO_IOMODE         = 0x02, //!< Configure digital IO pins as digital inputs or outputs
+        SET_DIO_IOMODE          = 0x02, //!< Configure digital IO pins as digital inputs or outputs
         WRITE_DIO               = 0x03, //!< Write digital outputs
         READ_DIO                = 0x04, //!< Read digital inputs
-        WRITE_SERVO             = 0x05, //!< Write servo output
+        WRITE_SERVO             = 0x05, //!< Write servo outputs
         READ_ANALOG             = 0x06, //!< Read analog inputs
         SET_RS485_BAUD          = 0x07, //!< Configure RS485 baud rate
         DO_RS485_COMM           = 0x08, //!< Send data to devices on the RS485 bus
@@ -38,7 +36,7 @@ public:
         WRITE_MOTOR_SPEED       = 0x0C, //!< Set motor speed and direction
         READ_MOTOR_SPEED        = 0x0D, //!< Get motor speed
         READ_MOTOR_CURRENT      = 0x0E, //!< Get motor currents
-        SET_PID_GAINS           = 0x0F, //!< Configure motor controller PID gains
+        SET_MOTOR_PID_GAINS     = 0x0F, //!< Configure motor controller PID gains
         SET_MOTOR_DRIVEMODE     = 0x10, //!< Set direct drive or PID mode for motor controller
         WRITE_MOTOR_POWER       = 0x11, //!< Set motor power
         READ_MOTOR_ENCODERS     = 0x12, //!< Read motor drive encoders
@@ -65,6 +63,19 @@ private:
     char computeChecksum();
 
 }; // IoBoardCommand
+
+
+/// \class ReadBoardVersionCommand
+/// \ingroup comms
+/// \brief Create command to read board version info.
+class UGV1_DLL_API ReadBoardVersionCommand : public IoBoardCommand
+{
+public:
+    ReadBoardVersionCommand() : IoBoardCommand()
+    {
+        createCommand(READ_BOARD_VERSION,0,NULL);
+    }
+};
 
 } // Ugv1
 
