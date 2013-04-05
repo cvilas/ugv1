@@ -90,38 +90,41 @@ WriteMotorSpeedCommand::WriteMotorSpeedCommand()
 }
 
 //-----------------------------------------------------------------------------
-void WriteMotorSpeedCommand::setMotor1Speed(int speed)
+void WriteMotorSpeedCommand::setMotorSpeed(unsigned int index, int speed)
 //-----------------------------------------------------------------------------
 {
     unsigned short cmps = (unsigned short)(abs(speed)&0xFFFF);
     bool fwdDir = (speed > 0);
 
-    iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (2 * index);
 
     *it = (char)((cmps >> 8) & 0xFF);
     *(it+1) = (char)(cmps & 0xFF);
 
     // lsb 4 bits of DIR byte set direction for this motor 0x0: forward, 0xF: backward
+    it = begin() + MESSAGE_PAYLOAD_INDEX + 4;
     if( fwdDir)
     {
-        *(it+4) &= 0xF0;
+        (index == 0) ? (*it &= 0xF0) : (*it &= 0x0F);
     }
     else
     {
-        *(it+4) |= 0x0F;
+        (index == 0) ? (*it |= 0x0F) : (*it |= 0xF0);
     }
 
     setCommandModified();
 }
 
 //-----------------------------------------------------------------------------
-int WriteMotorSpeedCommand::getMotor1Speed()
+int WriteMotorSpeedCommand::getMotorSpeed(unsigned int index)
 //-----------------------------------------------------------------------------
 {
-    iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (2 * index);
     unsigned short cmps = ((((unsigned short)(*it))&0xFF)<<8)
                         + ((unsigned short)(*(it+1))&0xFF);
-    char dir = *(it+4) & 0x0F;
+
+    it = begin() + MESSAGE_PAYLOAD_INDEX + 4;
+    char dir = (index == 0) ? (*it & 0x0F) : (*it & 0xF0);
     if( dir == 0)
     {
         return cmps;
@@ -132,49 +135,36 @@ int WriteMotorSpeedCommand::getMotor1Speed()
     }
 }
 
-//-----------------------------------------------------------------------------
-void WriteMotorSpeedCommand::setMotor2Speed(int speed)
-//-----------------------------------------------------------------------------
+//=============================================================================
+unsigned short ReadMotorSpeedResponse::getMotorSpeed(unsigned int index)
+//=============================================================================
 {
-    unsigned short cmps = (unsigned short)(abs(speed)&0xFFFF);
-    bool fwdDir = (speed > 0);
-
-    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + 2;
-
-    *it = (char)((cmps >> 8) & 0xFF);
-    *(it+1) = (char)(cmps & 0xFF);
-
-    // msb 4 bits of DIR byte set direction for this motor 0x0: forward, 0xF: backward
-    if( fwdDir)
-    {
-        *(it+2) &= 0x0F;
-    }
-    else
-    {
-        *(it+2) |= 0xF0;
-    }
-
-    setCommandModified();
-
-}
-
-//-----------------------------------------------------------------------------
-int WriteMotorSpeedCommand::getMotor2Speed()
-//-----------------------------------------------------------------------------
-{
-    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + 2;
-    unsigned short cmps = ((((unsigned short)(*it))&0xFF)<<8)
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (2 * index);
+    unsigned short value = ((((unsigned short)(*it))&0xFF)<<8)
                         + ((unsigned short)(*(it+1))&0xFF);
-    char dir = *(it+2) & 0xF0;
-    if( dir == 0)
-    {
-        return cmps;
-    }
-    else
-    {
-        return -cmps;
-    }
+    return value;
 }
+
+//=============================================================================
+unsigned short ReadMotorCurrentResponse::getMotorCurrent(unsigned int index)
+//=============================================================================
+{
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (2 * index);
+    unsigned short value = ((((unsigned short)(*it))&0xFF)<<8)
+                        + ((unsigned short)(*(it+1))&0xFF);
+    return value;
+}
+
+//=============================================================================
+unsigned short ReadMotorEncodersResponse::getEncoder(unsigned int index)
+//=============================================================================
+{
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (2 * index);
+    unsigned short value = ((((unsigned short)(*it))&0xFF)<<8)
+                        + ((unsigned short)(*(it+1))&0xFF);
+    return value;
+}
+
 
 //=============================================================================
 SetMotorPidGainsCommand::SetMotorPidGainsCommand()
@@ -286,7 +276,7 @@ WriteMotorPowerCommand::WriteMotorPowerCommand()
 }
 
 //-----------------------------------------------------------------------------
-void WriteMotorPowerCommand::setPower1(int percent)
+void WriteMotorPowerCommand::setPower(unsigned int index, int percent)
 //-----------------------------------------------------------------------------
 {
     if( percent < -100) percent = -100;
@@ -295,39 +285,16 @@ void WriteMotorPowerCommand::setPower1(int percent)
     unsigned char value = (unsigned char)(abs(percent)&0xFF);
     ( percent < 0) ? ( value = 0x64 - value) : (value = 0x64 + value);
 
-    iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + index;
     *it = value;
     setCommandModified();
 }
 
 //-----------------------------------------------------------------------------
-void WriteMotorPowerCommand::setPower2(int percent)
+int WriteMotorPowerCommand::getPower(unsigned int index)
 //-----------------------------------------------------------------------------
 {
-    if( percent < -100) percent = -100;
-    if( percent > 100) percent = 100;
-
-    unsigned char value = (unsigned char)(abs(percent)&0xFF);
-    ( percent < 0) ? ( value = 0x64 - value) : (value = 0x64 + value);
-
-    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + 1;
-    *it = value;
-    setCommandModified();
-}
-
-//-----------------------------------------------------------------------------
-int WriteMotorPowerCommand::getPower1()
-//-----------------------------------------------------------------------------
-{
-    iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
-    return (int)(*it&0xFF) - 100;
-}
-
-//-----------------------------------------------------------------------------
-int WriteMotorPowerCommand::getPower2()
-//-----------------------------------------------------------------------------
-{
-    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + 1;
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + index;
     return (int)(*it&0xFF) - 100;
 }
 

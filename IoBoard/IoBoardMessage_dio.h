@@ -88,14 +88,22 @@ public:
 /// \class ReadDioInResponse
 /// \ingroup comms
 /// \brief Response to ReadDioInCommand
-class ReadDioInResponse : public IoBoardResponse
+class UGV1_DLL_API ReadDioInResponse : public IoBoardResponse
 {
 public:
     ReadDioInResponse() : IoBoardResponse(){}
-    size_t getExpectedLength() { return 8; }
-    bool verifyId();
+    size_t getExpectedLength() { return 9; }
+    bool verifyId() { return getId() == READ_DIO; }
+
+    /// Get digital input pin state.
+    /// \param channel  Pin number in range 0 - 10
+    /// \return true if the specified channel is high.
     bool isHigh(unsigned int channel);
+
+    /// \return true if the specified channel is low.
+    /// \see isHigh
     bool isLow(unsigned int channel) { return !isHigh(channel); }
+
 };
 
 } // Ugv1

@@ -28,7 +28,7 @@ void IoBoardCommand::initialise(MessageID cmd, int nPayloadBytes, char* payload)
 {
     // message format: [header(3)][payload length(1)][cmd(1)][payload(n)][checksum(1)]
 
-    resize(nPayloadBytes + 6);
+    resize(nPayloadBytes + COMMAND_MIN_LENGTH);
     std::vector<char>::iterator it = begin();
     *it = IoBoardMessage::MESSAGE_HEADER[0]; ++it;
     *it = IoBoardMessage::MESSAGE_HEADER[1]; ++it;
@@ -111,6 +111,16 @@ bool IoBoardResponse::isValid()
 }
 
 //-----------------------------------------------------------------------------
+IoBoardMessage::MessageID IoBoardResponse::getId()
+//-----------------------------------------------------------------------------
+{
+    if( size() < RESPONSE_MIN_LENGTH)
+        return ID_UNKNOWN;
+
+    return (IoBoardMessage::MessageID)(*(begin() + MESSAGE_ID_INDEX));
+}
+
+//-----------------------------------------------------------------------------
 bool IoBoardResponse::verifyChecksum()
 //-----------------------------------------------------------------------------
 {
@@ -125,7 +135,6 @@ bool IoBoardResponse::verifyChecksum()
     }
 
     return ( (*itCSum) == (csum&0xFF) );
-
 }
 
 } // Ugv1

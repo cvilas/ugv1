@@ -10,6 +10,7 @@
 
 #include "ugv1_common.h"
 #include <vector>
+#include <iostream>
 
 namespace Ugv1
 {
@@ -39,6 +40,7 @@ public:
     /// Message types supported by the sensor/motor IO board
     enum MessageID
     {
+        ID_UNKNOWN              = 0x00, //!< unknown/undefined
         SET_DIO_SERVOMODE       = 0x01, //!< Configure digital IO pins as servo outputs
         SET_DIO_IOMODE          = 0x02, //!< Configure digital IO pins as digital inputs or outputs
         WRITE_DIO               = 0x03, //!< Write digital outputs
@@ -72,6 +74,10 @@ public:
 /// \see IoBoardReply, IoBoardMessage
 class UGV1_DLL_API IoBoardCommand : public IoBoardMessage
 {
+public:
+
+    /// minimum command length
+    static const unsigned int COMMAND_MIN_LENGTH = 6; // header[3] + length + id + csum
 
 protected:
     IoBoardCommand() {}
@@ -97,16 +103,38 @@ private:
 /// \class IoBoardResponse
 /// \ingroup comms
 /// \brief Response from the IoBoard for IoBoardCommand messages
+/// \note Always check that the message is valid before using it.
 class UGV1_DLL_API IoBoardResponse : public IoBoardMessage
 {
 public:
+
+    /// minimum command length
+    static const unsigned int RESPONSE_MIN_LENGTH = 8; // header[3] + length + id + payload + csum + '\n'
+
+public:
     IoBoardResponse();
     virtual ~IoBoardResponse();
+
+    /// Verify that the message construction is correct
+    /// The method verifies message length, header, id and checksum
+    /// but not the payload
+    /// \return true if the message format is correct
     bool isValid();
-protected:
-    virtual bool verifyId() = 0;
+
+    /// \return message ID.
+    MessageID getId();
+
+    /// Implemented by derived classes.
+    /// \return The expected length for the message, including header and checksum
     virtual size_t getExpectedLength() = 0;
+
+    /// Implemented by derived classes
+    /// \return true if ID is correct for the message
+    virtual bool verifyId() = 0;
+
+    /// \return true if the message has the correct checksum byte
     bool verifyChecksum();
+
 }; // IoBoardResponse
 
 /// \class ReadBoardVersionCommand
@@ -121,20 +149,19 @@ public:
     }
 };
 
-class ReadAnalogInResponse : public IoBoardResponse
-{};
-
-class ReadMotorSpeedResponse : public IoBoardResponse
-{};
-
-class ReadMotorCurrentResponse : public IoBoardResponse
-{};
-
-class ReadMotorEncodersResponse : public IoBoardResponse
-{};
-
-class ReadBoardVersionResponse : public IoBoardResponse
-{};
+/// \class ReadBoardVersionResponse
+/// \ingroup comms
+/// \brief Response to ReadBoardVersionCommand
+class UGV1_DLL_API ReadBoardVersionResponse : public IoBoardResponse
+{
+public:
+    ReadBoardVersionResponse() : IoBoardResponse() {}
+    size_t getExpectedLength() { return 10; }
+    MessageID getId() { return READ_BOARD_VERSION; }
+    char getBoardCode() { return *(begin() + MESSAGE_PAYLOAD_INDEX); }
+    char getBoardVersion() { return *(begin() + MESSAGE_PAYLOAD_INDEX + 1); }
+    char getBoardRevision() { return *(begin() + MESSAGE_PAYLOAD_INDEX + 2); }
+};
 
 
 } // Ugv1

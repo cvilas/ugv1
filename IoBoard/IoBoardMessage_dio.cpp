@@ -128,27 +128,11 @@ ReadDioInCommand::ReadDioInCommand()
     initialise(READ_DIO,0,NULL);
 }
 
-//=============================================================================
-bool ReadDioInResponse::verifyId()
-//=============================================================================
-{
-    if( size() < MESSAGE_ID_INDEX + 1 )
-    {
-        return false;
-    }
 
-    iterator it = begin() + MESSAGE_ID_INDEX;
-    return (*it == READ_DIO);
-}
-
-//-----------------------------------------------------------------------------
+//=============================================================================
 bool ReadDioInResponse::isHigh(unsigned int channel)
-//-----------------------------------------------------------------------------
+//=============================================================================
 {
-    if( size() < MESSAGE_PAYLOAD_INDEX + 3 )
-    {
-        throw;
-    }
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
     unsigned int bm = ((((unsigned int)(*it))&0x7)<<8) + ((unsigned int)(*(it+1))&0xFF);
     return (bm>>channel)&0x1;

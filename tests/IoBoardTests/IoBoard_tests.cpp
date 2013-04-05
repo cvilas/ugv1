@@ -24,6 +24,8 @@ private Q_SLOTS:
     void test_IoBoardCommand_setMotorPIDGains();
     void test_IoBoardCommand_setMotorDriveMode();
     void test_IoBoardCommand_setMotorPower();
+
+    void test_IoBoardResponse_isValid();
 };
 
 //=============================================================================
@@ -182,17 +184,17 @@ void IoBoardMessageTests::test_IoBoardCommand_setMotorSpeed()
     int speed2 = -800;
     Ugv1::WriteMotorSpeedCommand cmd;
 
-    cmd.setMotor1Speed(speed1);
-    QVERIFY2(speed1 == cmd.getMotor1Speed(), "Set/get fwd speed on motor 1 failed");
+    cmd.setMotorSpeed(0, speed1);
+    QVERIFY2(speed1 == cmd.getMotorSpeed(0), "Set/get fwd speed on motor 1 failed");
 
-    cmd.setMotor1Speed(speed2);
-    QVERIFY2(speed2 == cmd.getMotor1Speed(), "Set/get rev speed on motor 1 failed");
+    cmd.setMotorSpeed(0, speed2);
+    QVERIFY2(speed2 == cmd.getMotorSpeed(0), "Set/get rev speed on motor 1 failed");
 
-    cmd.setMotor2Speed(speed1);
-    QVERIFY2(speed1 == cmd.getMotor2Speed(), "Set/get fwd speed on motor 2 failed");
+    cmd.setMotorSpeed(1, speed1);
+    QVERIFY2(speed1 == cmd.getMotorSpeed(1), "Set/get fwd speed on motor 2 failed");
 
-    cmd.setMotor2Speed(speed2);
-    QVERIFY2(speed2 == cmd.getMotor2Speed(), "Set/get rev speed on motor 2 failed");
+    cmd.setMotorSpeed(1, speed2);
+    QVERIFY2(speed2 == cmd.getMotorSpeed(1), "Set/get rev speed on motor 2 failed");
 }
 
 //-----------------------------------------------------------------------------
@@ -235,14 +237,52 @@ void IoBoardMessageTests::test_IoBoardCommand_setMotorPower()
     int power[5] = {-100, -50, 0, 50, 100};
     for(int i = 0; i < 5; ++i)
     {
-        cmd.setPower1(power[i]);
-        QVERIFY2(cmd.getPower1() == power[i], "set/get power on motor 1 failed");
+        cmd.setPower(0, power[i]);
+        QVERIFY2(cmd.getPower(0) == power[i], "set/get power on motor 1 failed");
     }
     for(int i = 0; i < 5; ++i)
     {
-        cmd.setPower2(power[i]);
-        QVERIFY2(cmd.getPower2() == power[i], "set/get power on motor 1 failed");
+        cmd.setPower(1, power[i]);
+        QVERIFY2(cmd.getPower(1) == power[i], "set/get power on motor 2 failed");
     }
+}
+
+//-----------------------------------------------------------------------------
+void IoBoardMessageTests::test_IoBoardResponse_isValid()
+//-----------------------------------------------------------------------------
+{
+    // 1. Create valid message. Verify isValid passes
+    // 2. Create invalid message. Verify isValid fails.
+
+    // valid message
+    char validResponse[9] = {0x55, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_DIO, 0x07, 0xFF, 0x1B, 0x0A};
+    Ugv1::ReadDioInResponse resp;
+    resp.assign(validResponse, validResponse+9);
+    QVERIFY2(resp.isValid(), "Valid message but test failed");
+
+    // invalid length
+    char invalidResponse1[9] = {0x55, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_DIO, 0x07, 0xFF, 0x1B};
+    Ugv1::ReadDioInResponse resp1;
+    resp1.assign(invalidResponse1, invalidResponse1+8);
+    QVERIFY2(!resp1.isValid(), "Invalid message (length) but test failed");
+
+    // invalid header
+    char invalidResponse2[9] = {0x54, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_DIO, 0x07, 0xFF, 0x1B, 0x0A};
+    Ugv1::ReadDioInResponse resp2;
+    resp2.assign(invalidResponse2, invalidResponse2+9);
+    QVERIFY2(!resp2.isValid(), "Invalid message (header) but test failed");
+
+    // invalid id
+    char invalidResponse3[9] = {0x54, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_ANALOG, 0x07, 0xFF, 0x1B, 0x0A};
+    Ugv1::ReadDioInResponse resp3;
+    resp3.assign(invalidResponse3, invalidResponse3+9);
+    QVERIFY2(!resp3.isValid(), "Invalid message (id) but test failed");
+
+    // invalid checksum
+    char invalidResponse4[9] = {0x54, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_ANALOG, 0x07, 0xFF, 0x10, 0x0A};
+    Ugv1::ReadDioInResponse resp4;
+    resp4.assign(invalidResponse4, invalidResponse4+9);
+    QVERIFY2(!resp4.isValid(), "Invalid message (checksum) but test failed");
 }
 
 QTEST_APPLESS_MAIN(IoBoardMessageTests)

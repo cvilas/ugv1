@@ -57,18 +57,14 @@ public:
     WriteMotorSpeedCommand();
 
     /// Set speed for the first motor
-    /// \param cmps     Motor speed in cm/sec. (+ve for forward, -ve for reverse).
-    void setMotor1Speed(int speed);
+    /// \param index  Motor num. Valid range is 0 - 1.
+    /// \param cmps Motor speed in cm/sec. (+ve for forward, -ve for reverse).
+    void setMotorSpeed(unsigned int index, int cmps);
 
-    /// \return Speed setting for motor 1
-    int getMotor1Speed();
+    /// \param index  Motor num. Valid range is 0 - 1.
+    /// \return Speed setting for motor
+    int getMotorSpeed(unsigned int index);
 
-    /// Set speed for the second motor
-    /// \param cmps     Motor speed in cm/sec. (+ve for forward, -ve for reverse).
-    void setMotor2Speed(int speed);
-
-    /// \return Speed setting for motor 2
-    int getMotor2Speed();
 };
 
 /// \class ReadMotorSpeedCommand
@@ -83,6 +79,25 @@ public:
     }
 };
 
+/// \class ReadMotorSpeedResponse
+/// \ingroup comms
+/// \brief Response to ReadMotorSpeedCommand
+class UGV1_DLL_API ReadMotorSpeedResponse : public IoBoardResponse
+{
+public:
+    ReadMotorSpeedResponse() : IoBoardResponse() {}
+    size_t getExpectedLength() { return 11; }
+    MessageID getId() { return READ_MOTOR_SPEED; }
+
+    /// Get speed of the specified motor
+    /// \note Manual doesnt say whether value is signed or unsigned. Just return raw bits
+    /// \todo Resolve above issue
+    /// \param index    Motor index (0 or 1)
+    /// \return Motor speed in cm/s
+    unsigned short getMotorSpeed(unsigned int index);
+
+};
+
 /// \class ReadMotorCurrentCommand
 /// \ingroup comms
 /// \brief Command to read motor current consumption
@@ -93,6 +108,22 @@ public:
     {
         initialise(READ_MOTOR_CURRENT,0,NULL);
     }
+};
+
+/// \class ReadMotorCurrentResponse
+/// \ingroup comms
+/// \brief Response to ReadMotorCurrentCommand
+class UGV1_DLL_API ReadMotorCurrentResponse : public IoBoardResponse
+{
+public:
+    ReadMotorCurrentResponse() : IoBoardResponse() {}
+    size_t getExpectedLength() { return 11;}
+    MessageID getId() { return READ_MOTOR_CURRENT; }
+
+    /// Get motor current consumption
+    /// \param index  Motor number (0 or 1)
+    /// \return motor current in mA.
+    unsigned short getMotorCurrent(unsigned int index);
 };
 
 /// \class SetMotorPidGainsCommand
@@ -143,14 +174,15 @@ class UGV1_DLL_API WriteMotorPowerCommand : public IoBoardCommand
 public:
     WriteMotorPowerCommand();
 
-    /// Set power for first motor. Range -100 to +100
-    void setPower1(int percent);
+    /// Set power for motor.
+    /// \param index    motor number (0 or 1)
+    /// \param percent  Power range. (-100 to +100)
+    void setPower(unsigned int index, int percent);
 
-    /// Set power for second motor. Range -100 to +100.
-    void setPower2(int percent);
-
-    int getPower1();
-    int getPower2();
+    /// Get power setting for motor.
+    /// \param index    motor number (0 or 1)
+    /// \return Power setting (-100 to +100)
+    int getPower(unsigned int index);
 };
 
 /// \class ReadMotorEncodersCommand
@@ -165,6 +197,23 @@ public:
     }
 };
 
+/// \class ReadMotorEncodersResponse
+/// \ingroup comms
+/// \brief Response to ReadMotorEncodersCommand
+class UGV1_DLL_API ReadMotorEncodersResponse : public IoBoardResponse
+{
+public:
+    ReadMotorEncodersResponse() : IoBoardResponse() {}
+    size_t getExpectedLength() { return 11; }
+    MessageID getId() { return READ_MOTOR_ENCODERS; }
+
+    /// Get encoder count for motor.
+    /// \param index    motor number (0 or 1)
+    /// \return encoder count
+    /// \note Read manual about encoder count and motor direction
+    unsigned short getEncoder(unsigned int index);
+};
+
 /// \class ResetMotorEncodersCommand
 /// \ingroup comms
 /// \brief command to reset motor encoder counters
@@ -176,6 +225,7 @@ public:
         initialise(RESET_MOTOR_ENCODERS,0,NULL);
     }
 };
+
 
 } // Ugv1
 
