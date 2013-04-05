@@ -1,14 +1,14 @@
 //==============================================================================
 // Project  : UGV1
 // Module   : IO
-// File     : IoBoardCommand_dio.h
-// Brief    : UGV1 driver board command messages - digital IO
+// File     : IoBoardMessage_dio.h
+// Brief    : UGV1 driver board messages - digital IO
 //==============================================================================
 
-#ifndef UGV1_IOBOARDCOMMAND_DIO_H
-#define UGV1_IOBOARDCOMMAND_DIO_H
+#ifndef UGV1_IOBOARDMESSAGE_DIO_H
+#define UGV1_IOBOARDMESSAGE_DIO_H
 
-#include "IoBoardCommand.h"
+#include "IoBoardMessage.h"
 
 namespace Ugv1
 {
@@ -85,6 +85,19 @@ public:
     ReadDioInCommand();
 }; // ReadDioInCommand
 
+/// \class ReadDioInResponse
+/// \ingroup comms
+/// \brief Response to ReadDioInCommand
+class ReadDioInResponse : public IoBoardResponse
+{
+public:
+    ReadDioInResponse() : IoBoardResponse(){}
+    size_t getExpectedLength() { return 8; }
+    bool verifyId();
+    bool isHigh(unsigned int channel);
+    bool isLow(unsigned int channel) { return !isHigh(channel); }
+};
+
 } // Ugv1
 
-#endif // UGV1_IOBOARDCOMMAND_DIO_H
+#endif // UGV1_IOBOARDMESSAGE_DIO_H

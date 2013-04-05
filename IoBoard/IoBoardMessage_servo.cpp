@@ -1,10 +1,10 @@
 //==============================================================================
 // Project  : UGV1
 // Module   : IO
-// File     : IoBoardCommand_servo.cpp
+// File     : IoBoardMessage_servo.cpp
 //==============================================================================
 
-#include "IoBoardCommand_servo.h"
+#include "IoBoardMessage_servo.h"
 #include <cstddef>
 
 namespace Ugv1

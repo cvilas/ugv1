@@ -13,23 +13,19 @@ INCLUDEPATH += ./../common
 DEPENDPATH += 
 
 HEADERS += IoBoard.h \ 
-    IoBoardCommand.h \
-    IoBoardCommand_servo.h \
-    IoBoardCommand_dio.h \
-    IoBoardCommand_analog.h \
-    IoBoardCommand_rs485.h \
-    IoBoardCommand_i2c.h \
-    IoBoardCommand_motor.h \
-    IoBoardReply.h \
-    IoBoardMessage.h
+    IoBoardMessage.h \
+    IoBoardMessage_analog.h \
+    IoBoardMessage_dio.h \
+    IoBoardMesssage_i2c.h \
+    IoBoardMessage_motor.h \
+    IoBoardMessage_rs485.h \
+    IoBoardMessage_servo.h
 SOURCES += IoBoard.cpp \
-    IoBoardCommand.cpp \
-    IoBoardReply.cpp \
     IoBoardMessage.cpp \
-    IoBoardCommand_dio.cpp \
-    IoBoardCommand_servo.cpp \
-    IoBoardCommand_analog.cpp \
-    IoBoardCommand_motor.cpp
+    IoBoardMessage_analog.cpp \
+    IoBoardMessage_dio.cpp \
+    IoBoardMessage_motor.cpp \
+    IoBoardMessage_servo.cpp
 win32:SOURCES += 
 unix:SOURCES += 
 win32:LIBS += 

@@ -1,14 +1,14 @@
 //==============================================================================
 // Project  : UGV1
 // Module   : IO
-// File     : IoBoardCommand_i2c.h
-// Brief    : UGV1 driver board command messages - motor commands
+// File     : IoBoardMessage_motor.h
+// Brief    : UGV1 driver board messages - motor commands
 //==============================================================================
 
-#ifndef UGV1_IOBOARDCOMMAND_MOTOR_H
-#define UGV1_IOBOARDCOMMAND_MOTOR_H
+#ifndef UGV1_IOBOARDMESSAGE_MOTOR_H
+#define UGV1_IOBOARDMESSAGE_MOTOR_H
 
-#include "IoBoardCommand.h"
+#include "IoBoardMessage.h"
 
 namespace Ugv1
 {
@@ -179,4 +179,4 @@ public:
 
 } // Ugv1
 
-#endif // UGV1_IOBOARDCOMMAND_MOTOR_H
+#endif // UGV1_IOBOARDMESSAGE_MOTOR_H

@@ -66,6 +66,77 @@ public:
     virtual ~IoBoardMessage();    
 };
 
+/// \class IoBoardCommand
+/// \ingroup comms
+/// \brief IO board command message builder. Base class for all IoBoard commands.
+/// \see IoBoardReply, IoBoardMessage
+class UGV1_DLL_API IoBoardCommand : public IoBoardMessage
+{
+
+protected:
+    IoBoardCommand() {}
+    virtual ~IoBoardCommand() {}
+
+    /// Create command message given message code and payload
+    /// message format: [header(3)][payload length(1)][cmd(1)][payload(n)][checksum(1)]
+    /// \param cmd Command code (IoBoardCommand::MessageID)
+    /// \param nPayloadBytes Number of bytes in the payload (0-255).
+    /// \param pPayloadData Pointer to array containing payload data. If set to null,
+    ///                     payload data is set to 0.
+    void initialise(MessageID cmd, int nPayloadBytes, char* pPayloadData);
+
+    /// Derived classes must always call this method whenever it modifies the command
+    /// message buffer in any way.
+    void setCommandModified();
+
+private:
+    char computeChecksum();
+
+}; // IoBoardCommand
+
+/// \class IoBoardResponse
+/// \ingroup comms
+/// \brief Response from the IoBoard for IoBoardCommand messages
+class UGV1_DLL_API IoBoardResponse : public IoBoardMessage
+{
+public:
+    IoBoardResponse();
+    virtual ~IoBoardResponse();
+    bool isValid();
+protected:
+    virtual bool verifyId() = 0;
+    virtual size_t getExpectedLength() = 0;
+    bool verifyChecksum();
+}; // IoBoardResponse
+
+/// \class ReadBoardVersionCommand
+/// \ingroup comms
+/// \brief Create command to read board version info.
+class UGV1_DLL_API ReadBoardVersionCommand : public IoBoardCommand
+{
+public:
+    ReadBoardVersionCommand() : IoBoardCommand()
+    {
+        initialise(READ_BOARD_VERSION,0,NULL);
+    }
+};
+
+class ReadAnalogInResponse : public IoBoardResponse
+{};
+
+class ReadMotorSpeedResponse : public IoBoardResponse
+{};
+
+class ReadMotorCurrentResponse : public IoBoardResponse
+{};
+
+class ReadMotorEncodersResponse : public IoBoardResponse
+{};
+
+class ReadBoardVersionResponse : public IoBoardResponse
+{};
+
+
 } // Ugv1
 
 #endif // UGV1_IOBOARDMESSAGE_H

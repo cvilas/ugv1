@@ -1,14 +1,14 @@
 //==============================================================================
 // Project  : UGV1
 // Module   : IO
-// File     : IoBoardCommand_servo.h
-// Brief    : UGV1 driver board command messages - servo outputs
+// File     : IoBoardMessage_servo.h
+// Brief    : UGV1 driver board messages - servo outputs
 //==============================================================================
 
-#ifndef UGV1_IOBOARDCOMMAND_SERVO_H
-#define UGV1_IOBOARDCOMMAND_SERVO_H
+#ifndef UGV1_IOBOARDMESSAGE_SERVO_H
+#define UGV1_IOBOARDMESSAGE_SERVO_H
 
-#include "IoBoardCommand.h"
+#include "IoBoardMessage.h"
 
 namespace Ugv1
 {
@@ -63,4 +63,4 @@ public:
 
 } // Ugv1
 
-#endif // UGV1_IOBOARDCOMMAND_SERVO_H
+#endif // UGV1_IOBOARDMESSAGE_SERVO_H

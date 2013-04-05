@@ -21,7 +21,7 @@ IoBoard::~IoBoard()
 {}
 
 //-----------------------------------------------------------------------------
-bool IoBoard::send(IoBoardCommand& cmd, IoBoardReply& reply)
+bool IoBoard::send(IoBoardCommand& cmd, IoBoardResponse& reply)
 //-----------------------------------------------------------------------------
 {
     return false;

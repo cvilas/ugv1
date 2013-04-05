@@ -8,7 +8,7 @@
 #ifndef UGV1_IOBOARD_H
 #define UGV1_IOBOARD_H
 
-#include "IoBoardReply.h"
+#include "IoBoardMessage.h"
 #include "IPort.h"
 
 namespace Ugv1
@@ -22,7 +22,7 @@ public:
     IoBoard(Grape::IPort& transport);
     ~IoBoard();
 
-    bool send(IoBoardCommand& cmd, IoBoardReply& reply);
+    bool send(IoBoardCommand& cmd, IoBoardResponse& reply);
     bool send(IoBoardCommand& cmd);
 private:
     IoBoard(const IoBoard&); // disable copy

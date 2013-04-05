@@ -1,14 +1,14 @@
 //==============================================================================
 // Project  : UGV1
 // Module   : IO
-// File     : IoBoardCommand_analog.h
-// Brief    : UGV1 driver board command messages - analog commands
+// File     : IoBoardMessage_analog.h
+// Brief    : UGV1 driver board messages - analog commands
 //==============================================================================
 
-#ifndef UGV1_IOBOARDCOMMAND_ANALOG_H
-#define UGV1_IOBOARDCOMMAND_ANALOG_H
+#ifndef UGV1_IOBOARDMESSAGE_ANALOG_H
+#define UGV1_IOBOARDMESSAGE_ANALOG_H
 
-#include "IoBoardCommand.h"
+#include "IoBoardMessage.h"
 
 namespace Ugv1
 {
@@ -25,4 +25,4 @@ public:
 
 } // Ugv1
 
-#endif // UGV1_IOBOARDCOMMAND_ANALOG_H
+#endif // UGV1_IOBOARDMESSAGE_ANALOG_H

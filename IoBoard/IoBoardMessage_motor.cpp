@@ -1,12 +1,12 @@
 //==============================================================================
 // Project  : UGV1
 // Module   : IO
-// File     : IoBoardCommand_motor.cpp
+// File     : IoBoardMessage_motor.cpp
 //==============================================================================
 
-#include "IoBoardCommand_motor.h"
+#include "IoBoardMessage_motor.h"
 #include <cstddef>
-#include<iostream>
+
 namespace Ugv1
 {
 
