@@ -30,11 +30,11 @@ DEFINES +=
 win32: DEFINES += GRAPE_DLL UGV1_DLL UGV1_DLL_EXPORT _UNICODE _CRT_SECURE_NO_WARNINGS
 CONFIG(debug, release|debug) {
     DEFINES += _DEBUG
-    win32:LIBS += -lws2_32 -lUser32 -lGrapeIod0
-    else:unix: LIBS += -lGrapeIod
+    win32:LIBS += -lws2_32 -lUser32 -lGrapeIod0 -lGrapeCored0
+    else:unix: LIBS += -lGrapeIod -lGrapeCored
 } else {
-    win32:LIBS += -lws2_32 -lUser32 -lGrapeIo0
-    else:unix: LIBS += -lGrapeIo
+    win32:LIBS += -lws2_32 -lUser32 -lGrapeIo0 -lGrapeCore0
+    else:unix: LIBS += -lGrapeIo -lGrapeCore
 }
 
 # don't want linking against qtmain.lib
