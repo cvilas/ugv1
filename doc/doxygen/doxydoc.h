@@ -36,5 +36,8 @@
  *
  * \defgroup remote Remote
  * Remote systems
+ *
+ * \defgroup common Common
+ * Generic/common functions
  * 
  */
