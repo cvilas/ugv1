@@ -5,7 +5,6 @@
 //==============================================================================
 
 #include "IoBoardMessage_analog.h"
-#include <cstddef>
 
 namespace Ugv1
 {
@@ -19,12 +18,19 @@ ReadAnalogInCommand::ReadAnalogInCommand()
 }
 
 //=============================================================================
-unsigned short ReadAnalogInResponse::getChannel(unsigned int channel)
+unsigned short ReadAnalogInResponse::getRaw(unsigned int channel)
 //=============================================================================
 {
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (channel * 2);
     unsigned short value = ((((unsigned short)(*it))&0x0F)<<8) + ((unsigned short)(*(it+1))&0xFF);
     return value;
+}
+
+//-----------------------------------------------------------------------------
+double ReadAnalogInResponse::getVolts(unsigned int channel)
+//-----------------------------------------------------------------------------
+{
+    return 3.3 * getRaw(channel) / (double)0xfff;
 }
 
 } //Ugv1

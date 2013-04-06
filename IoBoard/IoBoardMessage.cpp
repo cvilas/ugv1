@@ -106,8 +106,7 @@ bool IoBoardResponse::isValid()
         return false;
     }
 
-    return verifyChecksum() && verifyId();
-
+    return (verifyChecksum() && verifyId());
 }
 
 //-----------------------------------------------------------------------------
@@ -117,7 +116,7 @@ IoBoardMessage::MessageID IoBoardResponse::getId()
     if( size() < RESPONSE_MIN_LENGTH)
         return ID_UNKNOWN;
 
-    return (IoBoardMessage::MessageID)(*(begin() + MESSAGE_ID_INDEX));
+    return (IoBoardMessage::MessageID)(*(begin() + MESSAGE_ID_INDEX)&0xFF);
 }
 
 //-----------------------------------------------------------------------------
@@ -126,15 +125,14 @@ bool IoBoardResponse::verifyChecksum()
 {
     const_iterator itCSum = end() - 2; // checksum is second last character
 
-    int csum = 0;
+    unsigned int csum = 0;
     const_iterator it = begin();
     while( it != itCSum )
     {
-        csum += (int)(*it);
+        csum += (unsigned int)(*it);
         ++it;
     }
-
-    return ( (*itCSum) == (csum&0xFF) );
+    return ( ((*itCSum)&0xFF) == (csum&0xFF) );
 }
 
 } // Ugv1

@@ -87,7 +87,7 @@ class UGV1_DLL_API ReadMotorSpeedResponse : public IoBoardResponse
 public:
     ReadMotorSpeedResponse() : IoBoardResponse() {}
     size_t getExpectedLength() { return 11; }
-    MessageID getId() { return READ_MOTOR_SPEED; }
+    bool verifyId() { return getId() == READ_MOTOR_SPEED; }
 
     /// Get speed of the specified motor
     /// \note Manual doesnt say whether value is signed or unsigned. Just return raw bits
@@ -118,7 +118,7 @@ class UGV1_DLL_API ReadMotorCurrentResponse : public IoBoardResponse
 public:
     ReadMotorCurrentResponse() : IoBoardResponse() {}
     size_t getExpectedLength() { return 11;}
-    MessageID getId() { return READ_MOTOR_CURRENT; }
+    bool verifyId() { return getId() == READ_MOTOR_CURRENT; }
 
     /// Get motor current consumption
     /// \param index  Motor number (0 or 1)
@@ -205,7 +205,7 @@ class UGV1_DLL_API ReadMotorEncodersResponse : public IoBoardResponse
 public:
     ReadMotorEncodersResponse() : IoBoardResponse() {}
     size_t getExpectedLength() { return 11; }
-    MessageID getId() { return READ_MOTOR_ENCODERS; }
+    bool verifyId() { return getId() == READ_MOTOR_ENCODERS; }
 
     /// Get encoder count for motor.
     /// \param index    motor number (0 or 1)

@@ -1,7 +1,9 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 SUBDIRS += IoBoard \
-    tests/IoBoardTests
+    tests/IoBoardTests \
+    tests/TestGui \
+    tests/TestConsole
 
 IoBoardTests.depends = IoBoard
 

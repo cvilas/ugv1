@@ -41,6 +41,7 @@ CONFIG(debug, release|debug) {
 QMAKE_LIBS_QT_ENTRY=
 INCLUDEPATH += $${PWD} \
                 $${PWD}/common \
+                $${GRAPE_DIR} \
                 $${GRAPE_DIR}/core \
                 $${GRAPE_DIR}/io
 

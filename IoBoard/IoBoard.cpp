@@ -5,6 +5,7 @@
 //==============================================================================
 
 #include "IoBoard.h"
+#include <iostream>
 
 namespace Ugv1
 {
@@ -12,7 +13,7 @@ namespace Ugv1
 //=============================================================================
 IoBoard::IoBoard(Grape::IPort& transport)
 //=============================================================================
-    : _transport(transport), _timeoutMs(-1)
+    : _transport(transport), _timeoutMs(-1), _errorCode(0)
 {
 }
 
@@ -20,6 +21,22 @@ IoBoard::IoBoard(Grape::IPort& transport)
 IoBoard::~IoBoard()
 //-----------------------------------------------------------------------------
 {}
+
+//-----------------------------------------------------------------------------
+bool IoBoard::getVersion(ReadBoardVersionResponse& response)
+//-----------------------------------------------------------------------------
+{
+    Ugv1::ReadBoardVersionCommand cmd;
+    return send(cmd, response);
+}
+
+//-----------------------------------------------------------------------------
+bool IoBoard::getAnalog(ReadAnalogInResponse& response)
+//-----------------------------------------------------------------------------
+{
+    Ugv1::ReadAnalogInCommand cmd;
+    return send(cmd, response);
+}
 
 //-----------------------------------------------------------------------------
 bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
@@ -31,7 +48,7 @@ bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
     // wait for response
     if( !_transport.waitForRead(_timeoutMs) )
     {
-        /// \todo set error message
+        setError(-1) << "[IoBoard::send]: Error in waitForRead";
         return false;
     }
 
@@ -45,21 +62,21 @@ bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
         nAvailable = _transport.availableToRead();
         if( nAvailable < 0 )
         {
-            /// \todo set error message
+            setError(-1) << "[IoBoard::send]: Error in availableToRead";
             return false;
         }
         Grape::milliSleep(1);
         --nTries;
         if( nTries < 1 )
         {
-            /// \todo error message
+            setError(-1) << "[IoBoard::send]: Expected " << nToRead << " bytes, got " << nAvailable;
             return false;
         }
     }
     int nRead = _transport.read(reply);
     if( nRead != nToRead )
     {
-        /// \todo error message
+        setError(-1) << "[IoBoard::send]: Error in read";
         return false;
     }
 
@@ -73,7 +90,7 @@ bool IoBoard::send(const IoBoardCommand& cmd)
     // wait for hardware to be ready
     if( !_transport.waitForWrite(-1) )
     {
-        /// \todo set error message
+        setError(-1) << "[IoBoard::send]: Error in waitForWrite";
         return false;
     }
 
@@ -82,7 +99,7 @@ bool IoBoard::send(const IoBoardCommand& cmd)
     int nWritten = _transport.write(cmd);
     if( nWritten != nToWrite )
     {
-        /// \todo set error message
+        setError(-1) << "[IoBoard::send]: Error in write";
         return false;
     }
 

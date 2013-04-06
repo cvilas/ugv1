@@ -5,7 +5,6 @@
 //==============================================================================
 
 #include "IoBoardMessage_dio.h"
-#include <cstddef>
 
 namespace Ugv1
 {

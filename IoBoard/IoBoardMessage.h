@@ -10,7 +10,7 @@
 
 #include "ugv1_common.h"
 #include <vector>
-#include <iostream>
+#include <cstddef>
 
 namespace Ugv1
 {
@@ -121,7 +121,7 @@ public:
     /// \return true if the message format is correct
     bool isValid();
 
-    /// \return message ID.
+    /// \return message ID extracted from the message.
     MessageID getId();
 
     /// Implemented by derived classes.
@@ -157,10 +157,10 @@ class UGV1_DLL_API ReadBoardVersionResponse : public IoBoardResponse
 public:
     ReadBoardVersionResponse() : IoBoardResponse() {}
     size_t getExpectedLength() { return 10; }
-    MessageID getId() { return READ_BOARD_VERSION; }
-    char getBoardCode() { return *(begin() + MESSAGE_PAYLOAD_INDEX); }
-    char getBoardVersion() { return *(begin() + MESSAGE_PAYLOAD_INDEX + 1); }
-    char getBoardRevision() { return *(begin() + MESSAGE_PAYLOAD_INDEX + 2); }
+    bool verifyId() { return READ_BOARD_VERSION == getId(); }
+    int getBoardCode() { return (int)(*(begin() + MESSAGE_PAYLOAD_INDEX)&0xFF); }
+    int getBoardVersion() { return (int)(*(begin() + MESSAGE_PAYLOAD_INDEX + 1)&0xFF); }
+    int getBoardRevision() { return (int)(*(begin() + MESSAGE_PAYLOAD_INDEX + 2)&0xFF); }
 };
 
 

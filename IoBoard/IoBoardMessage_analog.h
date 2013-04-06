@@ -30,13 +30,16 @@ class ReadAnalogInResponse : public IoBoardResponse
 public:
     ReadAnalogInResponse() : IoBoardResponse() {}
     size_t getExpectedLength() { return 23; }
-    MessageID getId(){ return READ_ANALOG; }
+    bool verifyId() { return getId() == READ_ANALOG; }
 
-    /// Read the analog input for a specified channel.
+    /// Read the raw ADC input for a specified channel.
     /// \note The ADC value is 12 bits long. 0x0000 maps to 0V and 0x0FFF maps to 3.3V
     /// \param channel  ADC channel in range 0 - 7.
     /// \return ADC value in range 0x0000 to 0x0FFF
-    unsigned short getChannel(unsigned int channel);
+    unsigned short getRaw(unsigned int channel);
+
+    /// Convenience function, returns value directly in volts (0.0 - 3.3V)
+    double getVolts(unsigned int channel);
 };
 
 } // Ugv1

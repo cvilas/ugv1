@@ -5,7 +5,6 @@
 //==============================================================================
 
 #include "IoBoardMessage_motor.h"
-#include <cstddef>
 #include <stdlib.h>
 
 namespace Ugv1
