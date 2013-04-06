@@ -51,12 +51,14 @@ public:
 
     /// Set position and speed for a servo channel
     /// \param channel  Servo channel in range 0 - 7.
-    /// \param position Position value of the servo in range 0 to 180. Center position is 90.
-    /// \param speed    Speed value of the servo from 0 to 0xFF.
+    /// \param position Position value in range 0 to 180. Center position is 90.
+    /// \param speed    Speed value from 0 to 0xFF.
     void setChannel(unsigned int channel, unsigned char position, unsigned char speed);
 
     /// Get the position and speed setting for a servo channel
     /// \param channel  Servo channel in range 0 - 7. Method returns doing nothing if channel is invalid.
+    /// \param position Position value in range 0 to 180. Center position is 90.
+    /// \param speed    Speed value from 0 to 0xFF.
     void getChannel(unsigned int channel, unsigned char& position, unsigned char& speed);
 
 }; // WriteServoOutCommand
