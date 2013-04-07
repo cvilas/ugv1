@@ -392,7 +392,7 @@ void MainWindow::on_pidControlOn_toggled(bool checked)
     _motorSpeedCmd.setSpeed(0,0);
     _motorSpeedCmd.setSpeed(1,0);
     _motorPowerCmd.setPower(0,0);
-    _motorPowerCmd.setPower(0,0);
+    _motorPowerCmd.setPower(1,0);
 }
 
 //-----------------------------------------------------------------------------
