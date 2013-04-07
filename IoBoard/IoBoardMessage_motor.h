@@ -59,7 +59,7 @@ public:
     /// Set speed for the first motor
     /// \param index  Motor num. Valid range is 0 - 1.
     /// \param cmps Motor speed in cm/sec. (+ve for forward, -ve for reverse).
-    void setMotorSpeed(unsigned int index, int cmps);
+    void setSpeed(unsigned int index, int cmps);
 
     /// \param index  Motor num. Valid range is 0 - 1.
     /// \return Speed setting for motor

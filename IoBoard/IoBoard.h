@@ -50,27 +50,27 @@ public:
     void setResponseTimeOut(int ms) { _timeoutMs = ms; }
 
     // ------------- Servo signals -------------------------
-    void configureServoOutPins(const SetDioServoModeCommand& message);
-    void setServo(const WriteServoOutCommand& message);
+    bool configureServoOutPins(const SetDioServoModeCommand& message) { return send(message); }
+    bool setServo(const WriteServoOutCommand& message) { return send(message); }
 
     // ------------- Analog I/O ----------------------------
     bool getAnalog(ReadAnalogInResponse& response);
 
     // ------------- Digital I/O ---------------------------
-    void configureDigitalOutPins(const SetDioIoModeCommand& message);
-    void setDigitalOut(const WriteDioOutCommand& message);
+    bool configureDigitalOutPins(const SetDioIoModeCommand& message) { return send(message); }
+    bool setDigitalOut(const WriteDioOutCommand& message) { return send(message); }
     bool getDigitalIn(ReadDioInResponse& response);
 
     // ------------- Motor control --------------------------
-    void configureDriveTrain(const SetMotorParametersCommand& message);
-    void configureMotorControlGains(const SetMotorPidGainsCommand& message);
-    void configureMotorControlMode(const SetMotorDriveModeCommand& message);
-    void setMotorSpeed(const WriteMotorSpeedCommand& message);
+    bool configureDriveTrain(const SetMotorParametersCommand& message) { return send(message); }
+    bool configureMotorControlGains(const SetMotorPidGainsCommand& message) { return send(message); }
+    bool configureMotorControlMode(const SetMotorDriveModeCommand& message) { return send(message); }
+    bool setMotorSpeed(const WriteMotorSpeedCommand& message) { return send(message); }
     bool getMotorSpeed(ReadMotorSpeedResponse& response);
     bool getMotorCurrent(ReadMotorCurrentResponse& response);
-    void setMotorPower(const WriteMotorPowerCommand& message);
+    bool setMotorPower(const WriteMotorPowerCommand& message) { return send(message); }
     bool getMotorEncoders(ReadMotorEncodersResponse& response);
-    void resetMotorEncoders();
+    bool resetMotorEncoders();
 
     // ------------- RS485 comms -----------------------------
     /// \todo RS485 comms

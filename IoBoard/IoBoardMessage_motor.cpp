@@ -90,7 +90,7 @@ WriteMotorSpeedCommand::WriteMotorSpeedCommand()
 }
 
 //-----------------------------------------------------------------------------
-void WriteMotorSpeedCommand::setMotorSpeed(unsigned int index, int speed)
+void WriteMotorSpeedCommand::setSpeed(unsigned int index, int speed)
 //-----------------------------------------------------------------------------
 {
     unsigned short cmps = (unsigned short)(abs(speed)&0xFFFF);

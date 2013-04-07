@@ -184,16 +184,16 @@ void IoBoardMessageTests::test_IoBoardCommand_setMotorSpeed()
     int speed2 = -800;
     Ugv1::WriteMotorSpeedCommand cmd;
 
-    cmd.setMotorSpeed(0, speed1);
+    cmd.setSpeed(0, speed1);
     QVERIFY2(speed1 == cmd.getMotorSpeed(0), "Set/get fwd speed on motor 1 failed");
 
-    cmd.setMotorSpeed(0, speed2);
+    cmd.setSpeed(0, speed2);
     QVERIFY2(speed2 == cmd.getMotorSpeed(0), "Set/get rev speed on motor 1 failed");
 
-    cmd.setMotorSpeed(1, speed1);
+    cmd.setSpeed(1, speed1);
     QVERIFY2(speed1 == cmd.getMotorSpeed(1), "Set/get fwd speed on motor 2 failed");
 
-    cmd.setMotorSpeed(1, speed2);
+    cmd.setSpeed(1, speed2);
     QVERIFY2(speed2 == cmd.getMotorSpeed(1), "Set/get rev speed on motor 2 failed");
 }
 

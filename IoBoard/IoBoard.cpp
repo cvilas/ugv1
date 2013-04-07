@@ -39,6 +39,46 @@ bool IoBoard::getAnalog(ReadAnalogInResponse& response)
 }
 
 //-----------------------------------------------------------------------------
+bool IoBoard::getDigitalIn(ReadDioInResponse& response)
+//-----------------------------------------------------------------------------
+{
+    Ugv1::ReadDioInCommand cmd;
+    return send(cmd, response);
+}
+
+//-----------------------------------------------------------------------------
+bool IoBoard::getMotorSpeed(ReadMotorSpeedResponse& response)
+//-----------------------------------------------------------------------------
+{
+    Ugv1::ReadMotorSpeedCommand cmd;
+    return send(cmd, response);
+}
+
+//-----------------------------------------------------------------------------
+bool IoBoard::getMotorCurrent(ReadMotorCurrentResponse& response)
+//-----------------------------------------------------------------------------
+{
+    Ugv1::ReadMotorCurrentCommand cmd;
+    return send(cmd, response);
+}
+
+//-----------------------------------------------------------------------------
+bool IoBoard::getMotorEncoders(ReadMotorEncodersResponse& response)
+//-----------------------------------------------------------------------------
+{
+    Ugv1::ReadMotorEncodersCommand cmd;
+    return send(cmd, response);
+}
+
+//-----------------------------------------------------------------------------
+bool IoBoard::resetMotorEncoders()
+//-----------------------------------------------------------------------------
+{
+    Ugv1::ResetMotorEncodersCommand cmd;
+    return send(cmd);
+}
+
+//-----------------------------------------------------------------------------
 bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
 //-----------------------------------------------------------------------------
 {

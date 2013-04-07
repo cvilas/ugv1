@@ -25,7 +25,7 @@ public:
 /// \class ReadAnalogInResponse
 /// \ingroup comms
 /// \brief Response message for ReadAnalogInCommand
-class ReadAnalogInResponse : public IoBoardResponse
+class UGV1_DLL_API ReadAnalogInResponse : public IoBoardResponse
 {
 public:
     ReadAnalogInResponse() : IoBoardResponse() {}

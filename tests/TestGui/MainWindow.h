@@ -31,6 +31,21 @@ private slots:
     void on_getAnalogBtn_clicked();
     void on_setTimeoutBtn_clicked();
     void on_getVersionBtn_clicked();
+    void on_dioConfigBtn_clicked();
+    void on_doSetBtn_clicked();
+    void on_configServoBtn_clicked();
+    void on_setServoBtn_clicked();
+    void on_getDinBtn_clicked();
+    void on_setDrvTrainBtn_clicked();
+    void on_setPidBtn_clicked();
+    void on_resetEncBtn_clicked();
+    void on_getEncBtn_clicked();
+    void on_pidControlOn_toggled(bool checked);
+    void on_motor1Slider_sliderMoved(int position);
+    void on_motor2Slider_sliderMoved(int position);
+    void on_getCurrentBtn_clicked();
+    void on_getSpeedBtn_clicked();
+
 private:
     void updateStatusBar();
 private:
@@ -40,6 +55,9 @@ private:
 
     QLabel* _pConnectionStatus;
     QLabel* _pErrorInfo;
+
+    Ugv1::WriteMotorSpeedCommand _motorSpeedCmd;
+    Ugv1::WriteMotorPowerCommand _motorPowerCmd;
 };
 
 #endif // MAINWINDOW_H
