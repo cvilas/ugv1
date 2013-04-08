@@ -1,3 +1,4 @@
 # version numbers for various libraries in ugv1
 
-IO_BOARD_VERSION = 0.5.0
+IO_BOARD_VERSION = 0.9.0
+CONTROLLER_VERSION = 0.5.0

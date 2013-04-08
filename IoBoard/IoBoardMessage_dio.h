@@ -22,9 +22,9 @@ public:
     /// Default constructor. Sets all digital pins as inputs.
     SetDioIoModeCommand();
 
-    /// Constructs command where specified pins are set as digital output
+    /// Constructs command where specified pins are set as digital input
     /// \param bitmask Bitmask to specify digital pins that are to be configured
-    ///                 as outputs. There are only 11 IO lines on the board.
+    ///                 as inputs. There are only 11 IO lines on the board.
     ///                 Therefore only the 11 least significant bits are considered.
     ///                 Bit 0 is IO0.
     SetDioIoModeCommand(int bitmask);

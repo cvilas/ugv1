@@ -92,6 +92,18 @@ int main(int argc, char *argv[])
         int code;
         std::cerr << iob.getLastError(code) << std::endl;
     }
+
+    // configure digital inputs
+    Ugv1::SetDioIoModeCommand dioConfig;
+    for(int i = 0; i < 11; ++i)
+    {
+        dioConfig.setModeOutput(i, true);
+    }
+    if( !iob.configureDigitalInPins(dioConfig) )
+    {
+        int code;
+        std::cerr << iob.getLastError(code) << std::endl;
+    }
 /*
     for(int i = 0; i < encoders.size(); ++i)
     {

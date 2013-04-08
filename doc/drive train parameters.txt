@@ -1,0 +1,5 @@
+Drive Train Parameters
+
+Encoder PPR = 13
+Gear Ratio = 51:1
+Wheel perimeter = 430mm

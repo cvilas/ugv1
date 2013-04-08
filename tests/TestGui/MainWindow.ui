@@ -235,7 +235,7 @@
        <item>
         <widget class="QGroupBox" name="doConfigGrp">
          <property name="title">
-          <string>Digital Output Pins</string>
+          <string>Digital Input Pins</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="4" column="2">

@@ -26,28 +26,32 @@ SetDioIoModeCommand::SetDioIoModeCommand(int bitmask)
 }
 
 //-----------------------------------------------------------------------------
-void SetDioIoModeCommand::setModeInput(unsigned int channel, bool setInput)
+void SetDioIoModeCommand::setModeOutput(unsigned int channel, bool isTrue)
 //-----------------------------------------------------------------------------
 {
-    setModeOutput(channel, !setInput);
+    setModeInput(channel, !isTrue);
 }
 
 //-----------------------------------------------------------------------------
-bool SetDioIoModeCommand::isModeInput(unsigned int channel)
+bool SetDioIoModeCommand::isModeOutput(unsigned int channel)
 //-----------------------------------------------------------------------------
 {
-    return !isModeOutput(channel);
+    return !isModeInput(channel);
 }
 
 //-----------------------------------------------------------------------------
-void SetDioIoModeCommand::setModeOutput(unsigned int channel, bool setOutput)
+void SetDioIoModeCommand::setModeInput(unsigned int channel, bool isTrue)
 //-----------------------------------------------------------------------------
 {
+    /// \note: ** According to the manual, to configure a digital pin as
+    /// output, the corresponding bit must be set to 1. However, in practise
+    /// it was found that setting the bit to 1 configures the pin as input
+
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX;
     unsigned int bm = ((((unsigned int)(*it))&0x7)<<8) + ((unsigned int)(*(it+1))&0xFF);
     unsigned int mask = (1<<channel);
 
-    if(setOutput)
+    if(isTrue)
     {
         bm |= mask;
     }
@@ -63,7 +67,7 @@ void SetDioIoModeCommand::setModeOutput(unsigned int channel, bool setOutput)
 }
 
 //-----------------------------------------------------------------------------
-bool SetDioIoModeCommand::isModeOutput(unsigned int channel)
+bool SetDioIoModeCommand::isModeInput(unsigned int channel)
 //-----------------------------------------------------------------------------
 {
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX;

@@ -1,45 +1,60 @@
-Tasklist for UGV1 MakerFaire demo
+Tasklist for UGV1
 
 Objective: Teleoperation within the local wireless network
 
 - purchases: 
 	- USB to Serial that works on Samsung Galaxy2
 	- Mounting box for Uno
-- IoBoard driver interface class
-- IoMessage adapters (command builder and reply interpreter)
-- IoMessageServer class (serial/tcp port server to send/reply IoMessage objects)
-- IoDriver node
-	- receives commands from clients such as joysticks
-	- sends commands to IO board
-	- receives responses from IO board, responds to clients
-	- reads sensors continuously - updates local copy with timestamp
-	- software safety loops
-	- IoDriver is the only node all user clients interact with
-	- Configuration display (IP address, etc)
-	- Lean GUI for system status
-- Measure drive (motor/gear/encoder) mechanical parameters
-- Wire up bumper switches (buy extender cables)
-- JoystickNode (server)
-- Joystick client
-- Joystick simulator
-- Deploy on tablet and test mobile system
+        - RS232 adapter
+        - Joystick for android device
 
-- Controller phone interface
-	- detect joystick
-	- connect to robot, or configure joystick wifi to connect to robot directly
-	- GCS HMI for command and control
-- Arduino joystick
-	- Serial interface to android phone
-	- configuration via serial (IP of robot)
-- Mount joystick securely in a box
-- Test with wireless network
-- Google+ hangout test between controller phone and robot
-- Tests, tests, tests
---------------------- Maker Faire ----------------------
+- Grape libs
+    - SerialPort for windows
+    - Config
+    - Stopwatch and timestamping
+    - Status (fixed size circular buffer to a message and code)
 
-Next milestone: Teleoperation from anywhere over the internet
-	- Hangout API mods
-	- Dealing with network delays
+- IoBoard
+    - timestamp message arrival time
+
+- RobotController
+    - Configuration data structure (fixed size)
+        - servo pins
+        - digital out pins
+        - drive train parameters - encoder ppr, gear ratio, wheel perimeter
+        - PID gains
+        - motor control mode
+    - DesiredState data structure (fixed size)
+        - Digital outputs
+        - Servo outputs
+        - Motor speed
+    - CurrentState data structure (fixed size)
+        - Digital inputs + timestamp
+        - Analog inputs + timestamp
+        - Speed + timestamp
+        - current + timestamp
+        - encoder + timestamp
+    - Encoder reset on motor direction reversal (speed and encoder values are signed long long in CurrentState)
+    - Loops continuously updating state
+    - Implements software safety loops - bumper sensors, proximity sensors
+    - Server
+        - TCP or UDP (user selectable)
+        - Accepts DesiredState from HMI, replies with CurrentState
+        - Resets DesiredState motor power after timeout with HMI and stops processing further inputs
+    - Android hosted controller
+    - Customised Google hangout (or similar) API
+    - HMI
+        - Desktop based HMI
+        - Android HMI (phone, tablet)
+        - Arduino HMI
+        - Joystick-to-drive signal adapter
+        - Customised Google hangout (or similar) API
+- Issues
+    - Encoder does not reset to 0 on reset command
+    - Encoder does not change when wheel back-driven
+
+- Mechanical
+    - Mount joystick securely in a box
 
 
 

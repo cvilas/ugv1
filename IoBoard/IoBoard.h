@@ -57,7 +57,7 @@ public:
     bool getAnalog(ReadAnalogInResponse& response);
 
     // ------------- Digital I/O ---------------------------
-    bool configureDigitalOutPins(const SetDioIoModeCommand& message) { return send(message); }
+    bool configureDigitalInPins(const SetDioIoModeCommand& message) { return send(message); }
     bool setDigitalOut(const WriteDioOutCommand& message) { return send(message); }
     bool getDigitalIn(ReadDioInResponse& response);
 

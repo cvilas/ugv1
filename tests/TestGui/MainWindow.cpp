@@ -143,18 +143,18 @@ void MainWindow::on_dioConfigBtn_clicked()
 //-----------------------------------------------------------------------------
 {
     Ugv1::SetDioIoModeCommand cmd;
-    cmd.setModeOutput(0, _pUi->dio0->isChecked());
-    cmd.setModeOutput(1, _pUi->dio1->isChecked());
-    cmd.setModeOutput(2, _pUi->dio2->isChecked());
-    cmd.setModeOutput(3, _pUi->dio3->isChecked());
-    cmd.setModeOutput(4, _pUi->dio4->isChecked());
-    cmd.setModeOutput(5, _pUi->dio5->isChecked());
-    cmd.setModeOutput(6, _pUi->dio6->isChecked());
-    cmd.setModeOutput(7, _pUi->dio7->isChecked());
-    cmd.setModeOutput(8, _pUi->dio8->isChecked());
-    cmd.setModeOutput(9, _pUi->dio9->isChecked());
-    cmd.setModeOutput(10, _pUi->dio10->isChecked());
-    if( !_iob.configureDigitalOutPins(cmd) )
+    cmd.setModeInput(0, _pUi->dio0->isChecked());
+    cmd.setModeInput(1, _pUi->dio1->isChecked());
+    cmd.setModeInput(2, _pUi->dio2->isChecked());
+    cmd.setModeInput(3, _pUi->dio3->isChecked());
+    cmd.setModeInput(4, _pUi->dio4->isChecked());
+    cmd.setModeInput(5, _pUi->dio5->isChecked());
+    cmd.setModeInput(6, _pUi->dio6->isChecked());
+    cmd.setModeInput(7, _pUi->dio7->isChecked());
+    cmd.setModeInput(8, _pUi->dio8->isChecked());
+    cmd.setModeInput(9, _pUi->dio9->isChecked());
+    cmd.setModeInput(10, _pUi->dio10->isChecked());
+    if( !_iob.configureDigitalInPins(cmd) )
     {
         int code;
         _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
