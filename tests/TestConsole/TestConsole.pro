@@ -15,7 +15,7 @@ TEMPLATE = app
 
 GRAPE_DIR = ../../../grape
 
-DESTDIR = $${PWD}/../../lib
+DESTDIR = $${PWD}/../../bin
 DLLDESTDIR = $${PWD}/../../bin/
 
 

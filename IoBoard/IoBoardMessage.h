@@ -64,6 +64,10 @@ public:
     };
 
 public:
+    /// \return message ID extracted from the message.
+    MessageID getId() const;
+
+protected:
     IoBoardMessage();
     virtual ~IoBoardMessage();    
 };
@@ -107,11 +111,6 @@ private:
 class UGV1_DLL_API IoBoardResponse : public IoBoardMessage
 {
 public:
-
-    /// minimum command length
-    static const unsigned int RESPONSE_MIN_LENGTH = 8; // header[3] + length + id + payload + csum + '\n'
-
-public:
     IoBoardResponse();
     virtual ~IoBoardResponse();
 
@@ -120,9 +119,6 @@ public:
     /// but not the payload
     /// \return true if the message format is correct
     bool isValid();
-
-    /// \return message ID extracted from the message.
-    MessageID getId();
 
     /// Implemented by derived classes.
     /// \return The expected length for the message, including header and checksum

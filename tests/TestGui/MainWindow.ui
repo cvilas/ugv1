@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>665</width>
-    <height>800</height>
+    <width>676</width>
+    <height>932</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -785,7 +785,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Speed</string>
+             <string>cm/s</string>
             </property>
            </widget>
           </item>
@@ -804,7 +804,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Current</string>
+             <string>mA</string>
             </property>
            </widget>
           </item>
@@ -1124,8 +1124,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>665</width>
-     <height>21</height>
+     <width>676</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuConnect">

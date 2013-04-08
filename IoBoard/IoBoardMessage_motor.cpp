@@ -156,12 +156,16 @@ unsigned short ReadMotorCurrentResponse::getMotorCurrent(unsigned int index)
 }
 
 //=============================================================================
-unsigned short ReadMotorEncodersResponse::getEncoder(unsigned int index)
+unsigned int ReadMotorEncodersResponse::getEncoder(unsigned int index)
 //=============================================================================
 {
-    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (2 * index);
-    unsigned short value = ((((unsigned short)(*it))&0xFF)<<8)
-                        + ((unsigned short)(*(it+1))&0xFF);
+    // ** error in manual. This command has a payload of 8, not 4 as suggested by
+    // the manual **
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (4 * index);
+    unsigned int value = ((((unsigned int)(*it))&0xFF)<<24)
+                        + (((unsigned int)(*(it+1))&0xFF)<<16)
+                        + (((unsigned int)(*(it+2))&0xFF)<<8)
+                        + ((unsigned int)(*(it+3))&0xFF);
     return value;
 }
 

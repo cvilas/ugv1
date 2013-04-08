@@ -17,7 +17,7 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-DESTDIR = $${PWD}/../../lib
+DESTDIR = $${PWD}/../../bin
 DLLDESTDIR = $${PWD}/../../bin/
 
 win32: DEFINES += GRAPE_DLL UGV1_DLL

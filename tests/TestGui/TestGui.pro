@@ -12,7 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = TestGui
 TEMPLATE = app
 
-DESTDIR = $${PWD}/../../lib
+DESTDIR = $${PWD}/../../bin
 DLLDESTDIR = $${PWD}/../../bin/
 
 SOURCES += main.cpp\

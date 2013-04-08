@@ -22,6 +22,16 @@ IoBoardMessage::~IoBoardMessage()
 //-----------------------------------------------------------------------------
 {}
 
+//-----------------------------------------------------------------------------
+IoBoardMessage::MessageID IoBoardMessage::getId() const
+//-----------------------------------------------------------------------------
+{
+    if( size() < (MESSAGE_ID_INDEX+1))
+        return ID_UNKNOWN;
+
+    return (IoBoardMessage::MessageID)(*(begin() + MESSAGE_ID_INDEX)&0xFF);
+}
+
 //=============================================================================
 void IoBoardCommand::initialise(MessageID cmd, int nPayloadBytes, char* payload)
 //=============================================================================
@@ -107,16 +117,6 @@ bool IoBoardResponse::isValid()
     }
 
     return (verifyChecksum() && verifyId());
-}
-
-//-----------------------------------------------------------------------------
-IoBoardMessage::MessageID IoBoardResponse::getId()
-//-----------------------------------------------------------------------------
-{
-    if( size() < RESPONSE_MIN_LENGTH)
-        return ID_UNKNOWN;
-
-    return (IoBoardMessage::MessageID)(*(begin() + MESSAGE_ID_INDEX)&0xFF);
 }
 
 //-----------------------------------------------------------------------------

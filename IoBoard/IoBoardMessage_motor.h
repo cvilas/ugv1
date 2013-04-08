@@ -204,14 +204,14 @@ class UGV1_DLL_API ReadMotorEncodersResponse : public IoBoardResponse
 {
 public:
     ReadMotorEncodersResponse() : IoBoardResponse() {}
-    size_t getExpectedLength() { return 11; }
+    size_t getExpectedLength() { return 15; }
     bool verifyId() { return getId() == READ_MOTOR_ENCODERS; }
 
     /// Get encoder count for motor.
     /// \param index    motor number (0 or 1)
     /// \return encoder count
     /// \note Read manual about encoder count and motor direction
-    unsigned short getEncoder(unsigned int index);
+    unsigned int getEncoder(unsigned int index);
 };
 
 /// \class ResetMotorEncodersCommand
