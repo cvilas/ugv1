@@ -10,6 +10,7 @@ Objective: Teleoperation within the local wireless network
 
 - Grape libs
     - SerialPort for windows
+    - SerialPort class - redefine waitForWrite. See Qt 5.1 SerialPort class
     - Config
     - Stopwatch and timestamping
     - Status (fixed size circular buffer to a message and code)
