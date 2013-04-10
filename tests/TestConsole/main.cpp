@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     Ugv1::IoBoard iob(port);
 
     iob.setResponseTimeOut(5000);
-    port.setPortName("/dev/ttyUSB0");
+    port.setPortName("COM6");
 
     if( !port.open() )
     {
@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
     {
         int code;
         std::cerr << iob.getLastError(code) << std::endl;
+        std::cerr << port.getLastError(code) << std::endl;
     }
 
     // Analog In
@@ -67,6 +68,7 @@ int main(int argc, char *argv[])
     {
         int code;
         std::cerr << iob.getLastError(code) << std::endl;
+        std::cerr << port.getLastError(code) << std::endl;
     }
 
     // Encoders
@@ -79,6 +81,7 @@ int main(int argc, char *argv[])
     {
         int code;
         std::cerr << iob.getLastError(code) << std::endl;
+        std::cerr << port.getLastError(code) << std::endl;
     }
 
     // speed
@@ -91,8 +94,9 @@ int main(int argc, char *argv[])
     {
         int code;
         std::cerr << iob.getLastError(code) << std::endl;
+        std::cerr << port.getLastError(code) << std::endl;
     }
-
+/*
     // configure digital inputs
     Ugv1::SetDioIoModeCommand dioConfig;
     for(int i = 0; i < 11; ++i)
@@ -103,13 +107,14 @@ int main(int argc, char *argv[])
     {
         int code;
         std::cerr << iob.getLastError(code) << std::endl;
+        std::cerr << port.getLastError(code) << std::endl;
     }
-/*
-    for(int i = 0; i < encoders.size(); ++i)
+*/
+    for(int i = 0; i < speed.size(); ++i)
     {
-        std::cout << std::hex << (int)(encoders[i]&0xFF) << " ";
+        std::cout << std::hex << (int)(speed[i]&0xFF) << " ";
     }
     std::cout << std::endl;
-*/
+
     return 0;
 }
