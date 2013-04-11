@@ -50,10 +50,11 @@ public:
     Version getBoardVersion();
 
     // --------------- update -----------------
-    bool updateConfig();
-    bool updateIO();
-private:
-    void constructMessageMap();
+    virtual bool setConfig();
+    virtual bool setOutputs();
+    virtual bool getInputs();
+protected:
+    virtual void constructMessageMap();
 private:
     std::map<IoBoardMessage::MessageID, IoBoardMessage*> _messageMap;
 };

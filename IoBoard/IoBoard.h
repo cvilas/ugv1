@@ -69,7 +69,7 @@ public:
     // ------------- Motor control --------------------------
     bool configureDriveTrain(const SetMotorParametersCommand& message) { return send(message); }
     bool configureMotorControlGains(const SetMotorPidGainsCommand& message) { return send(message); }
-    bool configureMotorControlMode(const SetMotorDriveModeCommand& message) { return send(message); }
+    bool configureMotorDriveMode(const SetMotorDriveModeCommand& message) { return send(message); }
     bool setMotorSpeed(const WriteMotorSpeedCommand& message) { return send(message); }
     bool getMotorSpeed(ReadMotorSpeedResponse& response);
     bool getMotorCurrent(ReadMotorCurrentResponse& response);

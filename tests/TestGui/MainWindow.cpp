@@ -366,7 +366,7 @@ void MainWindow::on_pidControlOn_toggled(bool checked)
     else
         cmd.setModeDirectPower();
 
-    if( !_iob.configureMotorControlMode(cmd) )
+    if( !_iob.configureMotorDriveMode(cmd) )
     {
         _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
