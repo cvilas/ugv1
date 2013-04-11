@@ -19,5 +19,13 @@ win32:SOURCES +=
 unix:SOURCES +=
 win32:LIBS +=
 
+CONFIG(debug, release|debug) {
+    DEFINES += _DEBUG
+    win32:LIBS += -lws2_32 -lIoBoardd0
+    else:unix: LIBS += -lIoBoardd
+} else {
+    win32:LIBS += -lIoBoard0
+    else:unix: LIBS += -lIoBoard
+}
 
 

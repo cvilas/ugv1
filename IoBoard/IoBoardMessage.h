@@ -69,7 +69,7 @@ public:
 
 protected:
     IoBoardMessage();
-    virtual ~IoBoardMessage();    
+    virtual ~IoBoardMessage();
 };
 
 /// \class IoBoardCommand
