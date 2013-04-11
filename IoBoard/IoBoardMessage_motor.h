@@ -90,8 +90,6 @@ public:
     bool verifyId() { return getId() == READ_MOTOR_SPEED; }
 
     /// Get speed of the specified motor
-    /// \note Manual doesnt say whether value is signed or unsigned. Just return raw bits
-    /// \todo Resolve above issue
     /// \param index    Motor index (0 or 1)
     /// \return Motor speed in cm/s
     unsigned short getMotorSpeed(unsigned int index);

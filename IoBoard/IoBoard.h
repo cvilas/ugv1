@@ -28,6 +28,11 @@ class UGV1_DLL_API IoBoard
 {
 
 public:
+    /// Publically accessible status object contains the last
+    /// error code and message
+    Grape::Status lastError;
+
+public:
 
     /// Constructor.
     /// \param transport    Communication medium between us and the hardware.
@@ -82,37 +87,15 @@ public:
     bool getVersion(ReadBoardVersionResponse& response);
     bool send(const IoBoardCommand& cmd, IoBoardResponse& reply);
     bool send(const IoBoardCommand& cmd);
-    inline std::string getLastError(int& errorCode);
 
 private:
     IoBoard(const IoBoard&); // disable copy
     IoBoard& operator=(const IoBoard&); // disable assignment
-    inline std::ostringstream& setError(int errorCode);
 
 private:
     Grape::IPort&   _transport;
     int             _timeoutMs; //!< wait timeout for response from hardware
-    std::ostringstream  _errorStream;
-    int                 _errorCode;
 }; //IoBoard
-
-//-----------------------------------------------------------------------------
-std::string IoBoard::getLastError(int& errorCode)
-//-----------------------------------------------------------------------------
-{
-    _errorCode = errorCode;
-    return _errorStream.str();
-}
-
-//-----------------------------------------------------------------------------
-std::ostringstream& IoBoard::setError(int errorCode)
-//-----------------------------------------------------------------------------
-{
-    _errorCode = errorCode;
-    _errorStream.clear();
-    _errorStream.str(std::string());
-    return _errorStream;
-}
 
 } // namespace Ugv1
 

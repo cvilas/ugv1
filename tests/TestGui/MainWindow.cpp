@@ -88,8 +88,7 @@ void MainWindow::on_getVersionBtn_clicked()
     Ugv1::ReadBoardVersionResponse response;
     if( !_iob.getVersion(response) )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -117,8 +116,7 @@ void MainWindow::on_getAnalogBtn_clicked()
     Ugv1::ReadAnalogInResponse response;
     if( !_iob.getAnalog(response) )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -156,8 +154,7 @@ void MainWindow::on_dioConfigBtn_clicked()
     cmd.setModeInput(10, _pUi->dio10->isChecked());
     if( !_iob.configureDigitalInPins(cmd) )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+         _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -183,8 +180,7 @@ void MainWindow::on_doSetBtn_clicked()
     cmd.setChannel(10, _pUi->do10->isChecked());
     if( !_iob.setDigitalOut(cmd) )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -207,8 +203,7 @@ void MainWindow::on_configServoBtn_clicked()
     cmd.setModeServo(7, _pUi->ds7->isChecked());
     if( !_iob.configureServoOutPins(cmd) )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -231,8 +226,7 @@ void MainWindow::on_setServoBtn_clicked()
     cmd.setChannel(7, _pUi->s7->value()&0xFF, 0xFF);
     if( !_iob.setServo(cmd) )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -247,8 +241,7 @@ void MainWindow::on_getDinBtn_clicked()
     Ugv1::ReadDioInResponse response;
     if( !_iob.getDigitalIn(response) )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -295,8 +288,7 @@ void MainWindow::on_setDrvTrainBtn_clicked()
     cmd.setWheelPerimeter( _pUi->wheelPerim->value() & 0xFFFF);
     if( !_iob.configureDriveTrain(cmd) )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -315,8 +307,7 @@ void MainWindow::on_setPidBtn_clicked()
     cmd.setIntegralGain( _pUi->gainI->value() & 0xFF );
     if( !_iob.configureMotorControlGains(cmd) )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -330,8 +321,7 @@ void MainWindow::on_resetEncBtn_clicked()
 {
     if( !_iob.resetMotorEncoders() )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -346,8 +336,7 @@ void MainWindow::on_getEncBtn_clicked()
     Ugv1::ReadMotorEncodersResponse response;
     if( !_iob.getMotorEncoders(response) )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -379,8 +368,7 @@ void MainWindow::on_pidControlOn_toggled(bool checked)
 
     if( !_iob.configureMotorControlMode(cmd) )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -413,8 +401,7 @@ void MainWindow::on_motor1Slider_sliderMoved(int position)
 
     if( result )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -443,8 +430,7 @@ void MainWindow::on_motor2Slider_sliderMoved(int position)
 
     if( result )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -462,8 +448,7 @@ void MainWindow::on_getCurrentBtn_clicked()
     Ugv1::ReadMotorCurrentResponse response;
     if( !_iob.getMotorCurrent(response) )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {
@@ -488,8 +473,7 @@ void MainWindow::on_getSpeedBtn_clicked()
     Ugv1::ReadMotorSpeedResponse response;
     if( !_iob.getMotorSpeed(response) )
     {
-        int code;
-        _pErrorInfo->setText(QString::fromStdString(_iob.getLastError(code)));
+        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
     }
     else
     {

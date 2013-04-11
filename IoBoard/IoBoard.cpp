@@ -13,7 +13,7 @@ namespace Ugv1
 //=============================================================================
 IoBoard::IoBoard(Grape::IPort& transport)
 //=============================================================================
-    : _transport(transport), _timeoutMs(-1), _errorCode(0)
+    : _transport(transport), _timeoutMs(-1)
 {
 }
 
@@ -91,7 +91,7 @@ bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
     // wait for response
     if( !_transport.waitForRead(_timeoutMs) )
     {
-        setError(-1) << "[IoBoard::send]: Error in waitForRead";
+        lastError.set(-1) << "[IoBoard::send]: Error in waitForRead";
         return false;
     }
 
@@ -113,21 +113,21 @@ bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
         nAvailable = _transport.availableToRead();
         if( nAvailable < 0 )
         {
-            setError(-1) << "[IoBoard::send]: Error in availableToRead";
+            lastError.set(-1) << "[IoBoard::send]: Error in availableToRead";
             return false;
         }
         Grape::milliSleep(1);
         --nTries;
         if( nTries < 1 )
         {
-            setError(-1) << "[IoBoard::send]: Expected " << nToRead << " bytes, " << nAvailable << " available";
+            lastError.set(-1) << "[IoBoard::send]: Expected " << nToRead << " bytes, " << nAvailable << " available";
             return false;
         }
     }
     int nRead = _transport.read(reply);
     if( nRead != nToRead )
     {
-        setError(-1) << "[IoBoard::send]: Error in read. Read " << nRead << "/" << nToRead;
+        lastError.set(-1) << "[IoBoard::send]: Error in read. Read " << nRead << "/" << nToRead;
         return false;
     }
 /*
@@ -150,14 +150,14 @@ bool IoBoard::send(const IoBoardCommand& cmd)
     int nWritten = _transport.write(cmd);
     if( nWritten != nToWrite )
     {
-        setError(-1) << "[IoBoard::send]: Error in write. Wrote " << nWritten << "/" << nToWrite;
+        lastError.set(-1) << "[IoBoard::send]: Error in write. Wrote " << nWritten << "/" << nToWrite;
         return false;
     }
 
     // wait for write operation to complete
     if( !_transport.waitForWrite(-1) )
     {
-        setError(-1) << "[IoBoard::send]: Error in waitForWrite";
+        lastError.set(-1) << "[IoBoard::send]: Error in waitForWrite";
         return false;
     }
 

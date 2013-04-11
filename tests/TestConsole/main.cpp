@@ -21,22 +21,19 @@ int main(int argc, char *argv[])
 
     if( !port.open() )
     {
-        int code;
-        std::cerr << port.getLastError(code) << std::endl;
+        std::cerr << port.lastError.getMessage() << std::endl;
         return -1;
     }
 
     if( !port.setDataFormat(Grape::SerialPort::D8N1) )
     {
-        int code;
-        std::cerr << port.getLastError(code) << std::endl;
+        std::cerr << port.lastError.getMessage() << std::endl;
         return -1;
     }
 
     if( !port.setBaudRate(Grape::SerialPort::B115200) )
     {
-        int code;
-        std::cerr << port.getLastError(code) << std::endl;
+        std::cerr << port.lastError.getMessage() << std::endl;
         return -1;
     }
 
@@ -48,9 +45,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        int code;
-        std::cerr << iob.getLastError(code) << std::endl;
-        std::cerr << port.getLastError(code) << std::endl;
+        std::cerr << iob.lastError.getMessage() << std::endl;
+        std::cerr << port.lastError.getMessage() << std::endl;
     }
 
     // Analog In
@@ -66,9 +62,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        int code;
-        std::cerr << iob.getLastError(code) << std::endl;
-        std::cerr << port.getLastError(code) << std::endl;
+        std::cerr << iob.lastError.getMessage() << std::endl;
+        std::cerr << port.lastError.getMessage() << std::endl;
     }
 
     // Encoders
@@ -79,9 +74,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        int code;
-        std::cerr << iob.getLastError(code) << std::endl;
-        std::cerr << port.getLastError(code) << std::endl;
+        std::cerr << iob.lastError.getMessage() << std::endl;
+        std::cerr << port.lastError.getMessage() << std::endl;
     }
 
     // speed
@@ -92,9 +86,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        int code;
-        std::cerr << iob.getLastError(code) << std::endl;
-        std::cerr << port.getLastError(code) << std::endl;
+        std::cerr << iob.lastError.getMessage() << std::endl;
+        std::cerr << port.lastError.getMessage() << std::endl;
     }
 /*
     // configure digital inputs
@@ -105,9 +98,8 @@ int main(int argc, char *argv[])
     }
     if( !iob.configureDigitalInPins(dioConfig) )
     {
-        int code;
-        std::cerr << iob.getLastError(code) << std::endl;
-        std::cerr << port.getLastError(code) << std::endl;
+        std::cerr << iob.lastError.getMessage() << std::endl;
+        std::cerr << port.lastError.getMessage() << std::endl;
     }
 */
     for(int i = 0; i < speed.size(); ++i)
