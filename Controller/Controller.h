@@ -18,23 +18,50 @@ class UGV1_DLL_API IoBoardModel
 {
 public:
 
-    class Version
+    /// \brief Version information
+    struct Version
     {
-    public:
-        char code;
-        char version;
-        char revision;
+        union
+        {
+            struct
+            {
+                unsigned int code:8;
+                unsigned int version:8;
+                unsigned int revision:8;
+                unsigned int reserved:8;
+            };
+            unsigned int value;
+        };
     };
-    enum DioMode { OUTPUT_MODE, INPUT_MODE, SERVO_MODE };
-    enum DriveControlMode { DIRECT_POWER_CONTROL, SPEED_CONTROL };
+
+    /// \brief Digital IO configuration options
+    enum DioMode
+    {
+        OUTPUT_MODE,    //!< Configure pin as digital output
+        INPUT_MODE,     //!< Configure pin as digital input
+        SERVO_MODE      //!< Configure pin as servo output
+    };
+
+    ///\brief Motor control modes
+    enum DriveControlMode
+    {
+        DIRECT_POWER_CONTROL, //!< open loop direct power control
+        SPEED_CONTROL         //!< closed loop PID speed control
+    };
+
+public:
+    IoBoardModel();
+    ~IoBoardModel();
 
     // -------------- configuration ---------------
     void setDioMode(unsigned int channel, DioMode mode);
-    void setMotorEncoderPpr();
-    void setMotorGearRatio();
-    void setWheelPerimeter();
-    void setPIDGains();
-    void setDriveMode(DriveControlMode mode);
+    void setMotorEncoderPpr(unsigned short ppr);
+    void setMotorGearRatio(unsigned short ratio10);
+    void setWheelPerimeter(unsigned short mm);
+    void setMotorDriveMode(DriveControlMode mode);
+    void setMotorControlPGain(unsigned char gain);
+    void setMotorControlIGain(unsigned char gain);
+    void setMotorControlDGain(unsigned char gain);
 
     // --------------- outputs --------------------
     void setDigitalOut(unsigned int channel, bool high);
@@ -53,6 +80,7 @@ public:
     virtual bool setConfig();
     virtual bool setOutputs();
     virtual bool getInputs();
+
 protected:
     virtual void constructMessageMap();
 private:

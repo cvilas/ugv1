@@ -362,7 +362,7 @@ void MainWindow::on_pidControlOn_toggled(bool checked)
     Ugv1::SetMotorDriveModeCommand cmd;
 
     if( checked )
-        cmd.setModePidControl();
+        cmd.setModeSpeedControl();
     else
         cmd.setModeDirectPower();
 

@@ -157,7 +157,7 @@ class UGV1_DLL_API SetMotorDriveModeCommand : public IoBoardCommand
 public:
     /// Default command sets PID control mode
     SetMotorDriveModeCommand();
-    void setModePidControl();   //!< closed loop PID control mode
+    void setModeSpeedControl();   //!< closed loop PID control mode
     void setModeDirectPower();  //!< open loop mode
     bool isModePidControl();
     bool isModeDirectPower();

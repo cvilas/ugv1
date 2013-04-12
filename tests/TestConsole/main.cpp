@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     Ugv1::IoBoard iob(port);
 
     iob.setResponseTimeOut(5000);
-    port.setPortName("COM6");
+    port.setPortName("/dev/ttyUSB0");
 
     if( !port.open() )
     {

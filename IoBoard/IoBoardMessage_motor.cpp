@@ -238,7 +238,7 @@ SetMotorDriveModeCommand::SetMotorDriveModeCommand()
 }
 
 //-----------------------------------------------------------------------------
-void SetMotorDriveModeCommand::setModePidControl()
+void SetMotorDriveModeCommand::setModeSpeedControl()
 //-----------------------------------------------------------------------------
 {
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX;

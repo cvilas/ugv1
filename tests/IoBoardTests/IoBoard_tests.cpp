@@ -219,7 +219,7 @@ void IoBoardMessageTests::test_IoBoardCommand_setMotorDriveMode()
 {
     Ugv1::SetMotorDriveModeCommand cmd;
 
-    cmd.setModePidControl();
+    cmd.setModeSpeedControl();
     QVERIFY2(cmd.isModePidControl(), "set/get pid control failed");
     QVERIFY2(!cmd.isModeDirectPower(), "incorrect mode set (expected pid mode)");
 
