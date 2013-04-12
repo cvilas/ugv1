@@ -78,16 +78,27 @@ void WriteServoOutCommand::setChannel(unsigned int channel, unsigned char positi
 }
 
 //-----------------------------------------------------------------------------
-void WriteServoOutCommand::getChannel(unsigned int channel, unsigned char& position, unsigned char& speed)
+unsigned char WriteServoOutCommand::getPosition(unsigned int channel)
 //-----------------------------------------------------------------------------
 {
     if(channel > 7)
     {
-        return;
+        return 0xFF;
     }
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (2 * channel);
-    position = *it;
-    speed = *(it+1);
+    return *it;
+}
+
+//-----------------------------------------------------------------------------
+unsigned char WriteServoOutCommand::getSpeed(unsigned int channel)
+//-----------------------------------------------------------------------------
+{
+    if(channel > 7)
+    {
+        return 0;
+    }
+    iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (2 * channel) + 1;
+    return *it;
 }
 
 } // Ugv1

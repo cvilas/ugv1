@@ -9,7 +9,7 @@
 namespace Ugv1
 {
 
-const char IoBoardMessage::MESSAGE_HEADER[3] = {0x55, 0xAA, 0x10};
+const unsigned char IoBoardMessage::MESSAGE_HEADER[3] = {0x55, 0xAA, 0x10};
 
 //==============================================================================
 IoBoardMessage::IoBoardMessage()

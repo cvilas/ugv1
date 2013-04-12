@@ -8,84 +8,11 @@
 #ifndef UGV1_CONTROLLER_H
 #define UGV1_CONTROLLER_H
 
+#include "controller_common.h"
 #include "IoBoard/IoBoard.h"
-#include <map>
 
 namespace Ugv1
 {
-
-class UGV1_DLL_API IoBoardModel
-{
-public:
-
-    /// \brief Version information
-    struct Version
-    {
-        union
-        {
-            struct
-            {
-                unsigned int code:8;
-                unsigned int version:8;
-                unsigned int revision:8;
-                unsigned int reserved:8;
-            };
-            unsigned int value;
-        };
-    };
-
-    /// \brief Digital IO configuration options
-    enum DioMode
-    {
-        OUTPUT_MODE,    //!< Configure pin as digital output
-        INPUT_MODE,     //!< Configure pin as digital input
-        SERVO_MODE      //!< Configure pin as servo output
-    };
-
-    ///\brief Motor control modes
-    enum DriveControlMode
-    {
-        DIRECT_POWER_CONTROL, //!< open loop direct power control
-        SPEED_CONTROL         //!< closed loop PID speed control
-    };
-
-public:
-    IoBoardModel();
-    ~IoBoardModel();
-
-    // -------------- configuration ---------------
-    void setDioMode(unsigned int channel, DioMode mode);
-    void setMotorEncoderPpr(unsigned short ppr);
-    void setMotorGearRatio(unsigned short ratio10);
-    void setWheelPerimeter(unsigned short mm);
-    void setMotorDriveMode(DriveControlMode mode);
-    void setMotorControlPGain(unsigned char gain);
-    void setMotorControlIGain(unsigned char gain);
-    void setMotorControlDGain(unsigned char gain);
-
-    // --------------- outputs --------------------
-    void setDigitalOut(unsigned int channel, bool high);
-    void setServoOut(unsigned int channel, unsigned char degrees, unsigned char speed);
-    void setMotorSpeed(unsigned int channel, int cmps);
-
-    // --------------- inputs ---------------------
-    bool getDigitalIn(unsigned int channel);
-    double getAnalogIn(unsigned int channel);
-    int getMotorSpeed(unsigned int channel);
-    int getMotorCurrent(unsigned int channel);
-    int getMotorEncoder(unsigned int channel);
-    Version getBoardVersion();
-
-    // --------------- update -----------------
-    virtual bool setConfig();
-    virtual bool setOutputs();
-    virtual bool getInputs();
-
-protected:
-    virtual void constructMessageMap();
-private:
-    std::map<IoBoardMessage::MessageID, IoBoardMessage*> _messageMap;
-};
 
 /// \class Controller
 /// \ingroup vehicle
@@ -99,7 +26,7 @@ private:
  * after exiting loop(), io outputs get written from devices
  * cleanup() to shutdown bits before exit
  */
-class UGV1_DLL_API Controller
+class UGV1CONTROLLER_DLL_API Controller
 {
 public:
     Controller();

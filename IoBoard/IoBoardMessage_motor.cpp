@@ -94,7 +94,7 @@ void WriteMotorSpeedCommand::setSpeed(unsigned int index, int speed)
 //-----------------------------------------------------------------------------
 {
     unsigned short cmps = (unsigned short)(abs(speed)&0xFFFF);
-    bool fwdDir = (speed > 0);
+    bool fwdDir = (speed >= 0);
 
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (2 * index);
 
@@ -116,7 +116,7 @@ void WriteMotorSpeedCommand::setSpeed(unsigned int index, int speed)
 }
 
 //-----------------------------------------------------------------------------
-int WriteMotorSpeedCommand::getMotorSpeed(unsigned int index)
+int WriteMotorSpeedCommand::getSpeed(unsigned int index)
 //-----------------------------------------------------------------------------
 {
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (2 * index);
@@ -256,7 +256,7 @@ void SetMotorDriveModeCommand::setModeDirectPower()
 }
 
 //-----------------------------------------------------------------------------
-bool SetMotorDriveModeCommand::isModePidControl()
+bool SetMotorDriveModeCommand::isModeSpeedControl()
 //-----------------------------------------------------------------------------
 {
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX;

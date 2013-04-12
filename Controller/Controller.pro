@@ -12,8 +12,11 @@ include(../ugvlibs.pri)
 INCLUDEPATH += ./../common
 DEPENDPATH +=
 
+win32:DEFINES += UGV1CONTROLLER_DLL UGV1CONTROLLER_DLL_API UGV1IOB_DLL
+
 HEADERS += Controller.h \
-    Controller.h
+    Controller.h \
+    controller_common.h
 SOURCES += Controller.cpp
 win32:SOURCES +=
 unix:SOURCES +=

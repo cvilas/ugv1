@@ -27,7 +27,7 @@ DESTDIR = $${PWD}/lib
 DLLDESTDIR = $${PWD}/bin/
 
 DEFINES +=
-win32: DEFINES += GRAPECORE_DLL GRAPEIO_DLL UGV1_DLL UGV1_DLL_EXPORT _UNICODE _CRT_SECURE_NO_WARNINGS
+win32: DEFINES += GRAPECORE_DLL GRAPEIO_DLL UNICODE _UNICODE _CRT_SECURE_NO_WARNINGS
 CONFIG(debug, release|debug) {
     DEFINES += _DEBUG
     win32:LIBS += -lws2_32 -lUser32 -lGrapeIod0 -lGrapeCored0
@@ -41,6 +41,7 @@ CONFIG(debug, release|debug) {
 QMAKE_LIBS_QT_ENTRY=
 INCLUDEPATH += $${PWD} \
                 $${PWD}/common \
+                $${PWD}/IoBoard \
                 $${GRAPE_DIR} \
                 $${GRAPE_DIR}/core \
                 $${GRAPE_DIR}/io

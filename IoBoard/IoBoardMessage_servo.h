@@ -16,7 +16,7 @@ namespace Ugv1
 /// \class SetDIOServoModeCommand
 /// \ingroup comms
 /// \brief Command to configure digital outputs as PWM servo drives
-class UGV1_DLL_API SetDioServoModeCommand : public IoBoardCommand
+class UGV1IOB_DLL_API SetDioServoModeCommand : public IoBoardCommand
 {
 public:
 
@@ -43,7 +43,7 @@ public:
 /// \brief Command to set servo output position and speed.
 /// After configuring the DIO0-7 to Servo control mode, this command is used to play the Servo
 /// with position and speed control.
-class UGV1_DLL_API WriteServoOutCommand : public IoBoardCommand
+class UGV1IOB_DLL_API WriteServoOutCommand : public IoBoardCommand
 {
 public:
     /// Default constructor creates a command with all positions and speeds set to 0.
@@ -55,11 +55,15 @@ public:
     /// \param speed    Speed value from 0 to 0xFF.
     void setChannel(unsigned int channel, unsigned char position, unsigned char speed);
 
-    /// Get the position and speed setting for a servo channel
+    /// Get the position setting for a servo channel
     /// \param channel  Servo channel in range 0 - 7. Method returns doing nothing if channel is invalid.
-    /// \param position Position value in range 0 to 180. Center position is 90.
-    /// \param speed    Speed value from 0 to 0xFF.
-    void getChannel(unsigned int channel, unsigned char& position, unsigned char& speed);
+    /// \return         Position value in range 0 to 180. Center position is 90. 0xFF if invalid channel
+    unsigned char getPosition(unsigned int channel);
+
+    /// Get the speed setting for a servo channel
+    /// \param channel  Servo channel in range 0 - 7. Method returns doing nothing if channel is invalid.
+    /// \return         Speed value from 0 to 0xFF.
+    unsigned char getSpeed(unsigned int channel);
 
 }; // WriteServoOutCommand
 

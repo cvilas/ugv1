@@ -24,7 +24,7 @@ namespace Ugv1
 /// from the hardware. A compatible external transport mechanism is used
 /// for message passing (i.e. RS232 serial port).
 /// \see IoBoardMessage, IoBoardCommand, IoBoardResponse
-class UGV1_DLL_API IoBoard
+class UGV1IOB_DLL_API IoBoard
 {
 
 public:

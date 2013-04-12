@@ -40,7 +40,7 @@ void IoBoardMessageTests::test_IoBoardCommand_format()
 {
     // Test that command is formatted properly
 
-    char SetServoModeCommand_result[7] = {0x55, 0xaa, 0x10, 0x01, 0x01, 0x7F, 0x90};
+    unsigned char SetServoModeCommand_result[7] = {0x55, 0xaa, 0x10, 0x01, 0x01, 0x7F, 0x90};
     Ugv1::SetDioServoModeCommand SetServoModeCommand_command(0x7F);
     for(int i = 0; i < 7; ++i)
     {
@@ -117,7 +117,8 @@ void IoBoardMessageTests::test_IoBoardCommand_writeServoOut()
         unsigned char speed = (unsigned char)((double)qrand()*255/RAND_MAX);
         unsigned char pos2, speed2;
         cmd.setChannel(i, pos, speed);
-        cmd.getChannel(i, pos2, speed2);
+        pos2 = cmd.getPosition(i);
+        speed2 = cmd.getSpeed(i);
         QVERIFY2(pos == pos2, "Position set failed");
         QVERIFY2(speed == speed2, "Speed set failed");
     }
@@ -185,16 +186,16 @@ void IoBoardMessageTests::test_IoBoardCommand_setMotorSpeed()
     Ugv1::WriteMotorSpeedCommand cmd;
 
     cmd.setSpeed(0, speed1);
-    QVERIFY2(speed1 == cmd.getMotorSpeed(0), "Set/get fwd speed on motor 1 failed");
+    QVERIFY2(speed1 == cmd.getSpeed(0), "Set/get fwd speed on motor 1 failed");
 
     cmd.setSpeed(0, speed2);
-    QVERIFY2(speed2 == cmd.getMotorSpeed(0), "Set/get rev speed on motor 1 failed");
+    QVERIFY2(speed2 == cmd.getSpeed(0), "Set/get rev speed on motor 1 failed");
 
     cmd.setSpeed(1, speed1);
-    QVERIFY2(speed1 == cmd.getMotorSpeed(1), "Set/get fwd speed on motor 2 failed");
+    QVERIFY2(speed1 == cmd.getSpeed(1), "Set/get fwd speed on motor 2 failed");
 
     cmd.setSpeed(1, speed2);
-    QVERIFY2(speed2 == cmd.getMotorSpeed(1), "Set/get rev speed on motor 2 failed");
+    QVERIFY2(speed2 == cmd.getSpeed(1), "Set/get rev speed on motor 2 failed");
 }
 
 //-----------------------------------------------------------------------------
@@ -220,12 +221,12 @@ void IoBoardMessageTests::test_IoBoardCommand_setMotorDriveMode()
     Ugv1::SetMotorDriveModeCommand cmd;
 
     cmd.setModeSpeedControl();
-    QVERIFY2(cmd.isModePidControl(), "set/get pid control failed");
+    QVERIFY2(cmd.isModeSpeedControl(), "set/get pid control failed");
     QVERIFY2(!cmd.isModeDirectPower(), "incorrect mode set (expected pid mode)");
 
     cmd.setModeDirectPower();
     QVERIFY2(cmd.isModeDirectPower(), "set/get direct control failed");
-    QVERIFY2(!cmd.isModePidControl(), "incorrect mode set (expected direct mode)");
+    QVERIFY2(!cmd.isModeSpeedControl(), "incorrect mode set (expected direct mode)");
 }
 
 //-----------------------------------------------------------------------------
@@ -255,31 +256,31 @@ void IoBoardMessageTests::test_IoBoardResponse_isValid()
     // 2. Create invalid message. Verify isValid fails.
 
     // valid message
-    char validResponse[9] = {0x55, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_DIO, 0x07, 0xFF, 0x1B, 0x0A};
+    unsigned char validResponse[9] = {0x55, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_DIO, 0x07, 0xFF, 0x1B, 0x0A};
     Ugv1::ReadDioInResponse resp;
     resp.assign(validResponse, validResponse+9);
     QVERIFY2(resp.isValid(), "Valid message but test failed");
 
     // invalid length
-    char invalidResponse1[9] = {0x55, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_DIO, 0x07, 0xFF, 0x1B};
+    unsigned char invalidResponse1[9] = {0x55, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_DIO, 0x07, 0xFF, 0x1B};
     Ugv1::ReadDioInResponse resp1;
     resp1.assign(invalidResponse1, invalidResponse1+8);
     QVERIFY2(!resp1.isValid(), "Invalid message (length) but test failed");
 
     // invalid header
-    char invalidResponse2[9] = {0x54, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_DIO, 0x07, 0xFF, 0x1B, 0x0A};
+    unsigned char invalidResponse2[9] = {0x54, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_DIO, 0x07, 0xFF, 0x1B, 0x0A};
     Ugv1::ReadDioInResponse resp2;
     resp2.assign(invalidResponse2, invalidResponse2+9);
     QVERIFY2(!resp2.isValid(), "Invalid message (header) but test failed");
 
     // invalid id
-    char invalidResponse3[9] = {0x54, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_ANALOG, 0x07, 0xFF, 0x1B, 0x0A};
+    unsigned char invalidResponse3[9] = {0x54, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_ANALOG, 0x07, 0xFF, 0x1B, 0x0A};
     Ugv1::ReadDioInResponse resp3;
     resp3.assign(invalidResponse3, invalidResponse3+9);
     QVERIFY2(!resp3.isValid(), "Invalid message (id) but test failed");
 
     // invalid checksum
-    char invalidResponse4[9] = {0x54, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_ANALOG, 0x07, 0xFF, 0x10, 0x0A};
+    unsigned char invalidResponse4[9] = {0x54, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_ANALOG, 0x07, 0xFF, 0x10, 0x0A};
     Ugv1::ReadDioInResponse resp4;
     resp4.assign(invalidResponse4, invalidResponse4+9);
     QVERIFY2(!resp4.isValid(), "Invalid message (checksum) but test failed");

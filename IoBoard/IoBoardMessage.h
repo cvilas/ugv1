@@ -8,7 +8,7 @@
 #ifndef UGV1_IOBOARDMESSAGE_H
 #define UGV1_IOBOARDMESSAGE_H
 
-#include "ugv1_common.h"
+#include "ioboard_common.h"
 #include <vector>
 #include <cstddef>
 
@@ -21,12 +21,12 @@ namespace Ugv1
 /// See Sensor/Motor Drive Board - Version 2.2 (SKU:DFR0057) Wiki for command format:
 /// in docs/Sensor Driver Board V2 - wiki.pdf, or the webpage
 /// http://www.dfrobot.com/wiki/index.php?title=Sensor/Motor_Drive_Board_-_Version_2.2_(SKU:DFR0057)
-class UGV1_DLL_API IoBoardMessage : public std::vector<char>
+class UGV1IOB_DLL_API IoBoardMessage : public std::vector<char>
 {
 public:
 
     /// header bytes common to all messages
-    static const char MESSAGE_HEADER[3];
+    static const unsigned char MESSAGE_HEADER[3];
 
     /// 0 based index to element containing message identifier
     /// \see IoBoardCommand::MessageID
@@ -76,7 +76,7 @@ protected:
 /// \ingroup comms
 /// \brief IO board command message builder. Base class for all IoBoard commands.
 /// \see IoBoardReply, IoBoardMessage
-class UGV1_DLL_API IoBoardCommand : public IoBoardMessage
+class UGV1IOB_DLL_API IoBoardCommand : public IoBoardMessage
 {
 public:
 
@@ -108,7 +108,7 @@ private:
 /// \ingroup comms
 /// \brief Response from the IoBoard for IoBoardCommand messages
 /// \note Always check that the message is valid before using it.
-class UGV1_DLL_API IoBoardResponse : public IoBoardMessage
+class UGV1IOB_DLL_API IoBoardResponse : public IoBoardMessage
 {
 public:
     IoBoardResponse();
@@ -136,7 +136,7 @@ public:
 /// \class ReadBoardVersionCommand
 /// \ingroup comms
 /// \brief Create command to read board version info.
-class UGV1_DLL_API ReadBoardVersionCommand : public IoBoardCommand
+class UGV1IOB_DLL_API ReadBoardVersionCommand : public IoBoardCommand
 {
 public:
     ReadBoardVersionCommand() : IoBoardCommand()
@@ -148,7 +148,7 @@ public:
 /// \class ReadBoardVersionResponse
 /// \ingroup comms
 /// \brief Response to ReadBoardVersionCommand
-class UGV1_DLL_API ReadBoardVersionResponse : public IoBoardResponse
+class UGV1IOB_DLL_API ReadBoardVersionResponse : public IoBoardResponse
 {
 public:
     ReadBoardVersionResponse() : IoBoardResponse() {}

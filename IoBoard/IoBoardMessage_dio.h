@@ -16,7 +16,7 @@ namespace Ugv1
 /// \class SetDioIoModeCommand
 /// \ingroup comms
 /// \brief Configure digital IO pins as inputs and outputs
-class UGV1_DLL_API SetDioIoModeCommand : public IoBoardCommand
+class UGV1IOB_DLL_API SetDioIoModeCommand : public IoBoardCommand
 {
 public:
     /// Default constructor. Sets all digital pins as inputs.
@@ -52,7 +52,7 @@ public:
 /// \class WriteDioOutCommand
 /// \ingroup comms
 /// \brief Command to write digital outputs
-class UGV1_DLL_API WriteDioOutCommand : public IoBoardCommand
+class UGV1IOB_DLL_API WriteDioOutCommand : public IoBoardCommand
 {
 public:
     /// Default constructor. Creates command with all output pins set to low.
@@ -79,7 +79,7 @@ public:
 /// \class ReadDioInCommand
 /// \ingroup comms
 /// \brief Command a read of digital lines configured as inputs
-class UGV1_DLL_API ReadDioInCommand : public IoBoardCommand
+class UGV1IOB_DLL_API ReadDioInCommand : public IoBoardCommand
 {
 public:
     ReadDioInCommand();
@@ -88,7 +88,7 @@ public:
 /// \class ReadDioInResponse
 /// \ingroup comms
 /// \brief Response to ReadDioInCommand
-class UGV1_DLL_API ReadDioInResponse : public IoBoardResponse
+class UGV1IOB_DLL_API ReadDioInResponse : public IoBoardResponse
 {
 public:
     ReadDioInResponse() : IoBoardResponse(){}
