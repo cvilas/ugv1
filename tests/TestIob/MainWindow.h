@@ -48,6 +48,7 @@ private slots:
 
 private:
     void updateStatusBar();
+
 private:
     Ui::MainWindow *_pUi;
     Grape::SerialPort _port;

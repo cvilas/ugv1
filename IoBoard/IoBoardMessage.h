@@ -21,7 +21,7 @@ namespace Ugv1
 /// See Sensor/Motor Drive Board - Version 2.2 (SKU:DFR0057) Wiki for command format:
 /// in docs/Sensor Driver Board V2 - wiki.pdf, or the webpage
 /// http://www.dfrobot.com/wiki/index.php?title=Sensor/Motor_Drive_Board_-_Version_2.2_(SKU:DFR0057)
-class UGV1IOB_DLL_API IoBoardMessage : public std::vector<char>
+class UGV1IOB_DLL_API IoBoardMessage : public std::vector<unsigned char>
 {
 public:
 
@@ -100,7 +100,7 @@ protected:
     void setCommandModified();
 
 private:
-    char computeChecksum();
+    unsigned char computeChecksum();
 
 }; // IoBoardCommand
 

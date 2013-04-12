@@ -120,6 +120,7 @@ bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
         --nTries;
         if( nTries < 1 )
         {
+            _transport.flushRx();
             lastError.set(-1) << "[IoBoard::send]: Expected " << nToRead << " bytes, " << nAvailable << " available";
             return false;
         }
@@ -127,6 +128,7 @@ bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
     int nRead = _transport.read(reply);
     if( nRead != nToRead )
     {
+        _transport.flushRx();
         lastError.set(-1) << "[IoBoard::send]: Error in read. Read " << nRead << "/" << nToRead;
         return false;
     }
@@ -150,6 +152,7 @@ bool IoBoard::send(const IoBoardCommand& cmd)
     int nWritten = _transport.write(cmd);
     if( nWritten != nToWrite )
     {
+        _transport.flushTx();
         lastError.set(-1) << "[IoBoard::send]: Error in write. Wrote " << nWritten << "/" << nToWrite;
         return false;
     }

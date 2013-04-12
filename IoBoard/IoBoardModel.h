@@ -20,16 +20,17 @@ namespace Ugv1
 /// The class provides a state model for various inputs and outputs on the IO board.
 /// State can be changed by calling set..() methods and the current state are returned
 /// by get..() methods.
-/// \note  The IO board does not actually provide methods to query all settable states. In
+/// \note
+/// - The IO board does not actually provide methods to query all settable states. In
 /// these instances, the corresponding get..() returns the last user setting for the parameter,
 /// and not the actual state. Such get methods are identified by the getSetting..() or
 /// getConfigSetting...() prefix.
-/// \note The board does not retain settings when power cycled. On power up, setConfig()
+/// - The board does not retain settings when power cycled. On power up, setConfig()
 /// must be called to ensure the state maintained by the class is consistent with
 /// actual settings on the board.
-/// \note Calling a set...() method does not immediately set state. Call setConfig() and
+/// - Calling a set...() method does not immediately set state. Call setConfig() and
 /// writeOutputs() to write them to the board.
-/// \note A get...() method do not return instantaneous state; they return state at the instant
+/// - A get...() method do not return instantaneous state; they return state at the instant
 /// of last call to readInputs()
 class UGV1IOB_DLL_API IoBoardModel
 {
@@ -132,7 +133,7 @@ public:
 
     /// Set position and speed for a servo channel
     /// \param channel  Servo channel in range 0 - 7.
-    /// \param position Position value in range 0 to 180. Center position is 90.
+    /// \param degrees Position value in range 0 to 180. Center position is 90.
     /// \param speed    Speed value from 0 to 0xFF.
     void setServoOut(unsigned int channel, unsigned char degrees, unsigned char speed=0xFF);
     unsigned char getSettingServoPosition(unsigned int channel);
@@ -149,7 +150,7 @@ public:
     /// \return State of a digital input pin
     bool getDigitalIn(unsigned int channel);
 
-    /// \retur State of an analog input pin (0 - 3.3 volts)
+    /// \return State of an analog input pin (0 - 3.3 volts)
     double getAnalogIn(unsigned int channel);
 
     /// Get motor speed. The output is 0 if the motors are configured in direct power mode.

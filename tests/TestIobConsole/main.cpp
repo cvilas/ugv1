@@ -19,20 +19,17 @@ int main(int argc, char *argv[])
     iob.setResponseTimeOut(5000);
     port.setPortName("/dev/ttyUSB0");
 
-    if( !port.open() )
-    {
+    if( !port.open() ) {
         std::cerr << port.lastError.getMessage() << std::endl;
         return -1;
     }
 
-    if( !port.setDataFormat(Grape::SerialPort::D8N1) )
-    {
+    if( !port.setDataFormat(Grape::SerialPort::D8N1) ) {
         std::cerr << port.lastError.getMessage() << std::endl;
         return -1;
     }
 
-    if( !port.setBaudRate(Grape::SerialPort::B115200) )
-    {
+    if( !port.setBaudRate(Grape::SerialPort::B115200) ) {
         std::cerr << port.lastError.getMessage() << std::endl;
         return -1;
     }
@@ -89,22 +86,10 @@ int main(int argc, char *argv[])
         std::cerr << iob.lastError.getMessage() << std::endl;
         std::cerr << port.lastError.getMessage() << std::endl;
     }
-/*
-    // configure digital inputs
-    Ugv1::SetDioIoModeCommand dioConfig;
-    for(int i = 0; i < 11; ++i)
+
+    for(int i = 0; i < encoders.size(); ++i)
     {
-        dioConfig.setModeOutput(i, true);
-    }
-    if( !iob.configureDigitalInPins(dioConfig) )
-    {
-        std::cerr << iob.lastError.getMessage() << std::endl;
-        std::cerr << port.lastError.getMessage() << std::endl;
-    }
-*/
-    for(int i = 0; i < speed.size(); ++i)
-    {
-        std::cout << std::hex << (int)(speed[i]&0xFF) << " ";
+        std::cout << std::hex << (int)(encoders[i]&0xFF) << " ";
     }
     std::cout << std::endl;
 

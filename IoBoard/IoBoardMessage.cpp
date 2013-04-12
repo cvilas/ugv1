@@ -39,7 +39,7 @@ void IoBoardCommand::initialise(MessageID cmd, int nPayloadBytes, char* payload)
     // message format: [header(3)][payload length(1)][cmd(1)][payload(n)][checksum(1)]
 
     resize(nPayloadBytes + COMMAND_MIN_LENGTH);
-    std::vector<char>::iterator it = begin();
+    std::vector<unsigned char>::iterator it = begin();
     *it = IoBoardMessage::MESSAGE_HEADER[0]; ++it;
     *it = IoBoardMessage::MESSAGE_HEADER[1]; ++it;
     *it = IoBoardMessage::MESSAGE_HEADER[2]; ++it;
@@ -61,7 +61,7 @@ void IoBoardCommand::setCommandModified()
 }
 
 //-----------------------------------------------------------------------------
-char IoBoardCommand::computeChecksum()
+unsigned char IoBoardCommand::computeChecksum()
 //-----------------------------------------------------------------------------
 {
     unsigned int csum = 0;
@@ -72,7 +72,7 @@ char IoBoardCommand::computeChecksum()
         csum += (unsigned int)(*it);
         ++it;
     }
-    return( (char)(csum&0xFF));
+    return( (unsigned char)(csum&0xFF));
 }
 
 //=============================================================================

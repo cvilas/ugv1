@@ -5,6 +5,7 @@
 //==============================================================================
 
 #include "IoBoardModel.h"
+#include <QDebug>
 
 namespace Ugv1
 {
@@ -412,7 +413,6 @@ bool IoBoardModel::writeOutputs()
         // stop first
         if( pModeCmd->isModeSpeedControl() )
         {
-
             if( !_board.send(WriteMotorSpeedCommand()) )
             {
                 return false;
@@ -448,7 +448,7 @@ bool IoBoardModel::writeOutputs()
     // go again
     if( pModeCmd->isModeSpeedControl() )
     {
-
+        qDebug("speed mode");
         if( !_board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_SPEED]) )
         {
             return false;
@@ -456,6 +456,7 @@ bool IoBoardModel::writeOutputs()
     }
     else
     {
+        qDebug("power mode");
         if( !_board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_POWER]) )
         {
                 return false;

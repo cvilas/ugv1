@@ -90,7 +90,7 @@ void IoBoardMessageTests::test_IoBoardCommand_setServoMode()
         cmd.setModeServo(i, true);
         QVERIFY2(cmd.isModeServo(i), "set/get failed for setServoMode(true)");
         csum += (1<<i);
-        QVERIFY2((char)(csum&0xFF) == *(cmd.end()-1), "checksum incorrect after setServoMode(true)");
+        QVERIFY2((unsigned char)(csum&0xFF) == *(cmd.end()-1), "checksum incorrect after setServoMode(true)");
     }
 
     // and toggle them back to false, one at a time
@@ -100,7 +100,7 @@ void IoBoardMessageTests::test_IoBoardCommand_setServoMode()
         cmd.setModeServo(i, false);
         QVERIFY2(!cmd.isModeServo(i), "set/get failed for setServoMode(false)");
         csum -= (1<<i);
-        QVERIFY2((char)(csum&0xFF) == *(cmd.end()-1), "checksum incorrect after setServoMode(true)");
+        QVERIFY2((unsigned char)(csum&0xFF) == *(cmd.end()-1), "checksum incorrect after setServoMode(true)");
     }
 }
 
@@ -137,20 +137,20 @@ void IoBoardMessageTests::test_IoBoardCommand_setDioOutMode()
     // toggle each bit to true one at a time
     for(int i = 0; i < 11; ++i)
     {
-        cmd.setModeOutput(i, true);
-        QVERIFY2(cmd.isModeOutput(i), "set/get failed for setOutputMode(true)");
+        cmd.setModeInput(i, true);
+        QVERIFY2(cmd.isModeInput(i), "set/get failed for setOutputMode(true)");
         csum += (1<<(i%8));
-        QVERIFY2((char)(csum&0xFF) == *(cmd.end()-1), "checksum incorrect after setOutputMode(true)");
+        QVERIFY2((unsigned char)(csum&0xFF) == *(cmd.end()-1), "checksum incorrect after setOutputMode(true) on toggle up");
     }
 
     // and toggle them back to false (equivalent to setting inputmode), one at a time
     csum = *(cmd.end()-1);
     for(int i = 0; i < 7; ++i)
     {
-        cmd.setModeInput(i, true);
-        QVERIFY2(cmd.isModeInput(i), "set/get failed for setInputMode(true)");
+        cmd.setModeOutput(i, true);
+        QVERIFY2(cmd.isModeOutput(i), "set/get failed for setInputMode(true)");
         csum -= (1<<(i%8));
-        QVERIFY2((char)(csum&0xFF) == *(cmd.end()-1), "checksum incorrect after setInputMode(true)");
+        QVERIFY2((unsigned char)(csum&0xFF) == *(cmd.end()-1), "checksum incorrect after setInputMode(true) on toggle down");
     }
 }
 
