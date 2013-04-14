@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>258</width>
-    <height>129</height>
+    <height>154</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -102,8 +102,32 @@
      </property>
     </widget>
    </item>
+   <item row="5" column="0">
+    <widget class="QPushButton" name="okBtn">
+     <property name="text">
+      <string>OK</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>okBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>SerialPortConnectUI</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>51</x>
+     <y>131</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>128</x>
+     <y>76</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

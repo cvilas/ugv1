@@ -23,12 +23,37 @@ IoBoardModel::IoBoardModel(IoBoard& board)
         _encoderResidual[i] = 0;
     }
     constructMessageMap();
+    configureDefaults();
 }
 
 //-----------------------------------------------------------------------------
 IoBoardModel::~IoBoardModel()
 //-----------------------------------------------------------------------------
 {}
+
+//-----------------------------------------------------------------------------
+void IoBoardModel::configureDefaults()
+//-----------------------------------------------------------------------------
+{
+    /// - All 11 digital lines are configured as inputs
+    /// - encoder ppr = 13
+    /// - gear ratio = 51:1
+    /// - wheel perimeter = 430 mm
+    /// - motor drive mode = speed control
+    /// - p,i,d gains = 10,30,1
+
+    for(unsigned int i = 0; i < 11; ++i)
+    {
+        setConfigDioMode(i, IoBoardModel::INPUT_MODE);
+    }
+    setConfigEncoderPPR(13);
+    setConfigMotorGearRatio(510);
+    setConfigWheelPerimeter(430);
+    setConfigMotorDriveMode(IoBoardModel::SPEED_CONTROL);
+    setConfigPGain(10);
+    setConfigIGain(30);
+    setConfigDGain(1);
+}
 
 //-----------------------------------------------------------------------------
 void IoBoardModel::setConfigDioMode(unsigned int channel, IoBoardModel::DioMode mode)
@@ -448,7 +473,6 @@ bool IoBoardModel::writeOutputs()
     // go again
     if( pModeCmd->isModeSpeedControl() )
     {
-        qDebug("speed mode");
         if( !_board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_SPEED]) )
         {
             return false;
@@ -456,7 +480,6 @@ bool IoBoardModel::writeOutputs()
     }
     else
     {
-        qDebug("power mode");
         if( !_board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_POWER]) )
         {
                 return false;

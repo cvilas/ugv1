@@ -14,6 +14,10 @@
 namespace Ugv1
 {
 
+/// \todo
+/// - Check encoder output and motor drive train parameters - encoder count seems to
+/// change faster than expected
+
 /// \class IoBoardModel
 /// \ingroup vehicle
 /// \brief IO state model
@@ -75,13 +79,22 @@ public:
 public:
 
     /// Constructor. Takes a reference to the IO board as the only
-    /// parameter.
+    /// parameter. Configures the board with default parameters.
     IoBoardModel(IoBoard& board);
 
     /// Destructor. Does nothing.
     ~IoBoardModel();
 
     // -------------- configuration ---------------
+
+    /// Configure the board with the following default parameters.
+    /// - All 11 digital lines are configured as inputs
+    /// - encoder ppr = 13
+    /// - gear ratio = 51:1
+    /// - wheel perimeter = 430 mm
+    /// - motor drive mode = speed control
+    /// - p,i,d gains = 10,30,1 respectively
+    void configureDefaults();
 
     /// Configure digital pins as input, output or servo lines.
     /// \param channel  IO pin in range 0 - 10. Note that only pins 0 - 7

@@ -3,8 +3,8 @@ CONFIG += ordered
 SUBDIRS += IoBoard \
     Controller \
     tests/IoBoardTests \
-    tests/TestIob \
     tests/TestIobConsole \
+    tests/TestIob \
     tests/TestIobModel
 
 IoBoardTests.depends = IoBoard

@@ -6,6 +6,9 @@
 
 #include "SerialPortDlg.h"
 #include "ui_SerialPortConnect.h"
+#ifdef __ANDROID__
+#include <QProcess>
+#endif
 
 //==============================================================================
 SerialPortDlg::SerialPortDlg(Grape::SerialPort& port, QWidget *parent)
@@ -74,6 +77,12 @@ void SerialPortDlg::on_connectBtn_clicked()
     }
     else
     {
+#ifdef __ANDROID__
+        //QProcess p;
+        //QString cmd = QString("su -c 'chmod 666 ") + pUi->portSel->text() + QString("'");
+        //p.start(cmd);
+        //p.waitForFinished(-1);
+#endif
         _port.open();
         if( _port.isOpen() )
         {

@@ -28,8 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(_pUi->actionSerial_Port, SIGNAL(triggered()), this, SLOT(onConnectSerialPort()));
     QObject::connect(&_timer, SIGNAL(timeout()), this, SLOT(onTimer()));
 
-    initialise();
-
     updateStatusBar();
 }
 
@@ -41,9 +39,39 @@ MainWindow::~MainWindow()
 }
 
 //-----------------------------------------------------------------------------
+void MainWindow::initialiseUi()
+//-----------------------------------------------------------------------------
+{
+    _model.setConfigDioMode(0,(Ugv1::IoBoardModel::DioMode)_pUi->dioconf0->currentIndex());
+    _model.setConfigDioMode(1,(Ugv1::IoBoardModel::DioMode)_pUi->dioconf1->currentIndex());
+    _model.setConfigDioMode(2,(Ugv1::IoBoardModel::DioMode)_pUi->dioconf2->currentIndex());
+    _model.setConfigDioMode(3,(Ugv1::IoBoardModel::DioMode)_pUi->dioconf3->currentIndex());
+    _model.setConfigDioMode(4,(Ugv1::IoBoardModel::DioMode)_pUi->dioconf4->currentIndex());
+    _model.setConfigDioMode(5,(Ugv1::IoBoardModel::DioMode)_pUi->dioconf5->currentIndex());
+    _model.setConfigDioMode(6,(Ugv1::IoBoardModel::DioMode)_pUi->dioconf6->currentIndex());
+    _model.setConfigDioMode(7,(Ugv1::IoBoardModel::DioMode)_pUi->dioconf7->currentIndex());
+    _model.setConfigDioMode(8,(Ugv1::IoBoardModel::DioMode)_pUi->dioconf8->currentIndex());
+    _model.setConfigDioMode(9,(Ugv1::IoBoardModel::DioMode)_pUi->dioconf9->currentIndex());
+    _model.setConfigDioMode(10,(Ugv1::IoBoardModel::DioMode)_pUi->dioconf10->currentIndex());
+
+    _model.setConfigEncoderPPR( _pUi->encoderPpr->value() );
+    _model.setConfigMotorGearRatio( _pUi->gearRatio->value() );
+    _model.setConfigWheelPerimeter( _pUi->wheelPerim->value() );
+    _model.setConfigMotorDriveMode( (Ugv1::IoBoardModel::DriveControlMode)_pUi->modeconf->currentIndex() );
+
+    _model.setConfigPGain( _pUi->gainP->value() );
+    _model.setConfigIGain( _pUi->gainI->value() );
+    _model.setConfigDGain( _pUi->gainD->value() );
+
+    on_configBtn_clicked();
+}
+
+//-----------------------------------------------------------------------------
 void MainWindow::onConnectSerialPort()
 //-----------------------------------------------------------------------------
 {
+    _timer.stop();
+
     QDialog* pDlg = new SerialPortDlg(_port, this);
     pDlg->show();
     pDlg->exec();
@@ -59,28 +87,20 @@ void MainWindow::updateStatusBar()
     if( isOpen )
     {
         _pConnectionStatus->setText(QString("connected to ") + QString::fromStdString(_port.getPortName()));
+        initialiseUi();
     }
     else
     {
         _pConnectionStatus->setText("Not connected");
     }
-    for(int i = 0; i < _pUi->gridLayout_5->count(); ++i)
+    for(int i = 0; i < _pUi->verticalLayout->count(); ++i)
     {
-        QWidget* pItem = _pUi->gridLayout_5->itemAt(i)->widget();
+        QWidget* pItem = _pUi->verticalLayout->itemAt(i)->widget();
         if( pItem )
         {
             pItem->setEnabled(isOpen);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-void MainWindow::initialise()
-//-----------------------------------------------------------------------------
-{
-    // set all values from the ui to model
-    // fix problem with motor control
-    error!
 }
 
 //-----------------------------------------------------------------------------
@@ -160,8 +180,8 @@ void MainWindow::onTimer()
     _pUi->encoder0->setText(QString::number(_model.getMotorEncoder(0)));
     _pUi->encoder1->setText(QString::number(_model.getMotorEncoder(1)));
 
-    _model.setMotorSpeed(0, _pUi->motor0Slider->value());
-    _model.setMotorSpeed(1, _pUi->motor1Slider->value());
+    _model.setMotorSpeed(0, _pUi->motor0dial->value());
+    _model.setMotorSpeed(1, _pUi->motor1dial->value());
 
     _pUi->speed0set->display( _model.getSettingMotorSpeed(0) );
     _pUi->speed1set->display( _model.getSettingMotorSpeed(1) );
