@@ -20,7 +20,7 @@ TEMPLATE = app
 DESTDIR = $${PWD}/../../bin
 DLLDESTDIR = $${PWD}/../../bin/
 
-win32: DEFINES += GRAPE_DLL UGV1_DLL
+win32: DEFINES += GRAPE_DLL UGV1IOB_DLL
 
 SOURCES += IoBoard_tests.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
