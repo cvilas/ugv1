@@ -15,46 +15,46 @@ Objective: Teleoperation within the local wireless network
 
 - IoBoard
     - timestamp message arrival time
+	
+- IoBoardModel
+	- Means to deal with invalid response packets
+	- Status object to hold error messages
+	- In read, write and config functions, don't exit after first error. Try to apply as many 
+	settings as possible
+	- Confirm encoder count is accurate
+	- Confifrm motor speed responses are accurate
 
 - RobotController
-    - Configuration data structure (fixed size)
-        - servo pins
-        - digital out pins
-        - drive train parameters - encoder ppr, gear ratio, wheel perimeter
-        - PID gains
-        - motor control mode
-    - DesiredState data structure (fixed size)
-        - Digital outputs
-        - Servo outputs
-        - Motor speed
-    - CurrentState data structure (fixed size)
-        - Digital inputs + timestamp
-        - Analog inputs + timestamp
-        - Speed + timestamp
-        - current + timestamp
-        - encoder + timestamp
-    - Encoder reset on motor direction reversal (speed and encoder values are signed long long in CurrentState)
-    - Loops continuously updating state
-    - Implements software safety loops - bumper sensors, proximity sensors
-    - Server
+	- Implement timed loop
+    - Implements software safety interlocks - bumper sensors, proximity sensors
+    - Implement HMI Server
         - TCP or UDP (user selectable)
         - Accepts DesiredState from HMI, replies with CurrentState
         - Resets DesiredState motor power after timeout with HMI and stops processing further inputs
-    - Android hosted controller
-    - Customised Google hangout (or similar) API
-    - HMI
+    - Deploy controller on Android 
+
+- HMI
         - Desktop based HMI
         - Android HMI (phone, tablet)
         - Arduino HMI
         - Joystick-to-drive signal adapter
-        - Customised Google hangout (or similar) API
+		- Trial Google Hangout for audio-visual comms
+
 - Issues
     - Encoder does not reset to 0 on reset command
     - Encoder does not change when wheel back-driven
 
+- Hangout API mods
+	- Customise Hangout to transport control and status messages
+
+- Ligting pack
+	- Blue undercarriage lights
+	- White LED head lamp
+	- Blinking direction indicator LEDs
+
+- Battery voltage monitor circuit
+
+- Racer stripes
+	
 - Mechanical
     - Mount joystick securely in a box
-
-
-
-
