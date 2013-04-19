@@ -15,10 +15,13 @@ DEPENDPATH +=
 
 win32:DEFINES += UGV1HMI_DLL UGV1HMI_DLL_EXPORT
 
-HEADERS += HMIMessageServer.h \
-	HMIMessageClient.h \
-    hmi_common.h
-SOURCES += HMIMessageServer.cpp HMIMessageClient.cpp
+HEADERS += \
+    hmi_common.h \
+    TelemetryServer.h \
+    TelemetryClient.h
+SOURCES += \
+    TelemetryClient.cpp \
+    TelemetryServer.cpp
 win32:SOURCES +=
 unix:SOURCES +=
 win32:LIBS +=

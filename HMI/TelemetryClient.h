@@ -1,24 +1,24 @@
 //==============================================================================
 // Project  : UGV1
 // Module   : hmi
-// File     : HMIMessageClient.h
-// Brief    : TCP client for HMI command/response messages
+// File     : TelemetryClient.h
+// Brief    : Client for HMI command/response messages
 //==============================================================================
 
-#ifndef UGV1_HMIMESSAGECLIENT_H
-#define UGV1_HMIMESSAGECLIENT_H
+#ifndef UGV1_TELEMETRYCLIENT_H
+#define UGV1_TELEMETRYCLIENT_H
 
 #include "hmi_common.h"
 
 namespace Ugv1
 {
 
-class UGV1HMI_DLL_API HMIMessageClient
+class UGV1HMI_DLL_API TelemetryClient
 {
 public:
-    HMIMessageClient();
+    TelemetryClient();
 };
 
 } // Ugv1
 
-#endif // UGV1_HMIMESSAGECLIENT_H
+#endif // UGV1_TELEMETRYCLIENT_H

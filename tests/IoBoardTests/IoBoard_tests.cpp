@@ -1,8 +1,8 @@
 #include <QString>
 #include <QtTest>
-#include <IoBoardMessage_servo.h>
-#include <IoBoardMessage_dio.h>
-#include <IoBoardMessage_motor.h>
+#include <Vehicle/IoBoardMessage_servo.h>
+#include <Vehicle/IoBoardMessage_dio.h>
+#include <Vehicle/IoBoardMessage_motor.h>
 
 //=============================================================================
 /// \class Test class for IoBoard messages

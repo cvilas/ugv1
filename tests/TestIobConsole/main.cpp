@@ -5,7 +5,7 @@
 // Brief    : Console based test program for IoBoard
 //==============================================================================
 
-#include "IoBoard.h"
+#include "Vehicle/IoBoard.h"
 #include "io/SerialPort.h"
 #include <iostream>
 

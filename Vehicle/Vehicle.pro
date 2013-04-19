@@ -2,7 +2,7 @@
 include(../version)
 
 # library description
-TARGET = vehicle
+TARGET = Vehicle
 VERSION = $${VEHICLELIB_VERSION}
 
 # common settings
@@ -18,7 +18,7 @@ HEADERS += IoBoard.h \
     IoBoardMessage.h \
     IoBoardMessage_analog.h \
     IoBoardMessage_dio.h \
-    IoBoardMesssage_i2c.h \
+    IoBoardMessage_i2c.h \
     IoBoardMessage_motor.h \
     IoBoardMessage_rs485.h \
     IoBoardMessage_servo.h \

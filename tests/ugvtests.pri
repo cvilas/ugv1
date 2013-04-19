@@ -2,18 +2,18 @@
 
 GRAPE_DIR = ../../../grape
 QT       += core gui
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TEMPLATE = app
 
-DESTDIR = $${PWD}/../../bin
-DLLDESTDIR = $${PWD}/../../bin/
+DESTDIR = $${PWD}/../bin
+DLLDESTDIR = $${PWD}/../bin/
 
-INCLUDEPATH += $$PWD/../../ $$PWD/../../Vehicle $${GRAPE_DIR}
-DEPENDPATH += $$PWD/../../ $$PWD/../../Vehicle $${GRAPE_DIR}
+INCLUDEPATH += $$PWD/../ $${GRAPE_DIR}
+DEPENDPATH += $$PWD/../ $${GRAPE_DIR}
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../lib/ -L$${GRAPE_DIR}/lib -lvehicle0 -lGrapeCore0 -lGrapeIo0
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../lib/ -L$${GRAPE_DIR}/lib -lvehicled0 -lGrapeCored0 -lGrapeIod0
-else:unix: LIBS += -L$$PWD/../../lib/ -L$${GRAPE_DIR}/lib -lvehicle -lGrapeCore -lGrapeIo
+DEFINES +=
+win32: DEFINES += GRAPECORE_DLL GRAPEIO_DLL UNICODE _UNICODE _CRT_SECURE_NO_WARNINGS
 
 build_pass:CONFIG(debug, release|debug) {
     TARGET = $$join(TARGET,,,d)
@@ -21,19 +21,18 @@ build_pass:CONFIG(debug, release|debug) {
     TARGET = $$join(TARGET,,,)
 }
 
-DEFINES +=
-win32: DEFINES += GRAPECORE_DLL GRAPEIO_DLL UNICODE _UNICODE _CRT_SECURE_NO_WARNINGS
 CONFIG(debug, release|debug) {
     DEFINES += _DEBUG
-    win32:LIBS += -lws2_32 -lUser32 -lGrapeIod0 -lGrapeCored0
-    else:unix: LIBS += -lGrapeIod -lGrapeCored
+    win32:LIBS += -lws2_32 -lUser32 -lVehicled0 -lGrapeCored0 -lGrapeIod0
+    else:unix: LIBS += -lVehicled -lGrapeIod -lGrapeCored
 } else {
-    win32:LIBS += -lws2_32 -lUser32 -lGrapeIo0 -lGrapeCore0
-    else:unix: LIBS += -lGrapeIo -lGrapeCore
+    win32:LIBS += -lws2_32 -lUser32 -lVehicle0 -lGrapeCore0 -lGrapeIo0
+    else:unix: LIBS += -lVehicle -lGrapeIo -lGrapeCore
 }
 
 # don't want linking against qtmain.lib
 QMAKE_LIBS_QT_ENTRY=
+
 INCLUDEPATH += $${PWD} \
                 $${PWD}/Vehicle \
                 $${GRAPE_DIR} \
@@ -42,5 +41,5 @@ INCLUDEPATH += $${PWD} \
 
 DEPENDPATH += ./
 
-LIBS += -L$${PWD}/lib/ -L$${GRAPE_DIR}/lib
+LIBS += -L$${PWD}/../lib/ -L$${GRAPE_DIR}/lib
 

@@ -22,7 +22,7 @@ Objective: Teleoperation within the local wireless network
 
 - RobotController
     - Implement timed loop
-    - Implements software safety interlocks - bumper sensors, proximity sensors
+    - Implement software safety interlocks - bumper sensors, proximity sensors
     - Implement HMI Server
         - TCP or UDP (user selectable)
         - Accepts DesiredState from HMI, replies with CurrentState

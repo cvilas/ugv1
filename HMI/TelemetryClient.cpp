@@ -1,16 +1,16 @@
 //==============================================================================
 // Project  : UGV1
 // Module   : hmi
-// File     : HMIMessageServer.cpp
+// File     : HMIMessageClient.cpp
 //==============================================================================
 
-#include "HMIMessageServer.h"
+#include "TelemetryClient.h"
 
 namespace Ugv1
 {
 
 //==============================================================================
-HMIMessageServer::HMIMessageServer()
+TelemetryClient::TelemetryClient()
 //==============================================================================
 {
 }

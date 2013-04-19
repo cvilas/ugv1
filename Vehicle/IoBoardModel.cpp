@@ -416,6 +416,7 @@ bool IoBoardModel::writeOutputs()
         lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_DIO)" << std::endl;
         return false;
     }
+
     if( !_board.send(*_commandMap[IoBoardMessage::WRITE_SERVO]) )
     {
         lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_SERVO)" << std::endl;
