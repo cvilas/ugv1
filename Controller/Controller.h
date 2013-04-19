@@ -26,14 +26,14 @@ namespace Ugv1
  * after exiting loop(), io outputs get written from devices
  * cleanup() to shutdown bits before exit
  */
-class UGV1CONTROLLER_DLL_API Controller
+class UGV1CONTROLLER_DLL_API IController
 {
 public:
-    Controller();
-    ~Controller();
-    virtual void setup() = 0;
-    virtual void loop() = 0;
-    virtual void cleanup() = 0;
+    IController();
+    ~IController();
+    virtual bool setup() = 0;
+    virtual bool loop() = 0;
+    virtual bool cleanup() = 0;
 private:
 };// Controller
 

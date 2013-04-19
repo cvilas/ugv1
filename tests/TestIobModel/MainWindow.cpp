@@ -107,13 +107,13 @@ void MainWindow::updateStatusBar()
 void MainWindow::on_configBtn_clicked()
 //-----------------------------------------------------------------------------
 {
-    if( _model.setConfig() )
+    if( _model.writeConfig() )
     {
         _pErrorInfo->setText("Configure succeeded");
     }
     else
     {
-        _pErrorInfo->setText("Configure failed");
+        _pErrorInfo->setText( _model.lastError.getMessage().c_str() );
     }
 }
 
@@ -143,52 +143,59 @@ void MainWindow::onTimer()
 {
     if( !_model.readInputs() )
     {
-        _pErrorInfo->setText("Input Read Error");
+        _pErrorInfo->setText( _model.lastError.getMessage().c_str() );
     }
     else
     {
         _pErrorInfo->setText("");
     }
 
-    _pUi->analog0->setText(QString::number(_model.getAnalogIn(0)));
-    _pUi->analog1->setText(QString::number(_model.getAnalogIn(1)));
-    _pUi->analog2->setText(QString::number(_model.getAnalogIn(2)));
-    _pUi->analog3->setText(QString::number(_model.getAnalogIn(3)));
-    _pUi->analog4->setText(QString::number(_model.getAnalogIn(4)));
-    _pUi->analog5->setText(QString::number(_model.getAnalogIn(5)));
-    _pUi->analog6->setText(QString::number(_model.getAnalogIn(6)));
-    _pUi->analog7->setText(QString::number(_model.getAnalogIn(7)));
+    if( _model.verifyAllResponses() )
+    {
+        _pUi->analog0->setText(QString::number(_model.getAnalogIn(0)));
+        _pUi->analog1->setText(QString::number(_model.getAnalogIn(1)));
+        _pUi->analog2->setText(QString::number(_model.getAnalogIn(2)));
+        _pUi->analog3->setText(QString::number(_model.getAnalogIn(3)));
+        _pUi->analog4->setText(QString::number(_model.getAnalogIn(4)));
+        _pUi->analog5->setText(QString::number(_model.getAnalogIn(5)));
+        _pUi->analog6->setText(QString::number(_model.getAnalogIn(6)));
+        _pUi->analog7->setText(QString::number(_model.getAnalogIn(7)));
 
-    _pUi->din0->setText(QString::number(_model.getDigitalIn(0)));
-    _pUi->din1->setText(QString::number(_model.getDigitalIn(1)));
-    _pUi->din2->setText(QString::number(_model.getDigitalIn(2)));
-    _pUi->din3->setText(QString::number(_model.getDigitalIn(3)));
-    _pUi->din4->setText(QString::number(_model.getDigitalIn(4)));
-    _pUi->din5->setText(QString::number(_model.getDigitalIn(5)));
-    _pUi->din6->setText(QString::number(_model.getDigitalIn(6)));
-    _pUi->din7->setText(QString::number(_model.getDigitalIn(7)));
-    _pUi->din8->setText(QString::number(_model.getDigitalIn(8)));
-    _pUi->din9->setText(QString::number(_model.getDigitalIn(9)));
-    _pUi->din10->setText(QString::number(_model.getDigitalIn(10)));
+        _pUi->din0->setText(QString::number(_model.getDigitalIn(0)));
+        _pUi->din1->setText(QString::number(_model.getDigitalIn(1)));
+        _pUi->din2->setText(QString::number(_model.getDigitalIn(2)));
+        _pUi->din3->setText(QString::number(_model.getDigitalIn(3)));
+        _pUi->din4->setText(QString::number(_model.getDigitalIn(4)));
+        _pUi->din5->setText(QString::number(_model.getDigitalIn(5)));
+        _pUi->din6->setText(QString::number(_model.getDigitalIn(6)));
+        _pUi->din7->setText(QString::number(_model.getDigitalIn(7)));
+        _pUi->din8->setText(QString::number(_model.getDigitalIn(8)));
+        _pUi->din9->setText(QString::number(_model.getDigitalIn(9)));
+        _pUi->din10->setText(QString::number(_model.getDigitalIn(10)));
 
-    _pUi->motor0Current->setText(QString::number(_model.getMotorCurrent(0)));
-    _pUi->motor1Current->setText(QString::number(_model.getMotorCurrent(1)));
+        _pUi->motor0Current->setText(QString::number(_model.getMotorCurrent(0)));
+        _pUi->motor1Current->setText(QString::number(_model.getMotorCurrent(1)));
 
-    _pUi->motor0Speed->setText(QString::number(_model.getMotorSpeed(0)));
-    _pUi->motor1Speed->setText(QString::number(_model.getMotorSpeed(1)));
+        _pUi->motor0Speed->setText(QString::number(_model.getMotorSpeed(0)));
+        _pUi->motor1Speed->setText(QString::number(_model.getMotorSpeed(1)));
 
-    _pUi->encoder0->setText(QString::number(_model.getMotorEncoder(0)));
-    _pUi->encoder1->setText(QString::number(_model.getMotorEncoder(1)));
+        _pUi->encoder0->setText(QString::number(_model.getMotorEncoder(0)));
+        _pUi->encoder1->setText(QString::number(_model.getMotorEncoder(1)));
 
-    _model.setMotorSpeed(0, _pUi->motor0dial->value());
-    _model.setMotorSpeed(1, _pUi->motor1dial->value());
+        _model.setMotorSpeed(0, _pUi->motor0dial->value());
+        _model.setMotorSpeed(1, _pUi->motor1dial->value());
 
-    _pUi->speed0set->display( _model.getSettingMotorSpeed(0) );
-    _pUi->speed1set->display( _model.getSettingMotorSpeed(1) );
+        _pUi->speed0set->display( _model.getSettingMotorSpeed(0) );
+        _pUi->speed1set->display( _model.getSettingMotorSpeed(1) );
+    }
+    else
+    {
+        _pErrorInfo->setText( _model.lastError.getMessage().c_str() );
+    }
 
     if( !_model.writeOutputs() )
     {
-        _pErrorInfo->setText("Output write error");
+        _pErrorInfo->setText( _model.lastError.getMessage().c_str() );
     }
     else
     {

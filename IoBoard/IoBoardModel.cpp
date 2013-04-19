@@ -23,7 +23,7 @@ IoBoardModel::IoBoardModel(IoBoard& board)
         _encoderResidual[i] = 0;
     }
     constructMessageMap();
-    configureDefaults();
+    setConfigDefaults();
 }
 
 //-----------------------------------------------------------------------------
@@ -32,7 +32,7 @@ IoBoardModel::~IoBoardModel()
 {}
 
 //-----------------------------------------------------------------------------
-void IoBoardModel::configureDefaults()
+void IoBoardModel::setConfigDefaults()
 //-----------------------------------------------------------------------------
 {
     /// - All 11 digital lines are configured as inputs
@@ -304,7 +304,7 @@ long long int IoBoardModel::getMotorEncoder(unsigned int channel)
 //-----------------------------------------------------------------------------
 {
     long long int sign = ((_isMotorRespDirFwd[channel])?(1):(-1));
-    return sign * (-_encoderResidual[channel] + dynamic_cast<ReadMotorEncodersResponse*>(_responseMap[IoBoardMessage::READ_MOTOR_ENCODERS])->getEncoder(channel));
+    return sign * (-(long long int)(_encoderResidual[channel]) + dynamic_cast<ReadMotorEncodersResponse*>(_responseMap[IoBoardMessage::READ_MOTOR_ENCODERS])->getEncoder(channel));
 }
 
 //-----------------------------------------------------------------------------
@@ -358,31 +358,37 @@ void IoBoardModel::addResponseMessage(IoBoardMessage::MessageID id, IoBoardRespo
 }
 
 //-----------------------------------------------------------------------------
-bool IoBoardModel::setConfig()
+bool IoBoardModel::writeConfig()
 //-----------------------------------------------------------------------------
 {
     if( !_board.send(*_commandMap[IoBoardMessage::SET_DIO_IOMODE]) )
     {
+        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(SET_DIO_IOMODE)" << std::endl;
         return false;
     }
     if( !_board.send(*_commandMap[IoBoardMessage::SET_DIO_SERVOMODE]) )
     {
+        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(SET_DIO_SERVOMODE)" << std::endl;
         return false;
     }
     if( !_board.send(*_commandMap[IoBoardMessage::SET_MOTOR_PARAM]) )
     {
+        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(SET_MOTOR_PARAM)" << std::endl;
         return false;
     }
     if( !_board.send(*_commandMap[IoBoardMessage::SET_MOTOR_PID_GAINS]) )
     {
+        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(SET_MOTOR_PID_GAINS)" << std::endl;
         return false;
     }
     if( !_board.send(*_commandMap[IoBoardMessage::SET_MOTOR_DRIVEMODE]) )
     {
+        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(SET_MOTOR_DRIVEMODE)" << std::endl;
         return false;
     }
     if( !_board.getVersion( *dynamic_cast<ReadBoardVersionResponse*>(_responseMap[IoBoardMessage::READ_BOARD_VERSION])) )
     {
+        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(READ_BOARD_VERSION)" << std::endl;
         return false;
     }
 
@@ -396,6 +402,7 @@ bool IoBoardModel::setConfig()
     }
     if( !_board.resetMotorEncoders() )
     {
+        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(RESET_MOTOR_ENCODERS)" << std::endl;
         return false;
     }
     return true;
@@ -407,10 +414,12 @@ bool IoBoardModel::writeOutputs()
 {
     if( !_board.send( *_commandMap[IoBoardMessage::WRITE_DIO]) )
     {
+        lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_DIO)" << std::endl;
         return false;
     }
     if( !_board.send(*_commandMap[IoBoardMessage::WRITE_SERVO]) )
     {
+        lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_SERVO)" << std::endl;
         return false;
     }
 
@@ -440,6 +449,7 @@ bool IoBoardModel::writeOutputs()
         {
             if( !_board.send(WriteMotorSpeedCommand()) )
             {
+                lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_MOTOR_SPEED = 0)" << std::endl;
                 return false;
             }
         }
@@ -447,7 +457,8 @@ bool IoBoardModel::writeOutputs()
         {
             if( !_board.send(WriteMotorPowerCommand()) )
             {
-                    return false;
+                lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_MOTOR_POWER = 0)" << std::endl;
+                return false;
             }
         }
 
@@ -457,6 +468,7 @@ bool IoBoardModel::writeOutputs()
         // reset encoders
         if( !_board.resetMotorEncoders() )
         {
+            lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(RESET_ENCODERS)" << std::endl;
             return false;
         }
 
@@ -464,6 +476,7 @@ bool IoBoardModel::writeOutputs()
         Ugv1::ReadMotorEncodersResponse encoders;
         if( !_board.getMotorEncoders(encoders) )
         {
+            lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(READ_ENCODERS)" << std::endl;
             return false;
         }
         _encoderResidual[0] = encoders.getEncoder(0);
@@ -475,6 +488,7 @@ bool IoBoardModel::writeOutputs()
     {
         if( !_board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_SPEED]) )
         {
+            lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_MOTOR_SPEED)" << std::endl;
             return false;
         }
     }
@@ -482,7 +496,8 @@ bool IoBoardModel::writeOutputs()
     {
         if( !_board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_POWER]) )
         {
-                return false;
+            lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_MOTOR_POWER)" << std::endl;
+            return false;
         }
     }
 
@@ -495,22 +510,27 @@ bool IoBoardModel::readInputs()
 {
     if( !_board.getDigitalIn(*dynamic_cast<ReadDioInResponse*>(_responseMap[IoBoardMessage::READ_DIO])) )
     {
+        lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_DIO)" << std::endl;
         return false;
     }
     if( !_board.getAnalog(*dynamic_cast<ReadAnalogInResponse*>(_responseMap[IoBoardMessage::READ_ANALOG])) )
     {
+        lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_ANALOG)" << std::endl;
         return false;
     }
     if( !_board.getMotorSpeed(*dynamic_cast<ReadMotorSpeedResponse*>(_responseMap[IoBoardMessage::READ_MOTOR_SPEED])))
     {
+        lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_MOTOR_SPEED)" << std::endl;
         return false;
     }
     if( !_board.getMotorCurrent(*dynamic_cast<ReadMotorCurrentResponse*>(_responseMap[IoBoardMessage::READ_MOTOR_CURRENT])))
     {
+        lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_MOTOR_CURRENT)" << std::endl;
         return false;
     }
     if( !_board.getMotorEncoders(*dynamic_cast<ReadMotorEncodersResponse*>(_responseMap[IoBoardMessage::READ_MOTOR_ENCODERS])))
     {
+        lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_MOTOR_ENCODERS)" << std::endl;
         return false;
     }
     // update motor directions since last write
@@ -519,6 +539,23 @@ bool IoBoardModel::readInputs()
         _isMotorRespDirFwd[i] = _isMotorCmdDirFwd[i];
     }
 
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+bool IoBoardModel::verifyAllResponses()
+//-----------------------------------------------------------------------------
+{
+    std::map<IoBoardMessage::MessageID, IoBoardResponse*>::iterator it = _responseMap.begin();
+    while( it != _responseMap.end() )
+    {
+        if( !(it->second)->isValid() )
+        {
+            lastError.set(-1) << "[IoBoardModel::verifyAllResponses] Invalid response. Message ID " << (it->second)->getId() << std::endl;
+            return false;
+        }
+        ++it;
+    }
     return true;
 }
 

@@ -5,9 +5,11 @@ SUBDIRS += IoBoard \
     tests/IoBoardTests \
     tests/TestIobConsole \
     tests/TestIob \
-    tests/TestIobModel
+    tests/TestIobModel \
+    HMI
 
 IoBoardTests.depends = IoBoard
+HMI.depends = IoBoard Controller
 
 OTHER_FILES += \
     doc/doxygen/doxydoc.h \

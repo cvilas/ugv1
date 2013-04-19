@@ -29,10 +29,10 @@ namespace Ugv1
 /// these instances, the corresponding get..() returns the last user setting for the parameter,
 /// and not the actual state. Such get methods are identified by the getSetting..() or
 /// getConfigSetting...() prefix.
-/// - The board does not retain settings when power cycled. On power up, setConfig()
-/// must be called to ensure the state maintained by the class is consistent with
-/// actual settings on the board.
-/// - Calling a set...() method does not immediately set state. Call setConfig() and
+/// - The board does not retain settings when power cycled. On power up, reconfigure using
+/// setConfig..() and call writeConfig() to ensure the state maintained by the class is
+/// consistent with actual settings on the board.
+/// - Calling a set...() method does not immediately set state. Call writeConfig() and
 /// writeOutputs() to write them to the board.
 /// - A get...() method do not return instantaneous state; they return state at the instant
 /// of last call to readInputs()
@@ -77,6 +77,11 @@ public:
     };
 
 public:
+    /// Publically accessible status object contains the last
+    /// error code and message
+    Grape::Status lastError;
+
+public:
 
     /// Constructor. Takes a reference to the IO board as the only
     /// parameter. Configures the board with default parameters.
@@ -87,60 +92,71 @@ public:
 
     // -------------- configuration ---------------
 
-    /// Configure the board with the following default parameters.
+    /// Set default configuration parameters. Call writeConfig to activate
+    /// the configuration by writing it to the board.
     /// - All 11 digital lines are configured as inputs
     /// - encoder ppr = 13
     /// - gear ratio = 51:1
     /// - wheel perimeter = 430 mm
     /// - motor drive mode = speed control
     /// - p,i,d gains = 10,30,1 respectively
-    void configureDefaults();
+    /// \see writeConfig
+    void setConfigDefaults();
 
     /// Configure digital pins as input, output or servo lines.
     /// \param channel  IO pin in range 0 - 10. Note that only pins 0 - 7
     ///                 are configurable in servo mode.
     /// \param mode     Desired mode
+    /// \see writeConfig
     void setConfigDioMode(unsigned int channel, DioMode mode);
     DioMode getConfigSettingDioMode(unsigned int channel);
 
     /// Specify the pulses per rotation for motor encoders.
+    /// \see writeConfig
     void setConfigEncoderPPR(unsigned short ppr);
     unsigned short getConfigSettingEncoderPPR();
 
     /// Set drive train gear ratio.
     /// \param gr10 Gear ratio multiplied by 10. i.e. If the actual ratio is
     ///             64:1, set 640.
+    /// \see writeConfig
     void setConfigMotorGearRatio(unsigned short gr10);
     unsigned short getConfigSettingMotorGearRatio();
 
     /// Set the wheel perimeter
     /// \param mm   Wheel perimeter in millimeters.
+    /// \see writeConfig
     void setConfigWheelPerimeter(unsigned short mm);
     unsigned short getConfigSettingWheelPerimeter();
 
     /// Configure motor control in open-loop direct power mode or closed-loop
     /// speed control mode
+    /// \see writeConfig
     void setConfigMotorDriveMode(DriveControlMode mode);
     DriveControlMode getConfigSettingMotorDriveMode();
 
     /// Set motor controller PID proportional gain
     /// \param gain    Proportional gain multiplied by 10. Range 0 - 255.
+    /// \see writeConfig
     void setConfigPGain(unsigned char gain);
     unsigned char getConfigSettingPGain();
 
     /// Set motor controller PID integral gain
     /// \param gain    Integral gain multiplied by 10. Range 0 - 255.
+    /// \see writeConfig
     void setConfigIGain(unsigned char gain);
     unsigned char getConfigSettingIGain();
 
     /// Set motor controller PID damping gain
     /// \param gain    Damping gain multiplied by 10. Range 0 - 255.
+    /// \see writeConfig
     void setConfigDGain(unsigned char gain);
     unsigned char getConfigSettingDGain();
 
     // --------------- outputs --------------------
 
     /// Set digital output pin for channels 0 - 10.
+    /// \see writeOutputs
     void setDigitalOut(unsigned int channel, bool high);
     bool getSettingDigitalOut(unsigned int channel);
 
@@ -148,6 +164,7 @@ public:
     /// \param channel  Servo channel in range 0 - 7.
     /// \param degrees Position value in range 0 to 180. Center position is 90.
     /// \param speed    Speed value from 0 to 0xFF.
+    /// \see writeOutputs
     void setServoOut(unsigned int channel, unsigned char degrees, unsigned char speed=0xFF);
     unsigned char getSettingServoPosition(unsigned int channel);
 
@@ -155,42 +172,55 @@ public:
     /// \param channel Motor number. Range 0 - 1.
     /// \param cmps If in speed control mode, this is speed in cm/sec.
     ///             If in direct power mode, this is percentage power in range - 100 to 100.
+    /// \see writeOutputs
     void setMotorSpeed(unsigned int channel, int cmps);
     int getSettingMotorSpeed(unsigned int channel);
 
     // --------------- inputs ---------------------
 
     /// \return State of a digital input pin
+    /// \see readInputs
     bool getDigitalIn(unsigned int channel);
 
     /// \return State of an analog input pin (0 - 3.3 volts)
+    /// \see readInputs
     double getAnalogIn(unsigned int channel);
 
     /// Get motor speed. The output is 0 if the motors are configured in direct power mode.
+    /// \see readInputs
     int getMotorSpeed(unsigned int channel);
 
     /// \return motor current consumption in mA.
+    /// \see readInputs
     int getMotorCurrent(unsigned int channel);
 
     /// \return motor encoder count
+    /// \see readInputs
     long long int getMotorEncoder(unsigned int channel);
 
-    /// \return board version information retrieved during setConfig()
+    /// \return board version information retrieved after writeConfig()
+    /// \see writeConfig
     Version getBoardVersion();
 
     // --------------- update -----------------
 
-    /// Write configuration to the board. None of the setConfig() calls take effect until
-    /// a call to this method
-    virtual bool setConfig();
+    /// Write configuration to the board. None of the setConfig..() calls take effect until
+    /// a call to this method.
+    /// \return true on success, false on failure (use lastError object to get error description)
+    virtual bool writeConfig();
 
     /// Apply all outputs on the board, i.e. digital output pins, servo outputs and motor control.
     /// None of the set() calls take effect until calls to this method.
+    /// \return true on success, false on failure (use lastError object to get error description)
     virtual bool writeOutputs();
 
     /// Read in inputs on the IO board, i.e. digital inputs, analog inputs, motor currents, etc.
     /// Call get...() methods after this method to obtain the latest input state.
+    /// \return true on success, false on failure (use lastError object to get error description)
     virtual bool readInputs();
+
+    /// Verify that all response messages are valid. Call after calling readInputs.
+    virtual bool verifyAllResponses();
 
 protected:
 
