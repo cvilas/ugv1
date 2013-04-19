@@ -16,7 +16,7 @@ namespace Ugv1
 /// \class SetDIOServoModeCommand
 /// \ingroup comms
 /// \brief Command to configure digital outputs as PWM servo drives
-class UGV1IOB_DLL_API SetDioServoModeCommand : public IoBoardCommand
+class UGV1VEHICLELIB_DLL_API SetDioServoModeCommand : public IoBoardCommand
 {
 public:
 
@@ -43,7 +43,7 @@ public:
 /// \brief Command to set servo output position and speed.
 /// After configuring the DIO0-7 to Servo control mode, this command is used to play the Servo
 /// with position and speed control.
-class UGV1IOB_DLL_API WriteServoOutCommand : public IoBoardCommand
+class UGV1VEHICLELIB_DLL_API WriteServoOutCommand : public IoBoardCommand
 {
 public:
     /// Default constructor creates a command with all positions and speeds set to 0.

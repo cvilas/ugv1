@@ -8,8 +8,7 @@
 #ifndef UGV1_CONTROLLER_H
 #define UGV1_CONTROLLER_H
 
-#include "controller_common.h"
-#include "IoBoard/IoBoard.h"
+#include "IoBoard.h"
 
 namespace Ugv1
 {
@@ -26,7 +25,7 @@ namespace Ugv1
  * after exiting loop(), io outputs get written from devices
  * cleanup() to shutdown bits before exit
  */
-class UGV1CONTROLLER_DLL_API IController
+class UGV1VEHICLELIB_DLL_API IController
 {
 public:
     IController();

@@ -5,7 +5,6 @@
 //==============================================================================
 
 #include "IoBoardModel.h"
-#include <QDebug>
 
 namespace Ugv1
 {

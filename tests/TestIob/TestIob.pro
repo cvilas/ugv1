@@ -28,6 +28,6 @@ FORMS    += MainWindow.ui \
 INCLUDEPATH += $$PWD/../../IoBoard $$PWD/../../common $${GRAPE_DIR}
 DEPENDPATH += $$PWD/../../IoBoard $$PWD/../../common $${GRAPE_DIR}
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../lib/ -L$${GRAPE_DIR}/lib -lIoBoard0 -lGrapeCore0 -lGrapeIo0
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../lib/ -L$${GRAPE_DIR}/lib -lIoBoardd0 -lGrapeCored0 -lGrapeIod0
-else:unix: LIBS += -L$$PWD/../../lib/ -L$${GRAPE_DIR}/lib -lIoBoard -lGrapeCore -lGrapeIo
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../lib/ -L$${GRAPE_DIR}/lib -lvehicle0 -lGrapeCore0 -lGrapeIo0
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../lib/ -L$${GRAPE_DIR}/lib -lvehicled0 -lGrapeCored0 -lGrapeIod0
+else:unix: LIBS += -L$$PWD/../../lib/ -L$${GRAPE_DIR}/lib -lvehicle -lGrapeCore -lGrapeIo

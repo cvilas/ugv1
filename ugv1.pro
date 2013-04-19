@@ -1,15 +1,11 @@
 TEMPLATE = subdirs
 CONFIG += ordered
-SUBDIRS += IoBoard \
-    Controller \
-    tests/IoBoardTests \
-    tests/TestIobConsole \
-    tests/TestIob \
-    tests/TestIobModel \
-    HMI
+SUBDIRS += Vehicle \
+	HMI \
+    tests
 
-IoBoardTests.depends = IoBoard
-HMI.depends = IoBoard Controller
+tests.depends = Vehicle
+HMI.depends = Vehicle
 
 OTHER_FILES += \
     doc/doxygen/doxydoc.h \

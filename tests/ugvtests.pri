@@ -1,31 +1,25 @@
 # Common settings for UGV1 project libraries
 
-GRAPE_DIR = ../../grape
+GRAPE_DIR = ../../../grape
+QT       += core gui
 
-TEMPLATE = lib
+TEMPLATE = app
 
-# the following are used by individual libraries
-VERSTR = '\\"$${VERSION}\\"'  # place quotes around the version string
-DEFINES += VER=\"$${VERSTR}\" # create a VER macro containing the version string
+DESTDIR = $${PWD}/../../bin
+DLLDESTDIR = $${PWD}/../../bin/
 
-# config settings
-CONFIG += debug_and_release build_all resources thread
-android:CONFIG += static
-win32: CONFIG += dll embed_manifest_dll embed_manifest_exe
+INCLUDEPATH += $$PWD/../../ $$PWD/../../Vehicle $${GRAPE_DIR}
+DEPENDPATH += $$PWD/../../ $$PWD/../../Vehicle $${GRAPE_DIR}
 
-CONFIG += qt
-QT += core
-QT -= gui
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../lib/ -L$${GRAPE_DIR}/lib -lvehicle0 -lGrapeCore0 -lGrapeIo0
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../lib/ -L$${GRAPE_DIR}/lib -lvehicled0 -lGrapeCored0 -lGrapeIod0
+else:unix: LIBS += -L$$PWD/../../lib/ -L$${GRAPE_DIR}/lib -lvehicle -lGrapeCore -lGrapeIo
 
 build_pass:CONFIG(debug, release|debug) {
     TARGET = $$join(TARGET,,,d)
 } else {
     TARGET = $$join(TARGET,,,)
 }
-
-# target directories
-DESTDIR = $${PWD}/lib
-DLLDESTDIR = $${PWD}/bin/
 
 DEFINES +=
 win32: DEFINES += GRAPECORE_DLL GRAPEIO_DLL UNICODE _UNICODE _CRT_SECURE_NO_WARNINGS

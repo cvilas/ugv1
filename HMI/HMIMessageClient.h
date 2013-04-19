@@ -13,7 +13,7 @@
 namespace Ugv1
 {
 
-class UGV1JSS_DLL_API HMIMessageClient
+class UGV1HMI_DLL_API HMIMessageClient
 {
 public:
     HMIMessageClient();

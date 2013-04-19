@@ -8,7 +8,7 @@
 #ifndef UGV1_IOBOARD_MODEL_H
 #define UGV1_IOBOARD_MODEL_H
 
-#include "IoBoard/IoBoard.h"
+#include "IoBoard.h"
 #include <map>
 
 namespace Ugv1
@@ -36,7 +36,7 @@ namespace Ugv1
 /// writeOutputs() to write them to the board.
 /// - A get...() method do not return instantaneous state; they return state at the instant
 /// of last call to readInputs()
-class UGV1IOB_DLL_API IoBoardModel
+class UGV1VEHICLELIB_DLL_API IoBoardModel
 {
 public:
 

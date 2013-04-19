@@ -16,7 +16,7 @@ namespace Ugv1
 /// \class ReadAnalogInCommand
 /// \ingroup comms
 /// \brief Command a read of analog inputs
-class UGV1IOB_DLL_API ReadAnalogInCommand : public IoBoardCommand
+class UGV1VEHICLELIB_DLL_API ReadAnalogInCommand : public IoBoardCommand
 {
 public:
     ReadAnalogInCommand();
@@ -25,7 +25,7 @@ public:
 /// \class ReadAnalogInResponse
 /// \ingroup comms
 /// \brief Response message for ReadAnalogInCommand
-class UGV1IOB_DLL_API ReadAnalogInResponse : public IoBoardResponse
+class UGV1VEHICLELIB_DLL_API ReadAnalogInResponse : public IoBoardResponse
 {
 public:
     ReadAnalogInResponse() : IoBoardResponse() {}
