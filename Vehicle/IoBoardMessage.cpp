@@ -23,7 +23,7 @@ IoBoardMessage::~IoBoardMessage()
 {}
 
 //-----------------------------------------------------------------------------
-IoBoardMessage::MessageID IoBoardMessage::getId() const
+IoBoardMessage::MessageID IoBoardMessage::getIdFromMessage() const
 //-----------------------------------------------------------------------------
 {
     if( size() < (MESSAGE_ID_INDEX+1))
@@ -97,26 +97,42 @@ bool IoBoardResponse::isValid()
 
     if( size() != getExpectedLength() )
     {
+        std::cerr << "[IoBoardResponse::isValid] invalid size " << size() << " expected "  << getExpectedLength() << std::endl;
         return false;
     }
 
     iterator it = begin();
     if( *it != MESSAGE_HEADER[0] )
     {
+        std::cerr << "[IoBoardResponse::isValid] invalid header 0" << std::endl;
         return false;
     }
     ++it;
     if( *it != MESSAGE_HEADER[1] )
     {
+        std::cerr << "[IoBoardResponse::isValid] invalid header 1" << std::endl;
         return false;
     }
     ++it;
     if( *it != MESSAGE_HEADER[2] )
     {
+        std::cerr << "[IoBoardResponse::isValid] invalid header 2" << std::endl;
         return false;
     }
 
-    return (verifyChecksum() && verifyId());
+    if( !verifyChecksum() )
+    {
+        std::cerr << "[IoBoardResponse::isValid] invalid checksum" << std::endl;
+        return false;
+    }
+
+    if( !verifyId() )
+    {
+        std::cerr << "[IoBoardResponse::isValid] invalid ID" << std::endl;
+        return false;
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

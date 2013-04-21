@@ -101,7 +101,7 @@ bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
 
     // ** Sensor/Motor board v1.2.2 firmware bug workaround **
     // -> reply does not contain ID. Expect one less byte to read
-    if( cmd.getId() == IoBoardMessage::READ_MOTOR_SPEED)
+    if( cmd.getIdFromMessage() == IoBoardMessage::READ_MOTOR_SPEED)
     {
         nToRead -= 1;
     }
@@ -121,7 +121,7 @@ bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
         if( nTries < 1 )
         {
             _transport.flushRx();
-            lastError.set(-1) << "[IoBoard::send]: Expected " << nToRead << " bytes, " << nAvailable << " available";
+            lastError.set(-1) << "[IoBoard::send]: Expected " << nToRead << " bytes, " << nAvailable << " available (cmd ID: " << cmd.getIdFromMessage() << ")";
             return false;
         }
     }
@@ -135,9 +135,9 @@ bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
 
     // ** Sensor/Motor board v1.2.2 firmware bug workaround **
     // -> reply does not contain ID. insert it
-    if( cmd.getId() == IoBoardMessage::READ_MOTOR_SPEED)
+    if( cmd.getIdFromMessage() == IoBoardMessage::READ_MOTOR_SPEED)
     {
-        reply.insert(reply.begin() + IoBoardMessage::MESSAGE_ID_INDEX, 1, cmd.getId() );
+        reply.insert(reply.begin() + IoBoardMessage::MESSAGE_ID_INDEX, 1, cmd.getIdFromMessage() );
     }
 
     return true;

@@ -8,6 +8,7 @@
 #include "ui_MainWindow.h"
 #include "SerialPortDlg.h"
 #include <QLabel>
+#include <iostream>
 
 //==============================================================================
 MainWindow::MainWindow(QWidget *parent)
@@ -190,7 +191,15 @@ void MainWindow::onTimer()
     }
     else
     {
+        std::cout << _model.lastError.getMessage()
+            << _iob.lastError.getMessage()
+            << _port.lastError.getMessage() << std::endl;
+
         _pErrorInfo->setText( _model.lastError.getMessage().c_str() );
+
+        _model.lastError.clear();
+        _iob.lastError.clear();
+        _port.lastError.clear();
     }
 
     if( !_model.writeOutputs() )

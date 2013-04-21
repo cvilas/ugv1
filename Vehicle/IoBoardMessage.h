@@ -65,7 +65,7 @@ public:
 
 public:
     /// \return message ID extracted from the message.
-    MessageID getId() const;
+    MessageID getIdFromMessage() const;
 
 protected:
     IoBoardMessage();
@@ -125,8 +125,11 @@ public:
     virtual size_t getExpectedLength() = 0;
 
     /// Implemented by derived classes
+    /// \return the correct message ID for the message
+    virtual MessageID getExpectedId() = 0;
+
     /// \return true if ID is correct for the message
-    virtual bool verifyId() = 0;
+    bool verifyId() { return getIdFromMessage() == getExpectedId(); }
 
     /// \return true if the message has the correct checksum byte
     bool verifyChecksum();
@@ -153,7 +156,7 @@ class UGV1VEHICLELIB_DLL_API ReadBoardVersionResponse : public IoBoardResponse
 public:
     ReadBoardVersionResponse() : IoBoardResponse() {}
     size_t getExpectedLength() { return 10; }
-    bool verifyId() { return READ_BOARD_VERSION == getId(); }
+    MessageID getExpectedId() { return READ_BOARD_VERSION; }
     int getBoardCode() { return (int)(*(begin() + MESSAGE_PAYLOAD_INDEX)&0xFF); }
     int getBoardVersion() { return (int)(*(begin() + MESSAGE_PAYLOAD_INDEX + 1)&0xFF); }
     int getBoardRevision() { return (int)(*(begin() + MESSAGE_PAYLOAD_INDEX + 2)&0xFF); }

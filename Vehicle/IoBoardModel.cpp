@@ -524,6 +524,12 @@ bool IoBoardModel::readInputs()
         lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_DIO)" << std::endl;
         return false;
     }
+    Ugv1::IoBoardResponse* pResp = dynamic_cast<ReadDioInResponse*>(_responseMap[IoBoardMessage::READ_DIO]);
+    for(int i = 0; i < pResp->size(); ++i)
+        std::cout << std::hex << (int)((*pResp)[i]) << " ";
+    std::cout << std::endl;
+    pResp->isValid();
+
     if( !_board.getAnalog(*dynamic_cast<ReadAnalogInResponse*>(_responseMap[IoBoardMessage::READ_ANALOG])) )
     {
         lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_ANALOG)" << std::endl;
@@ -562,7 +568,7 @@ bool IoBoardModel::verifyAllResponses()
     {
         if( !(it->second)->isValid() )
         {
-            lastError.set(-1) << "[IoBoardModel::verifyAllResponses] Invalid response. Message ID " << (it->second)->getId() << std::endl;
+            lastError.set(-1) << "[IoBoardModel::verifyAllResponses] Invalid response. Message ID " << (it->second)->getExpectedId() << std::endl;
             return false;
         }
         ++it;

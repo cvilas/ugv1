@@ -93,7 +93,7 @@ class UGV1VEHICLELIB_DLL_API ReadDioInResponse : public IoBoardResponse
 public:
     ReadDioInResponse() : IoBoardResponse(){}
     size_t getExpectedLength() { return 9; }
-    bool verifyId() { return getId() == READ_DIO; }
+    MessageID getExpectedId() { return READ_DIO; }
 
     /// Get digital input pin state.
     /// \param channel  Pin number in range 0 - 10
