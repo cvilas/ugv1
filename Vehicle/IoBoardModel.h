@@ -239,6 +239,8 @@ protected:
     bool                                                    _isMotorCmdDirFwd[2];  //!< motor direction at latest write
     bool                                                    _isMotorRespDirFwd[2]; //!< motor direction sign after read
     unsigned int                                            _encoderResidual[2];    //!< value at reset
+    bool                                                    _dioCmdChanged;         //!< set if a change if commanded for io bits
+    bool                                                    _servoCmdChanged;
 }; // IoBoardModel
 
 } // namespace Ugv1

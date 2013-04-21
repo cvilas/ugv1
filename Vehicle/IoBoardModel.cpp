@@ -12,7 +12,7 @@ namespace Ugv1
 //==============================================================================
 IoBoardModel::IoBoardModel(IoBoard& board)
 //==============================================================================
-    : _board(board)
+    : _board(board), _dioCmdChanged(true), _servoCmdChanged(true)
 {
     for(int i = 0; i < 2; ++i)
     {
@@ -21,6 +21,7 @@ IoBoardModel::IoBoardModel(IoBoard& board)
         _isMotorRespDirFwd[i] = true;
         _encoderResidual[i] = 0;
     }
+
     constructMessageMap();
     setConfigDefaults();
 }
@@ -215,6 +216,7 @@ void IoBoardModel::setDigitalOut(unsigned int channel, bool high)
 //-----------------------------------------------------------------------------
 {
     dynamic_cast<WriteDioOutCommand*>(_commandMap[IoBoardMessage::WRITE_DIO])->setChannel(channel, high);
+    _dioCmdChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -229,6 +231,7 @@ void IoBoardModel::setServoOut(unsigned int channel, unsigned char degrees, unsi
 //-----------------------------------------------------------------------------
 {
     dynamic_cast<WriteServoOutCommand*>(_commandMap[IoBoardMessage::WRITE_SERVO])->setChannel(channel, degrees, speed);
+    _servoCmdChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -411,16 +414,24 @@ bool IoBoardModel::writeConfig()
 bool IoBoardModel::writeOutputs()
 //-----------------------------------------------------------------------------
 {
-    if( !_board.send( *_commandMap[IoBoardMessage::WRITE_DIO]) )
+    if( _dioCmdChanged )
     {
-        lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_DIO)" << std::endl;
-        return false;
+        if( !_board.send( *_commandMap[IoBoardMessage::WRITE_DIO]) )
+        {
+            lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_DIO)" << std::endl;
+            return false;
+        }
+        _dioCmdChanged = false;
     }
 
-    if( !_board.send(*_commandMap[IoBoardMessage::WRITE_SERVO]) )
+    if( _servoCmdChanged )
     {
-        lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_SERVO)" << std::endl;
-        return false;
+        if( !_board.send(*_commandMap[IoBoardMessage::WRITE_SERVO]) )
+        {
+            lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_SERVO)" << std::endl;
+            return false;
+        }
+        _servoCmdChanged = false;
     }
 
     // if motor direction of motion is to be changed, then
