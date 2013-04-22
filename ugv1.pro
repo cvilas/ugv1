@@ -1,8 +1,6 @@
 TEMPLATE = subdirs
 CONFIG += ordered
-SUBDIRS += Vehicle \
-	HMI \
-    tests
+SUBDIRS += Vehicle HMI tests
 
 tests.depends = Vehicle
 HMI.depends = Vehicle
