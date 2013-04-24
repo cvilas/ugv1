@@ -99,13 +99,6 @@ bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
     // until the entire message is available
     int nToRead = reply.getExpectedLength();
 
-    // ** Sensor/Motor board v1.2.2 firmware bug workaround **
-    // -> reply does not contain ID. Expect one less byte to read
-    if( cmd.getIdFromMessage() == IoBoardMessage::READ_MOTOR_SPEED)
-    {
-        nToRead -= 1;
-    }
-
     int nTries = 10;
     int nAvailable = 0;
     while( (nAvailable < nToRead) && (nTries > 0) )
@@ -131,13 +124,6 @@ bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
         _transport.flushRx();
         lastError.set(-1) << "[IoBoard::send]: Error in read. Read " << nRead << "/" << nToRead;
         return false;
-    }
-
-    // ** Sensor/Motor board v1.2.2 firmware bug workaround **
-    // -> reply does not contain ID. insert it
-    if( cmd.getIdFromMessage() == IoBoardMessage::READ_MOTOR_SPEED)
-    {
-        reply.insert(reply.begin() + IoBoardMessage::MESSAGE_ID_INDEX, 1, cmd.getIdFromMessage() );
     }
 
     return true;
