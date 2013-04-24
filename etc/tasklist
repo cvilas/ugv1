@@ -14,6 +14,8 @@ Objective: Teleoperation within the local wireless network
     - Status (fixed size circular buffer to a message and code)
 
 - IoBoard
+    - Resolve the need to handle READ_MOTOR_SPEED as a special case. Note: ID (0x0D) is carriage return. Is this a serial port configuration error?
+    - Remove character insertion for the above, or ensure that response size after insertion is trimmed to expected length.
     - timestamp message arrival time
 	
 - IoBoardModel
