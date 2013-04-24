@@ -8,6 +8,9 @@ Objective: Teleoperation within the local wireless network
     - RS232 adapter
     - Joystick for android device
 
+- Replace error return codes with exceptions where possible. See http://stackoverflow.com/questions/99683/which-and-why-do-you-prefer-exceptions-or-return-codes
+- Remove Status objects and use exceptions where possible.
+
 - Grape libs
     - Config
     - Stopwatch and timestamping
