@@ -28,11 +28,6 @@ class UGV1VEHICLELIB_DLL_API IoBoard
 {
 
 public:
-    /// Publically accessible status object contains the last
-    /// error code and message
-    Grape::Status lastError;
-
-public:
 
     /// Constructor.
     /// \param transport    Communication medium between us and the hardware.
@@ -55,27 +50,27 @@ public:
     void setResponseTimeOut(int ms) { _timeoutMs = ms; }
 
     // ------------- Servo signals -------------------------
-    bool configureServoOutPins(const SetDioServoModeCommand& message) { return send(message); }
-    bool setServo(const WriteServoOutCommand& message) { return send(message); }
+    void configureServoOutPins(const SetDioServoModeCommand& message) { send(message); }
+    void setServo(const WriteServoOutCommand& message) { send(message); }
 
     // ------------- Analog I/O ----------------------------
-    bool getAnalog(ReadAnalogInResponse& response);
+    void getAnalog(ReadAnalogInResponse& response);
 
     // ------------- Digital I/O ---------------------------
-    bool configureDigitalInPins(const SetDioIoModeCommand& message) { return send(message); }
-    bool setDigitalOut(const WriteDioOutCommand& message) { return send(message); }
-    bool getDigitalIn(ReadDioInResponse& response);
+    void configureDigitalInPins(const SetDioIoModeCommand& message) { send(message); }
+    void setDigitalOut(const WriteDioOutCommand& message) { send(message); }
+    void getDigitalIn(ReadDioInResponse& response);
 
     // ------------- Motor control --------------------------
-    bool configureDriveTrain(const SetMotorParametersCommand& message) { return send(message); }
-    bool configureMotorControlGains(const SetMotorPidGainsCommand& message) { return send(message); }
-    bool configureMotorDriveMode(const SetMotorDriveModeCommand& message) { return send(message); }
-    bool setMotorSpeed(const WriteMotorSpeedCommand& message) { return send(message); }
-    bool getMotorSpeed(ReadMotorSpeedResponse& response);
-    bool getMotorCurrent(ReadMotorCurrentResponse& response);
-    bool setMotorPower(const WriteMotorPowerCommand& message) { return send(message); }
-    bool getMotorEncoders(ReadMotorEncodersResponse& response);
-    bool resetMotorEncoders();
+    void configureDriveTrain(const SetMotorParametersCommand& message) { send(message); }
+    void configureMotorControlGains(const SetMotorPidGainsCommand& message) { send(message); }
+    void configureMotorDriveMode(const SetMotorDriveModeCommand& message) { send(message); }
+    void setMotorSpeed(const WriteMotorSpeedCommand& message) { send(message); }
+    void getMotorSpeed(ReadMotorSpeedResponse& response);
+    void getMotorCurrent(ReadMotorCurrentResponse& response);
+    void setMotorPower(const WriteMotorPowerCommand& message) { send(message); }
+    void getMotorEncoders(ReadMotorEncodersResponse& response);
+    void resetMotorEncoders();
 
     // ------------- RS485 comms -----------------------------
     /// \todo RS485 comms
@@ -84,8 +79,19 @@ public:
     /// \todo i2c comms
 
     // -------------- General --------------------------------
-    bool getVersion(ReadBoardVersionResponse& response);
+    void getVersion(ReadBoardVersionResponse& response);
+
+	/// Send a command and receive a response
+	/// On error, the following exceptions are thrown
+	/// - IoWaitException
+	/// - IoWriteException
+	/// - IoReadException
     void send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(VehicleException);
+
+	/// Send command that generate a response from the IoBoard.
+	/// On error the following exceptions are thrown
+	/// - IoWaitException
+	/// - IoWriteException
     void send(const IoBoardCommand& cmd) throw(VehicleException);
 
 private:

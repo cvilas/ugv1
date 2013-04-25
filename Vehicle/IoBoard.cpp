@@ -23,59 +23,59 @@ IoBoard::~IoBoard()
 {}
 
 //-----------------------------------------------------------------------------
-bool IoBoard::getVersion(ReadBoardVersionResponse& response)
+void IoBoard::getVersion(ReadBoardVersionResponse& response)
 //-----------------------------------------------------------------------------
 {
     Ugv1::ReadBoardVersionCommand cmd;
-    return send(cmd, response);
+    send(cmd, response);
 }
 
 //-----------------------------------------------------------------------------
-bool IoBoard::getAnalog(ReadAnalogInResponse& response)
+void IoBoard::getAnalog(ReadAnalogInResponse& response)
 //-----------------------------------------------------------------------------
 {
     Ugv1::ReadAnalogInCommand cmd;
-    return send(cmd, response);
+    send(cmd, response);
 }
 
 //-----------------------------------------------------------------------------
-bool IoBoard::getDigitalIn(ReadDioInResponse& response)
+void IoBoard::getDigitalIn(ReadDioInResponse& response)
 //-----------------------------------------------------------------------------
 {
     Ugv1::ReadDioInCommand cmd;
-    return send(cmd, response);
+    send(cmd, response);
 }
 
 //-----------------------------------------------------------------------------
-bool IoBoard::getMotorSpeed(ReadMotorSpeedResponse& response)
+void IoBoard::getMotorSpeed(ReadMotorSpeedResponse& response)
 //-----------------------------------------------------------------------------
 {
     Ugv1::ReadMotorSpeedCommand cmd;
-    return send(cmd, response);
+    send(cmd, response);
 }
 
 //-----------------------------------------------------------------------------
-bool IoBoard::getMotorCurrent(ReadMotorCurrentResponse& response)
+void IoBoard::getMotorCurrent(ReadMotorCurrentResponse& response)
 //-----------------------------------------------------------------------------
 {
     Ugv1::ReadMotorCurrentCommand cmd;
-    return send(cmd, response);
+    send(cmd, response);
 }
 
 //-----------------------------------------------------------------------------
-bool IoBoard::getMotorEncoders(ReadMotorEncodersResponse& response)
+void IoBoard::getMotorEncoders(ReadMotorEncodersResponse& response)
 //-----------------------------------------------------------------------------
 {
     Ugv1::ReadMotorEncodersCommand cmd;
-    return send(cmd, response);
+    send(cmd, response);
 }
 
 //-----------------------------------------------------------------------------
-bool IoBoard::resetMotorEncoders()
+void IoBoard::resetMotorEncoders()
 //-----------------------------------------------------------------------------
 {
     Ugv1::ResetMotorEncodersCommand cmd;
-    return send(cmd);
+    send(cmd);
 }
 
 //-----------------------------------------------------------------------------
@@ -87,8 +87,11 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Vehi
     // wait for response
     if( _transport.waitForRead(_timeoutMs) <= 0 )
     {
+		_transport.flushRx();
+
 		std::ostringstream str;
-		str << __FUNCTION__ << ": Error or timeout waiting for response to message ID " << cmd.getIdFromMessage();
+		str << __FUNCTION__ << ": Error or timeout waiting for response to message ID " 
+			<< cmd.getIdFromMessage() << ".";
 		throw new IoWaitException(0, str.str());
     }
 
@@ -103,16 +106,24 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Vehi
         nAvailable = _transport.availableToRead();
         if( nAvailable < 0 )
         {
-            lastError.set(-1) << "[IoBoard::send]: Error in availableToRead";
-            return false;
+			_transport.flushRx();
+
+			std::ostringstream str;
+			str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() 
+				<< " error checking read buffer for bytes available.";
+			throw new IoReadException(0, str.str());
         }
         Grape::milliSleep(1);
         --nTries;
         if( nTries < 1 )
         {
             _transport.flushRx();
-            lastError.set(-1) << "[IoBoard::send]: Expected " << nToRead << " bytes, " << nAvailable << " available (cmd ID: " << cmd.getIdFromMessage() << ")";
-            return false;
+
+			std::ostringstream str;
+			str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() 
+				<< ", full response not available after additional wait. Expected " << nToRead 
+				<< " bytes, got only " << nAvailable << ".";
+			throw new IoWaitException(0, str.str());
         }
     }
     int nRead = _transport.read(reply);
@@ -121,7 +132,8 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Vehi
         _transport.flushRx();
 
 		std::ostringstream str;
-		str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() << ", read " << nRead << "/" << nToRead << " bytes";
+		str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() 
+			<< ", read " << nRead << "/" << nToRead << " bytes.";
 		throw new IoReadException(0, str.str());
     }
 
@@ -141,7 +153,8 @@ void IoBoard::send(const IoBoardCommand& cmd) throw (VehicleException)
         _transport.flushTx();
 
 		std::ostringstream str;
-		str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() << ", wrote " << nWritten << "/" << nToWrite << " bytes";
+		str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() 
+			<< ", wrote " << nWritten << "/" << nToWrite << " bytes.";
 		throw new IoWriteException(0, str.str());
     }
 
@@ -151,7 +164,8 @@ void IoBoard::send(const IoBoardCommand& cmd) throw (VehicleException)
 		_transport.flushTx();
 
 		std::ostringstream str;
-		str << __FUNCTION__ << ": Write operation didn't complete For message ID " << cmd.getIdFromMessage();
+		str << __FUNCTION__ << ": Write operation didn't complete For message ID " 
+			<< cmd.getIdFromMessage() << ".";
 		throw new IoWaitException(0, str.str());
     }
 }
