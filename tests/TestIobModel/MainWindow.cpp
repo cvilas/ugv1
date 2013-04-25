@@ -8,7 +8,6 @@
 #include "ui_MainWindow.h"
 #include "SerialPortDlg.h"
 #include <QLabel>
-#include <iostream>
 
 //==============================================================================
 MainWindow::MainWindow(QWidget *parent)

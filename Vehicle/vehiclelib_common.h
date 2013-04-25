@@ -20,8 +20,6 @@
 #	define UGV1VEHICLELIB_DLL_API
 #endif
 
-#include <iostream>
-
 namespace Ugv1
 {
 
