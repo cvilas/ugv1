@@ -25,7 +25,7 @@ private Q_SLOTS:
     void test_IoBoardCommand_setMotorDriveMode();
     void test_IoBoardCommand_setMotorPower();
 
-    void test_IoBoardResponse_isValid();
+    void test_IoBoardResponse_validate();
 };
 
 //=============================================================================
@@ -249,41 +249,81 @@ void IoBoardMessageTests::test_IoBoardCommand_setMotorPower()
 }
 
 //-----------------------------------------------------------------------------
-void IoBoardMessageTests::test_IoBoardResponse_isValid()
+void IoBoardMessageTests::test_IoBoardResponse_validate()
 //-----------------------------------------------------------------------------
 {
-    // 1. Create valid message. Verify isValid passes
-    // 2. Create invalid message. Verify isValid fails.
+    // 1. Create valid message. Verify validate passes
+    // 2. Create invalid message. Verify validate fails.
 
     // valid message
     unsigned char validResponse[9] = {0x55, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_DIO, 0x07, 0xFF, 0x1B, 0x0A};
     Ugv1::ReadDioInResponse resp;
     resp.assign(validResponse, validResponse+9);
-    QVERIFY2(resp.isValid(), "Valid message but test failed");
+    try
+    {
+        resp.validate();
+    }
+    catch( Ugv1::VehicleException& ex )
+    {
+        qDebug() << ex.what();
+        QFAIL("Valid message but test failed");
+    }
 
     // invalid length
     unsigned char invalidResponse1[9] = {0x55, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_DIO, 0x07, 0xFF, 0x1B};
     Ugv1::ReadDioInResponse resp1;
     resp1.assign(invalidResponse1, invalidResponse1+8);
-    QVERIFY2(!resp1.isValid(), "Invalid message (length) but test failed");
+    try
+    {
+        resp1.validate();
+        QFAIL("Invalid message (length) but test failed");
+    }
+    catch(Ugv1::VehicleException& ex)
+    {
+        qDebug() << ex.what();
+    }
 
     // invalid header
     unsigned char invalidResponse2[9] = {0x54, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_DIO, 0x07, 0xFF, 0x1B, 0x0A};
     Ugv1::ReadDioInResponse resp2;
     resp2.assign(invalidResponse2, invalidResponse2+9);
-    QVERIFY2(!resp2.isValid(), "Invalid message (header) but test failed");
+    try
+    {
+        resp2.validate();
+        QFAIL("Invalid message (header) but test failed");
+    }
+    catch(Ugv1::VehicleException& ex)
+    {
+        qDebug() << ex.what();
+    }
 
     // invalid id
-    unsigned char invalidResponse3[9] = {0x54, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_ANALOG, 0x07, 0xFF, 0x1B, 0x0A};
+    unsigned char invalidResponse3[9] = {0x55, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_ANALOG, 0x07, 0xFF, 0x1B, 0x0A};
     Ugv1::ReadDioInResponse resp3;
     resp3.assign(invalidResponse3, invalidResponse3+9);
-    QVERIFY2(!resp3.isValid(), "Invalid message (id) but test failed");
+    try
+    {
+        resp3.validate();
+        QFAIL("Invalid message (id) but test failed");
+    }
+    catch(Ugv1::VehicleException& ex)
+    {
+        qDebug() << ex.what();
+    }
 
     // invalid checksum
-    unsigned char invalidResponse4[9] = {0x54, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_ANALOG, 0x07, 0xFF, 0x10, 0x0A};
+    unsigned char invalidResponse4[9] = {0x55, 0xAA, 0x10, 0x02, Ugv1::IoBoardMessage::READ_DIO, 0x07, 0xFF, 0x10, 0x0A};
     Ugv1::ReadDioInResponse resp4;
     resp4.assign(invalidResponse4, invalidResponse4+9);
-    QVERIFY2(!resp4.isValid(), "Invalid message (checksum) but test failed");
+    try
+    {
+        resp4.validate();
+        QFAIL("Invalid message (checksum) but test failed");
+    }
+    catch(Ugv1::VehicleException& ex)
+    {
+        qDebug() << ex.what();
+    }
 }
 
 QTEST_APPLESS_MAIN(IoBoardMessageTests)

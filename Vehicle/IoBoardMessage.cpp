@@ -101,7 +101,7 @@ void IoBoardResponse::validate() throw(VehicleException)
 		std::ostringstream str;
         str << __FUNCTION__ << ": For message ID " << getExpectedId() << ", expected message length " 
 			<< getExpectedLength() << " got " << size();
-		throw new InvalidMessageLengthException(0, str.str());
+        throw InvalidMessageLengthException(0, str.str());
     }
 
     iterator it = begin();
@@ -110,7 +110,7 @@ void IoBoardResponse::validate() throw(VehicleException)
 		std::ostringstream str;
         str << __FUNCTION__ << ": For message ID " << getExpectedId() << ", expected header[0] " 
 			<< ((int)(*it)&0xFF) << " got " << ((int)(MESSAGE_HEADER[0])&0xFF);
-		throw new InvalidMessageHeaderException(0, str.str());
+        throw InvalidMessageHeaderException(0, str.str());
     }
     ++it;
     if( *it != MESSAGE_HEADER[1] )
@@ -118,7 +118,7 @@ void IoBoardResponse::validate() throw(VehicleException)
 		std::ostringstream str;
         str << __FUNCTION__ << ": For message ID " << getExpectedId() << ", expected header[1] " 
 			<< ((int)(*it)&0xFF) << " got " << ((int)(MESSAGE_HEADER[1])&0xFF);
-		throw new InvalidMessageHeaderException(0, str.str());
+        throw InvalidMessageHeaderException(0, str.str());
     }
     ++it;
     if( *it != MESSAGE_HEADER[2] )
@@ -126,23 +126,22 @@ void IoBoardResponse::validate() throw(VehicleException)
 		std::ostringstream str;
         str << __FUNCTION__ << ": For message ID " << getExpectedId() << ", expected header[2] " 
 			<< ((int)(*it)&0xFF) << " got " << ((int)(MESSAGE_HEADER[2])&0xFF);
-		throw new InvalidMessageHeaderException(0, str.str());
-    }
-
-    if( !verifyChecksum() )
-    {
-        std::ostringstream str;
-		str << __FUNCTION__ << ": For message ID " << getExpectedId() << ", invalid checksum received";
-		throw new InvalidMessageChecksumException(0,str.str());
+        throw InvalidMessageHeaderException(0, str.str());
     }
 
     if( !verifyId() )
     {
         std::ostringstream str;
 		str << __FUNCTION__ << ": Expected message ID " << getExpectedId() << ", got " << getIdFromMessage();
-		throw new InvalidMessageIdException(0,str.str());
+        throw InvalidMessageIdException(0,str.str());
     }
 
+    if( !verifyChecksum() )
+    {
+        std::ostringstream str;
+        str << __FUNCTION__ << ": For message ID " << getExpectedId() << ", invalid checksum received";
+        throw InvalidMessageChecksumException(0,str.str());
+    }
 }
 
 //-----------------------------------------------------------------------------

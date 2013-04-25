@@ -108,13 +108,14 @@ void MainWindow::updateStatusBar()
 void MainWindow::on_configBtn_clicked()
 //-----------------------------------------------------------------------------
 {
-    if( _model.writeConfig() )
+    try
     {
+        _model.writeConfig();
         _pErrorInfo->setText("Configure succeeded");
     }
-    else
+    catch( Ugv1::VehicleException& ex )
     {
-        _pErrorInfo->setText( _model.lastError.getMessage().c_str() );
+        _pErrorInfo->setText( ex.what() );
     }
 }
 
@@ -142,17 +143,10 @@ void MainWindow::on_startStopBtn_clicked()
 void MainWindow::onTimer()
 //-----------------------------------------------------------------------------
 {
-    if( !_model.readInputs() )
+    try
     {
-        _pErrorInfo->setText( _model.lastError.getMessage().c_str() );
-    }
-    else
-    {
-        _pErrorInfo->setText("");
-    }
+        _model.readInputs();
 
-    if( _model.verifyAllResponses() )
-    {
         _pUi->analog0->setText(QString::number(_model.getAnalogIn(0)));
         _pUi->analog1->setText(QString::number(_model.getAnalogIn(1)));
         _pUi->analog2->setText(QString::number(_model.getAnalogIn(2)));
@@ -188,27 +182,15 @@ void MainWindow::onTimer()
 
         _pUi->speed0set->display( _model.getSettingMotorSpeed(0) );
         _pUi->speed1set->display( _model.getSettingMotorSpeed(1) );
-    }
-    else
-    {
-        std::cout << _model.lastError.getMessage()
-            << _iob.lastError.getMessage()
-            << _port.lastError.getMessage() << std::endl;
 
-        _pErrorInfo->setText( _model.lastError.getMessage().c_str() );
+        _model.writeOutputs();
 
-        _model.lastError.clear();
-        _iob.lastError.clear();
-        _port.lastError.clear();
-    }
-
-    if( !_model.writeOutputs() )
-    {
-        _pErrorInfo->setText( _model.lastError.getMessage().c_str() );
-    }
-    else
-    {
         _pErrorInfo->setText("");
+
+    }
+    catch( Ugv1::VehicleException& ex )
+    {
+        _pErrorInfo->setText( ex.what() );
     }
 }
 

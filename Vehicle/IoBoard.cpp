@@ -92,7 +92,7 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Vehi
 		std::ostringstream str;
 		str << __FUNCTION__ << ": Error or timeout waiting for response to message ID " 
 			<< cmd.getIdFromMessage() << ".";
-		throw new IoWaitException(0, str.str());
+        throw IoWaitException(0, str.str());
     }
 
     // ok. we got something in the read buffer. now wait
@@ -111,7 +111,7 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Vehi
 			std::ostringstream str;
 			str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() 
 				<< " error checking read buffer for bytes available.";
-			throw new IoReadException(0, str.str());
+            throw IoReadException(0, str.str());
         }
         Grape::milliSleep(1);
         --nTries;
@@ -123,7 +123,7 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Vehi
 			str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() 
 				<< ", full response not available after additional wait. Expected " << nToRead 
 				<< " bytes, got only " << nAvailable << ".";
-			throw new IoWaitException(0, str.str());
+            throw IoWaitException(0, str.str());
         }
     }
     int nRead = _transport.read(reply);
@@ -134,7 +134,7 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Vehi
 		std::ostringstream str;
 		str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() 
 			<< ", read " << nRead << "/" << nToRead << " bytes.";
-		throw new IoReadException(0, str.str());
+        throw IoReadException(0, str.str());
     }
 
 	// validate
@@ -155,7 +155,7 @@ void IoBoard::send(const IoBoardCommand& cmd) throw (VehicleException)
 		std::ostringstream str;
 		str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() 
 			<< ", wrote " << nWritten << "/" << nToWrite << " bytes.";
-		throw new IoWriteException(0, str.str());
+        throw IoWriteException(0, str.str());
     }
 
     // wait for write operation to complete
@@ -166,7 +166,7 @@ void IoBoard::send(const IoBoardCommand& cmd) throw (VehicleException)
 		std::ostringstream str;
 		str << __FUNCTION__ << ": Write operation didn't complete For message ID " 
 			<< cmd.getIdFromMessage() << ".";
-		throw new IoWaitException(0, str.str());
+        throw IoWaitException(0, str.str());
     }
 }
 

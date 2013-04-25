@@ -86,27 +86,20 @@ void MainWindow::on_getVersionBtn_clicked()
 //-----------------------------------------------------------------------------
 {
     Ugv1::ReadBoardVersionResponse response;
-    if( !_iob.getVersion(response) )
+    try
     {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.getVersion(response);
         _pErrorInfo->setText("");
-    }
-
-    if( response.isValid() )
-    {
         QString vinfo = QString::number(response.getBoardCode()) + QString(":")
-                + QString::number(response.getBoardVersion()) + QString(":")
-                + QString::number(response.getBoardRevision());
+                    + QString::number(response.getBoardVersion()) + QString(":")
+                    + QString::number(response.getBoardRevision());
         _pUi->versionTxt->setText(vinfo);
     }
-    else
+    catch( Ugv1::VehicleException& ex)
     {
+        _pErrorInfo->setText( ex.what() );
         _pUi->versionTxt->setText("error");
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -114,17 +107,10 @@ void MainWindow::on_getAnalogBtn_clicked()
 //-----------------------------------------------------------------------------
 {
     Ugv1::ReadAnalogInResponse response;
-    if( !_iob.getAnalog(response) )
+    try
     {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.getAnalog(response);
         _pErrorInfo->setText("");
-    }
-
-    if( response.isValid() )
-    {
         _pUi->analog0->setText(QString::number(response.getVolts(0)));
         _pUi->analog1->setText(QString::number(response.getVolts(1)));
         _pUi->analog2->setText(QString::number(response.getVolts(2)));
@@ -133,6 +119,10 @@ void MainWindow::on_getAnalogBtn_clicked()
         _pUi->analog5->setText(QString::number(response.getVolts(5)));
         _pUi->analog6->setText(QString::number(response.getVolts(6)));
         _pUi->analog7->setText(QString::number(response.getVolts(7)));
+    }
+    catch( Ugv1::VehicleException& ex)
+    {
+        _pErrorInfo->setText( ex.what() );
     }
 }
 
@@ -152,13 +142,14 @@ void MainWindow::on_dioConfigBtn_clicked()
     cmd.setModeInput(8, _pUi->dio8->isChecked());
     cmd.setModeInput(9, _pUi->dio9->isChecked());
     cmd.setModeInput(10, _pUi->dio10->isChecked());
-    if( !_iob.configureDigitalInPins(cmd) )
+    try
     {
-         _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.configureDigitalInPins(cmd);
         _pErrorInfo->setText("");
+    }
+    catch( Ugv1::VehicleException& ex)
+    {
+        _pErrorInfo->setText( ex.what() );
     }
 }
 
@@ -178,13 +169,14 @@ void MainWindow::on_doSetBtn_clicked()
     cmd.setChannel(8, _pUi->do8->isChecked());
     cmd.setChannel(9, _pUi->do9->isChecked());
     cmd.setChannel(10, _pUi->do10->isChecked());
-    if( !_iob.setDigitalOut(cmd) )
+    try
     {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.setDigitalOut(cmd);
         _pErrorInfo->setText("");
+    }
+    catch( Ugv1::VehicleException& ex )
+    {
+        _pErrorInfo->setText( ex.what() );
     }
 }
 
@@ -201,13 +193,14 @@ void MainWindow::on_configServoBtn_clicked()
     cmd.setModeServo(5, _pUi->ds5->isChecked());
     cmd.setModeServo(6, _pUi->ds6->isChecked());
     cmd.setModeServo(7, _pUi->ds7->isChecked());
-    if( !_iob.configureServoOutPins(cmd) )
+    try
     {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.configureServoOutPins(cmd);
         _pErrorInfo->setText("");
+    }
+    catch( Ugv1::VehicleException& ex )
+    {
+        _pErrorInfo->setText( ex.what() );
     }
 }
 
@@ -224,13 +217,14 @@ void MainWindow::on_setServoBtn_clicked()
     cmd.setChannel(5, _pUi->s5->value()&0xFF, 0xFF);
     cmd.setChannel(6, _pUi->s6->value()&0xFF, 0xFF);
     cmd.setChannel(7, _pUi->s7->value()&0xFF, 0xFF);
-    if( !_iob.setServo(cmd) )
+    try
     {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.setServo(cmd);
         _pErrorInfo->setText("");
+    }
+    catch( Ugv1::VehicleException& ex )
+    {
+        _pErrorInfo->setText( ex.what() );
     }
 }
 
@@ -239,17 +233,10 @@ void MainWindow::on_getDinBtn_clicked()
 //-----------------------------------------------------------------------------
 {
     Ugv1::ReadDioInResponse response;
-    if( !_iob.getDigitalIn(response) )
+    try
     {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.getDigitalIn(response);
         _pErrorInfo->setText("");
-    }
-
-    if( response.isValid() )
-    {
         _pUi->din0->setText(QString::number(response.isHigh(0)));
         _pUi->din1->setText(QString::number(response.isHigh(1)));
         _pUi->din2->setText(QString::number(response.isHigh(2)));
@@ -262,8 +249,9 @@ void MainWindow::on_getDinBtn_clicked()
         _pUi->din9->setText(QString::number(response.isHigh(9)));
         _pUi->din10->setText(QString::number(response.isHigh(10)));
     }
-    else
+    catch( Ugv1::VehicleException& ex )
     {
+        _pErrorInfo->setText( ex.what() );
         _pUi->din0->setText("E");
         _pUi->din1->setText("E");
         _pUi->din2->setText("E");
@@ -286,15 +274,15 @@ void MainWindow::on_setDrvTrainBtn_clicked()
     cmd.setEncoderPPR( _pUi->encoderPpr->value()&0xFFFF );
     cmd.setGearRatio( _pUi->gearRatio->value() & 0xFFFF);
     cmd.setWheelPerimeter( _pUi->wheelPerim->value() & 0xFFFF);
-    if( !_iob.configureDriveTrain(cmd) )
+    try
     {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.configureDriveTrain(cmd);
         _pErrorInfo->setText("");
     }
-
+    catch( Ugv1::VehicleException& ex )
+    {
+        _pErrorInfo->setText( ex.what() );
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -305,13 +293,14 @@ void MainWindow::on_setPidBtn_clicked()
     cmd.setProportionalGain( _pUi->gainP->value()&0xFF );
     cmd.setDerivativeGain( _pUi->gainD->value() & 0xFF );
     cmd.setIntegralGain( _pUi->gainI->value() & 0xFF );
-    if( !_iob.configureMotorControlGains(cmd) )
+    try
     {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.configureMotorControlGains(cmd);
         _pErrorInfo->setText("");
+    }
+    catch( Ugv1::VehicleException& ex )
+    {
+        _pErrorInfo->setText( ex.what() );
     }
 }
 
@@ -319,13 +308,14 @@ void MainWindow::on_setPidBtn_clicked()
 void MainWindow::on_resetEncBtn_clicked()
 //-----------------------------------------------------------------------------
 {
-    if( !_iob.resetMotorEncoders() )
+    try
     {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.resetMotorEncoders();
         _pErrorInfo->setText("");
+    }
+    catch( Ugv1::VehicleException& ex )
+    {
+        _pErrorInfo->setText( ex.what() );
     }
 }
 
@@ -334,22 +324,16 @@ void MainWindow::on_getEncBtn_clicked()
 //-----------------------------------------------------------------------------
 {
     Ugv1::ReadMotorEncodersResponse response;
-    if( !_iob.getMotorEncoders(response) )
+    try
     {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.getMotorEncoders(response);
         _pErrorInfo->setText("");
-    }
-
-    if( response.isValid() )
-    {
         _pUi->encoder0->setText( QString::number(response.getEncoder(0)) );
         _pUi->encoder1->setText( QString::number(response.getEncoder(1)) );
     }
-    else
+    catch( Ugv1::VehicleException& ex )
     {
+        _pErrorInfo->setText( ex.what() );
         _pUi->encoder0->setText( "Error" );
         _pUi->encoder1->setText( "Error" );
     }
@@ -366,46 +350,45 @@ void MainWindow::on_pidControlOn_toggled(bool checked)
     else
         cmd.setModeDirectPower();
 
-    if( !_iob.configureMotorDriveMode(cmd) )
+    try
     {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.configureMotorDriveMode(cmd);
         _pErrorInfo->setText("");
+        _pUi->motor1Slider->setValue(0);
+        _pUi->motor2Slider->setValue(0);
+        _motorSpeedCmd.setSpeed(0,0);
+        _motorSpeedCmd.setSpeed(1,0);
+        _motorPowerCmd.setPower(0,0);
+        _motorPowerCmd.setPower(1,0);
+    }
+    catch( Ugv1::VehicleException& ex )
+    {
+        _pErrorInfo->setText( ex.what() );
     }
 
-    _pUi->motor1Slider->setValue(0);
-    _pUi->motor2Slider->setValue(0);
-    _motorSpeedCmd.setSpeed(0,0);
-    _motorSpeedCmd.setSpeed(1,0);
-    _motorPowerCmd.setPower(0,0);
-    _motorPowerCmd.setPower(1,0);
 }
 
 //-----------------------------------------------------------------------------
 void MainWindow::on_motor1Slider_sliderMoved(int position)
 //-----------------------------------------------------------------------------
 {
-    bool result;
-    if( _pUi->pidControlOn->isChecked() )
+    try
     {
-        _motorSpeedCmd.setSpeed(0, position);
-        result = _iob.setMotorSpeed(_motorSpeedCmd);
-    }
-    else
-    {
-        _motorPowerCmd.setPower(0, position);
-        result = _iob.setMotorPower(_motorPowerCmd);
-    }
-
-    if( result )
-    {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        if( _pUi->pidControlOn->isChecked() )
+        {
+            _motorSpeedCmd.setSpeed(0, position);
+            _iob.setMotorSpeed(_motorSpeedCmd);
+        }
+        else
+        {
+            _motorPowerCmd.setPower(0, position);
+            _iob.setMotorPower(_motorPowerCmd);
+        }
         _pErrorInfo->setText("");
+    }
+    catch( Ugv1::VehicleException& ex )
+    {
+        _pErrorInfo->setText( ex.what() );
     }
 
     on_getSpeedBtn_clicked();
@@ -416,25 +399,23 @@ void MainWindow::on_motor1Slider_sliderMoved(int position)
 void MainWindow::on_motor2Slider_sliderMoved(int position)
 //-----------------------------------------------------------------------------
 {
-    bool result;
-    if( _pUi->pidControlOn->isChecked() )
+    try
     {
-        _motorSpeedCmd.setSpeed(1, position);
-        result = _iob.setMotorSpeed(_motorSpeedCmd);
-    }
-    else
-    {
-        _motorPowerCmd.setPower(1, position);
-        result = _iob.setMotorPower(_motorPowerCmd);
-    }
-
-    if( result )
-    {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        if( _pUi->pidControlOn->isChecked() )
+        {
+            _motorSpeedCmd.setSpeed(1, position);
+            _iob.setMotorSpeed(_motorSpeedCmd);
+        }
+        else
+        {
+            _motorPowerCmd.setPower(1, position);
+            _iob.setMotorPower(_motorPowerCmd);
+        }
         _pErrorInfo->setText("");
+    }
+    catch( Ugv1::VehicleException& ex )
+    {
+        _pErrorInfo->setText( ex.what() );
     }
 
     on_getSpeedBtn_clicked();
@@ -446,21 +427,16 @@ void MainWindow::on_getCurrentBtn_clicked()
 //-----------------------------------------------------------------------------
 {
     Ugv1::ReadMotorCurrentResponse response;
-    if( !_iob.getMotorCurrent(response) )
+    try
     {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.getMotorCurrent(response);
         _pErrorInfo->setText("");
-    }
-    if( response.isValid() )
-    {
         _pUi->motor1Current->setText(QString::number(response.getMotorCurrent(0)));
         _pUi->motor2Current->setText(QString::number(response.getMotorCurrent(1)));
     }
-    else
+    catch( Ugv1::VehicleException& ex )
     {
+        _pErrorInfo->setText( ex.what() );
         _pUi->motor1Speed->setText("Error");
         _pUi->motor2Speed->setText("Error");
     }
@@ -471,21 +447,16 @@ void MainWindow::on_getSpeedBtn_clicked()
 //-----------------------------------------------------------------------------
 {
     Ugv1::ReadMotorSpeedResponse response;
-    if( !_iob.getMotorSpeed(response) )
+    try
     {
-        _pErrorInfo->setText(QString::fromStdString(_iob.lastError.getMessage()));
-    }
-    else
-    {
+        _iob.getMotorSpeed(response);
         _pErrorInfo->setText("");
-    }
-    if( response.isValid() )
-    {
         _pUi->motor1Speed->setText(QString::number(response.getMotorSpeed(0)));
         _pUi->motor2Speed->setText(QString::number(response.getMotorSpeed(1)));
     }
-    else
+    catch( Ugv1::VehicleException& ex )
     {
+        _pErrorInfo->setText( ex.what() );
         _pUi->motor1Speed->setText("Error");
         _pUi->motor2Speed->setText("Error");
     }

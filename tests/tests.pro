@@ -1,7 +1,7 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 SUBDIRS += IoBoardTests \
-	TestIob \
+        TestIob \
     TestIobConsole \
     TestIobModel
 

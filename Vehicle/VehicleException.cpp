@@ -3,3 +3,5 @@
 // Module   : Vehicle
 // File     : VehicleException.cpp
 //==============================================================================
+
+#include "VehicleException.h"
