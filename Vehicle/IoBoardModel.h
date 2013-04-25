@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : IoBoard
+// Module   : Vehicle
 // File     : IoBoardModel.h
 // Brief    : IoBoard state class
 //==============================================================================
@@ -39,6 +39,9 @@ namespace Ugv1
 class UGV1VEHICLELIB_DLL_API IoBoardModel
 {
 public:
+	Grape::Status lastError;
+
+public:
 
     /// \brief Version information
     /// \see getBoardVersion
@@ -75,11 +78,6 @@ public:
         SPEED_CONTROL,        //!< closed loop PID speed control
         DRIVEMODE_MAX
     };
-
-public:
-    /// Publically accessible status object contains the last
-    /// error code and message
-    Grape::Status lastError;
 
 public:
 

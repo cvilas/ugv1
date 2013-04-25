@@ -24,6 +24,7 @@ HEADERS += IoBoard.h \
     IoBoardMessage_servo.h \
     IoBoardModel.h \
     Controller.h \
+	VehicleException.h \
     vehiclelib_common.h
 SOURCES += IoBoard.cpp \
     IoBoardMessage.cpp \
@@ -32,7 +33,8 @@ SOURCES += IoBoard.cpp \
     IoBoardMessage_motor.cpp \
     IoBoardMessage_servo.cpp \
     IoBoardModel.cpp \
-    Controller.cpp
+    Controller.cpp \
+	VehicleException.cpp
 win32:SOURCES += 
 unix:SOURCES += 
 win32:LIBS += 

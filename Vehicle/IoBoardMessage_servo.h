@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : IO
+// Module   : Vehicle
 // File     : IoBoardMessage_servo.h
 // Brief    : UGV1 driver board messages - servo outputs
 //==============================================================================

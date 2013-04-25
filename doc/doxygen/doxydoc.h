@@ -33,6 +33,10 @@
  * \defgroup comms Comms
  * \ingroup vehicle
  * Control messages
+ * 
+ * \defgroup exceptions Vehicle Exceptions
+ * \ingroup vehicle
+ * Exceptions raised by vehicle software
  *
  * \defgroup remote Remote
  * Remote systems

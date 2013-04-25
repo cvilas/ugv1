@@ -1,10 +1,11 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : IO
+// Module   : Vehicle
 // File     : IoBoardMessage.cpp
 //==============================================================================
 
 #include "IoBoardMessage.h"
+#include <sstream>
 
 namespace Ugv1
 {
@@ -87,7 +88,7 @@ IoBoardResponse::~IoBoardResponse()
 {}
 
 //-----------------------------------------------------------------------------
-bool IoBoardResponse::isValid()
+void IoBoardResponse::validate() throw(VehicleException)
 //-----------------------------------------------------------------------------
 {
     // check length
@@ -97,42 +98,51 @@ bool IoBoardResponse::isValid()
 
     if( size() != getExpectedLength() )
     {
-        std::cerr << "[IoBoardResponse::isValid] invalid size " << size() << " expected "  << getExpectedLength() << std::endl;
-        return false;
+		std::ostringstream str;
+        str << __FUNCTION__ << ": For message ID " << getExpectedId() << ", expected message length " 
+			<< getExpectedLength() << " got " << size();
+		throw new InvalidMessageLengthException(0, str.str());
     }
 
     iterator it = begin();
     if( *it != MESSAGE_HEADER[0] )
     {
-        std::cerr << "[IoBoardResponse::isValid] invalid header 0" << std::endl;
-        return false;
+		std::ostringstream str;
+        str << __FUNCTION__ << ": For message ID " << getExpectedId() << ", expected header[0] " 
+			<< ((int)(*it)&0xFF) << " got " << ((int)(MESSAGE_HEADER[0])&0xFF);
+		throw new InvalidMessageHeaderException(0, str.str());
     }
     ++it;
     if( *it != MESSAGE_HEADER[1] )
     {
-        std::cerr << "[IoBoardResponse::isValid] invalid header 1" << std::endl;
-        return false;
+		std::ostringstream str;
+        str << __FUNCTION__ << ": For message ID " << getExpectedId() << ", expected header[1] " 
+			<< ((int)(*it)&0xFF) << " got " << ((int)(MESSAGE_HEADER[1])&0xFF);
+		throw new InvalidMessageHeaderException(0, str.str());
     }
     ++it;
     if( *it != MESSAGE_HEADER[2] )
     {
-        std::cerr << "[IoBoardResponse::isValid] invalid header 2" << std::endl;
-        return false;
+		std::ostringstream str;
+        str << __FUNCTION__ << ": For message ID " << getExpectedId() << ", expected header[2] " 
+			<< ((int)(*it)&0xFF) << " got " << ((int)(MESSAGE_HEADER[2])&0xFF);
+		throw new InvalidMessageHeaderException(0, str.str());
     }
 
     if( !verifyChecksum() )
     {
-        std::cerr << "[IoBoardResponse::isValid] invalid checksum" << std::endl;
-        return false;
+        std::ostringstream str;
+		str << __FUNCTION__ << ": For message ID " << getExpectedId() << ", invalid checksum received";
+		throw new InvalidMessageChecksumException(0,str.str());
     }
 
     if( !verifyId() )
     {
-        std::cerr << "[IoBoardResponse::isValid] invalid ID" << std::endl;
-        return false;
+        std::ostringstream str;
+		str << __FUNCTION__ << ": Expected message ID " << getExpectedId() << ", got " << getIdFromMessage();
+		throw new InvalidMessageIdException(0,str.str());
     }
 
-    return true;
 }
 
 //-----------------------------------------------------------------------------

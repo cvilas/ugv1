@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : IO
+// Module   : Vehicle
 // File     : IoBoard.cpp
 //==============================================================================
 
@@ -79,20 +79,17 @@ bool IoBoard::resetMotorEncoders()
 }
 
 //-----------------------------------------------------------------------------
-bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
+void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(VehicleException)
 //-----------------------------------------------------------------------------
 {
-    // send the command
-    if( !send(cmd) )
-    {
-        return false;
-    }
+    send(cmd);
 
     // wait for response
-    if( !_transport.waitForRead(_timeoutMs) )
+    if( _transport.waitForRead(_timeoutMs) <= 0 )
     {
-        lastError.set(-1) << "[IoBoard::send]: Error in waitForRead";
-        return false;
+		std::ostringstream str;
+		str << __FUNCTION__ << ": Error or timeout waiting for response to message ID " << cmd.getIdFromMessage();
+		throw new IoWaitException(0, str.str());
     }
 
     // ok. we got something in the read buffer. now wait
@@ -122,15 +119,18 @@ bool IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
     if( nRead != nToRead )
     {
         _transport.flushRx();
-        lastError.set(-1) << "[IoBoard::send]: Error in read. Read " << nRead << "/" << nToRead;
-        return false;
+
+		std::ostringstream str;
+		str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() << ", read " << nRead << "/" << nToRead << " bytes";
+		throw new IoReadException(0, str.str());
     }
 
-    return true;
+	// validate
+	reply.validate();
 }
 
 //-----------------------------------------------------------------------------
-bool IoBoard::send(const IoBoardCommand& cmd)
+void IoBoard::send(const IoBoardCommand& cmd) throw (VehicleException)
 //-----------------------------------------------------------------------------
 {
     // write message
@@ -139,18 +139,21 @@ bool IoBoard::send(const IoBoardCommand& cmd)
     if( nWritten != nToWrite )
     {
         _transport.flushTx();
-        lastError.set(-1) << "[IoBoard::send]: Error in write. Wrote " << nWritten << "/" << nToWrite;
-        return false;
+
+		std::ostringstream str;
+		str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() << ", wrote " << nWritten << "/" << nToWrite << " bytes";
+		throw new IoWriteException(0, str.str());
     }
 
     // wait for write operation to complete
-    if( !_transport.waitForWrite(-1) )
+    if( _transport.waitForWrite(-1) <= 0 )
     {
-        lastError.set(-1) << "[IoBoard::send]: Error in waitForWrite";
-        return false;
-    }
+		_transport.flushTx();
 
-    return true;
+		std::ostringstream str;
+		str << __FUNCTION__ << ": Write operation didn't complete For message ID " << cmd.getIdFromMessage();
+		throw new IoWaitException(0, str.str());
+    }
 }
 
 } // Ugv1

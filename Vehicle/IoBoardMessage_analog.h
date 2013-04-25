@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : IO
+// Module   : Vehicle
 // File     : IoBoardMessage_analog.h
 // Brief    : UGV1 driver board messages - analog commands
 //==============================================================================

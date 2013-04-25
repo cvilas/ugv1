@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : IO
+// Module   : Vehicle
 // File     : IoBoardMessage_rs485.h
 // Brief    : UGV1 driver board messages - rs485 commands
 //==============================================================================

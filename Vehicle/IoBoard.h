@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : IO
+// Module   : Vehicle
 // File     : IoBoard.h
 // Brief    : IO board interface
 //==============================================================================
@@ -85,8 +85,8 @@ public:
 
     // -------------- General --------------------------------
     bool getVersion(ReadBoardVersionResponse& response);
-    bool send(const IoBoardCommand& cmd, IoBoardResponse& reply);
-    bool send(const IoBoardCommand& cmd);
+    void send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(VehicleException);
+    void send(const IoBoardCommand& cmd) throw(VehicleException);
 
 private:
     IoBoard(const IoBoard&); // disable copy

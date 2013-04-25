@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : IO
+// Module   : Vehicle
 // File     : IoBoardMessage.h
 // Brief    : base class for UGV1 driver board messages
 //==============================================================================
@@ -8,7 +8,7 @@
 #ifndef UGV1_IOBOARDMESSAGE_H
 #define UGV1_IOBOARDMESSAGE_H
 
-#include "vehiclelib_common.h"
+#include "VehicleException.h"
 #include <vector>
 #include <cstddef>
 
@@ -116,9 +116,14 @@ public:
 
     /// Verify that the message construction is correct
     /// The method verifies message length, header, id and checksum
-    /// but not the payload
+    /// but not the payload. If the message is invalid, one of the following
+	/// exceptions are thrown:
+	/// - InvalidMessageLengthException
+	/// - InvalidMessageHeaderException
+	/// - InvalidMessageChecksumException
+	/// - InvalidMessageIdException
     /// \return true if the message format is correct
-    bool isValid();
+    void validate() throw(VehicleException);
 
     /// Implemented by derived classes.
     /// \return The expected length for the message, including header and checksum

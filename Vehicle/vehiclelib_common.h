@@ -1,8 +1,8 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : ioboard
-// File     : ioboard_common.h
-// Brief    : common header for ioboard library
+// Module   : Vehicle
+// File     : vehiclelib_common.h
+// Brief    : common header for vehicle library
 //==============================================================================
 #ifndef UGV1_VEHICLELIB_COMMON_H
 #define	UGV1_VEHICLELIB_COMMON_H

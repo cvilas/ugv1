@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : IoBoard
+// Module   : Vehicle
 // File     : IoBoardModel.cpp
 //==============================================================================
 
@@ -525,10 +525,6 @@ bool IoBoardModel::readInputs()
         lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_DIO)" << std::endl;
         return false;
     }
-    if( !pDioResp->isValid() )
-    {
-        // throw exception here
-    }
 
     if( !_board.getAnalog(*dynamic_cast<ReadAnalogInResponse*>(_responseMap[IoBoardMessage::READ_ANALOG])) )
     {
@@ -556,23 +552,6 @@ bool IoBoardModel::readInputs()
         _isMotorRespDirFwd[i] = _isMotorCmdDirFwd[i];
     }
 
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-bool IoBoardModel::verifyAllResponses()
-//-----------------------------------------------------------------------------
-{
-    std::map<IoBoardMessage::MessageID, IoBoardResponse*>::iterator it = _responseMap.begin();
-    while( it != _responseMap.end() )
-    {
-        if( !(it->second)->isValid() )
-        {
-            lastError.set(-1) << "[IoBoardModel::verifyAllResponses] Invalid response. Message ID " << (it->second)->getExpectedId() << std::endl;
-            return false;
-        }
-        ++it;
-    }
     return true;
 }
 
