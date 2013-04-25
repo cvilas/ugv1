@@ -360,39 +360,15 @@ void IoBoardModel::addResponseMessage(IoBoardMessage::MessageID id, IoBoardRespo
 }
 
 //-----------------------------------------------------------------------------
-bool IoBoardModel::writeConfig()
+void IoBoardModel::writeConfig() throw(VehicleException)
 //-----------------------------------------------------------------------------
 {
-    if( !_board.send(*_commandMap[IoBoardMessage::SET_DIO_IOMODE]) )
-    {
-        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(SET_DIO_IOMODE)" << std::endl;
-        return false;
-    }
-    if( !_board.send(*_commandMap[IoBoardMessage::SET_DIO_SERVOMODE]) )
-    {
-        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(SET_DIO_SERVOMODE)" << std::endl;
-        return false;
-    }
-    if( !_board.send(*_commandMap[IoBoardMessage::SET_MOTOR_PARAM]) )
-    {
-        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(SET_MOTOR_PARAM)" << std::endl;
-        return false;
-    }
-    if( !_board.send(*_commandMap[IoBoardMessage::SET_MOTOR_PID_GAINS]) )
-    {
-        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(SET_MOTOR_PID_GAINS)" << std::endl;
-        return false;
-    }
-    if( !_board.send(*_commandMap[IoBoardMessage::SET_MOTOR_DRIVEMODE]) )
-    {
-        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(SET_MOTOR_DRIVEMODE)" << std::endl;
-        return false;
-    }
-    if( !_board.getVersion( *dynamic_cast<ReadBoardVersionResponse*>(_responseMap[IoBoardMessage::READ_BOARD_VERSION])) )
-    {
-        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(READ_BOARD_VERSION)" << std::endl;
-        return false;
-    }
+    _board.send(*_commandMap[IoBoardMessage::SET_DIO_IOMODE]);
+    _board.send(*_commandMap[IoBoardMessage::SET_DIO_SERVOMODE]);
+    _board.send(*_commandMap[IoBoardMessage::SET_MOTOR_PARAM]);
+    _board.send(*_commandMap[IoBoardMessage::SET_MOTOR_PID_GAINS]);
+    _board.send(*_commandMap[IoBoardMessage::SET_MOTOR_DRIVEMODE]);
+    _board.getVersion( *dynamic_cast<ReadBoardVersionResponse*>(_responseMap[IoBoardMessage::READ_BOARD_VERSION]));
 
     // motor controller mode may have changed. reset encoders
     for(int i = 0; i < 2; ++i)
@@ -402,35 +378,22 @@ bool IoBoardModel::writeConfig()
         _isMotorRespDirFwd[i] = true;
         _encoderResidual[i] = 0;
     }
-    if( !_board.resetMotorEncoders() )
-    {
-        lastError.set(-1) << "[IoBoardModel::writeConfig] Error in send(RESET_MOTOR_ENCODERS)" << std::endl;
-        return false;
-    }
-    return true;
+    _board.resetMotorEncoders();
 }
 
 //-----------------------------------------------------------------------------
-bool IoBoardModel::writeOutputs()
+void IoBoardModel::writeOutputs() throw(VehicleException)
 //-----------------------------------------------------------------------------
 {
     if( _dioCmdChanged )
     {
-        if( !_board.send( *_commandMap[IoBoardMessage::WRITE_DIO]) )
-        {
-            lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_DIO)" << std::endl;
-            return false;
-        }
+        _board.send( *_commandMap[IoBoardMessage::WRITE_DIO]);
         _dioCmdChanged = false;
     }
 
     if( _servoCmdChanged )
     {
-        if( !_board.send(*_commandMap[IoBoardMessage::WRITE_SERVO]) )
-        {
-            lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_SERVO)" << std::endl;
-            return false;
-        }
+        _board.send(*_commandMap[IoBoardMessage::WRITE_SERVO]);
         _servoCmdChanged = false;
     }
 
@@ -458,38 +421,23 @@ bool IoBoardModel::writeOutputs()
         // stop first
         if( pModeCmd->isModeSpeedControl() )
         {
-            if( !_board.send(WriteMotorSpeedCommand()) )
-            {
-                lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_MOTOR_SPEED = 0)" << std::endl;
-                return false;
-            }
+            _board.send(WriteMotorSpeedCommand());
         }
         else
         {
-            if( !_board.send(WriteMotorPowerCommand()) )
-            {
-                lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_MOTOR_POWER = 0)" << std::endl;
-                return false;
-            }
+            _board.send(WriteMotorPowerCommand());
         }
 
         // wait
         Grape::milliSleep(500);
 
         // reset encoders
-        if( !_board.resetMotorEncoders() )
-        {
-            lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(RESET_ENCODERS)" << std::endl;
-            return false;
-        }
+        _board.resetMotorEncoders();
 
         // get residials
         Ugv1::ReadMotorEncodersResponse encoders;
-        if( !_board.getMotorEncoders(encoders) )
-        {
-            lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(READ_ENCODERS)" << std::endl;
-            return false;
-        }
+        _board.getMotorEncoders(encoders);
+
         _encoderResidual[0] = encoders.getEncoder(0);
         _encoderResidual[1] = encoders.getEncoder(1);
     }
@@ -497,62 +445,29 @@ bool IoBoardModel::writeOutputs()
     // go again
     if( pModeCmd->isModeSpeedControl() )
     {
-        if( !_board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_SPEED]) )
-        {
-            lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_MOTOR_SPEED)" << std::endl;
-            return false;
-        }
+        _board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_SPEED]);
     }
     else
     {
-        if( !_board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_POWER]) )
-        {
-            lastError.set(-1) << "[IoBoardModel::writeOutputs] Error in send(WRITE_MOTOR_POWER)" << std::endl;
-            return false;
-        }
+        _board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_POWER]);
     }
-
-    return true;
 }
 
 //-----------------------------------------------------------------------------
-bool IoBoardModel::readInputs()
+void IoBoardModel::readInputs() throw(VehicleException)
 //-----------------------------------------------------------------------------
 {
-    Ugv1::ReadDioInResponse* pDioResp = dynamic_cast<ReadDioInResponse*>(_responseMap[IoBoardMessage::READ_DIO]);
-    if( !_board.getDigitalIn(*pDioResp) )
-    {
-        lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_DIO)" << std::endl;
-        return false;
-    }
+    _board.getDigitalIn(*dynamic_cast<ReadDioInResponse*>(_responseMap[IoBoardMessage::READ_DIO]));
+    _board.getAnalog(*dynamic_cast<ReadAnalogInResponse*>(_responseMap[IoBoardMessage::READ_ANALOG]));
+    _board.getMotorSpeed(*dynamic_cast<ReadMotorSpeedResponse*>(_responseMap[IoBoardMessage::READ_MOTOR_SPEED]));
+    _board.getMotorCurrent(*dynamic_cast<ReadMotorCurrentResponse*>(_responseMap[IoBoardMessage::READ_MOTOR_CURRENT]));
+    _board.getMotorEncoders(*dynamic_cast<ReadMotorEncodersResponse*>(_responseMap[IoBoardMessage::READ_MOTOR_ENCODERS]));
 
-    if( !_board.getAnalog(*dynamic_cast<ReadAnalogInResponse*>(_responseMap[IoBoardMessage::READ_ANALOG])) )
-    {
-        lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_ANALOG)" << std::endl;
-        return false;
-    }
-    if( !_board.getMotorSpeed(*dynamic_cast<ReadMotorSpeedResponse*>(_responseMap[IoBoardMessage::READ_MOTOR_SPEED])))
-    {
-        lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_MOTOR_SPEED)" << std::endl;
-        return false;
-    }
-    if( !_board.getMotorCurrent(*dynamic_cast<ReadMotorCurrentResponse*>(_responseMap[IoBoardMessage::READ_MOTOR_CURRENT])))
-    {
-        lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_MOTOR_CURRENT)" << std::endl;
-        return false;
-    }
-    if( !_board.getMotorEncoders(*dynamic_cast<ReadMotorEncodersResponse*>(_responseMap[IoBoardMessage::READ_MOTOR_ENCODERS])))
-    {
-        lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_MOTOR_ENCODERS)" << std::endl;
-        return false;
-    }
-    // update motor directions since last write
+	// update motor directions since last write
     for(int i = 0; i < 2; ++i)
     {
         _isMotorRespDirFwd[i] = _isMotorCmdDirFwd[i];
     }
-
-    return true;
 }
 
 } // Ugv1

@@ -39,9 +39,6 @@ namespace Ugv1
 class UGV1VEHICLELIB_DLL_API IoBoardModel
 {
 public:
-	Grape::Status lastError;
-
-public:
 
     /// \brief Version information
     /// \see getBoardVersion
@@ -205,20 +202,15 @@ public:
     /// Write configuration to the board. None of the setConfig..() calls take effect until
     /// a call to this method.
     /// \return true on success, false on failure (use lastError object to get error description)
-    virtual bool writeConfig();
+    virtual void writeConfig() throw(VehicleException);
 
     /// Apply all outputs on the board, i.e. digital output pins, servo outputs and motor control.
     /// None of the set() calls take effect until calls to this method.
-    /// \return true on success, false on failure (use lastError object to get error description)
-    virtual bool writeOutputs();
+    virtual void writeOutputs() throw(VehicleException);
 
     /// Read in inputs on the IO board, i.e. digital inputs, analog inputs, motor currents, etc.
     /// Call get...() methods after this method to obtain the latest input state.
-    /// \return true on success, false on failure (use lastError object to get error description)
-    virtual bool readInputs();
-
-    /// Verify that all response messages are valid. Call after calling readInputs.
-    virtual bool verifyAllResponses();
+    virtual void readInputs() throw(VehicleException);
 
 protected:
 
