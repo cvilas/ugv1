@@ -519,16 +519,16 @@ bool IoBoardModel::writeOutputs()
 bool IoBoardModel::readInputs()
 //-----------------------------------------------------------------------------
 {
-    if( !_board.getDigitalIn(*dynamic_cast<ReadDioInResponse*>(_responseMap[IoBoardMessage::READ_DIO])) )
+    Ugv1::ReadDioInResponse* pDioResp = dynamic_cast<ReadDioInResponse*>(_responseMap[IoBoardMessage::READ_DIO]);
+    if( !_board.getDigitalIn(*pDioResp) )
     {
         lastError.set(-1) << "[IoBoardModel::readInputs] Error in send(READ_DIO)" << std::endl;
         return false;
     }
-    Ugv1::IoBoardResponse* pResp = dynamic_cast<ReadDioInResponse*>(_responseMap[IoBoardMessage::READ_DIO]);
-    for(int i = 0; i < pResp->size(); ++i)
-        std::cout << std::hex << (int)((*pResp)[i]) << " ";
-    std::cout << std::endl;
-    pResp->isValid();
+    if( !pDioResp->isValid() )
+    {
+        // throw exception here
+    }
 
     if( !_board.getAnalog(*dynamic_cast<ReadAnalogInResponse*>(_responseMap[IoBoardMessage::READ_ANALOG])) )
     {
