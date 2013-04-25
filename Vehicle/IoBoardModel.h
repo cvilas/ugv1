@@ -201,7 +201,6 @@ public:
 
     /// Write configuration to the board. None of the setConfig..() calls take effect until
     /// a call to this method.
-    /// \return true on success, false on failure (use lastError object to get error description)
     virtual void writeConfig() throw(VehicleException);
 
     /// Apply all outputs on the board, i.e. digital output pins, servo outputs and motor control.
