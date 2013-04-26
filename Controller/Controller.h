@@ -31,8 +31,8 @@ public:
     IController();
     ~IController();
     virtual bool setup() = 0;
-    virtual bool loop() = 0;
-    virtual bool cleanup() = 0;
+    virtual void loop() = 0;
+    virtual bool teardown() = 0;
 private:
 };// Controller
 
