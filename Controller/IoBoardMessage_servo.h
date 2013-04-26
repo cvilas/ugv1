@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : Vehicle
+// Module   : Controller
 // File     : IoBoardMessage_servo.h
 // Brief    : UGV1 driver board messages - servo outputs
 //==============================================================================
@@ -14,9 +14,9 @@ namespace Ugv1
 {
 
 /// \class SetDIOServoModeCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Command to configure digital outputs as PWM servo drives
-class UGV1VEHICLELIB_DLL_API SetDioServoModeCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API SetDioServoModeCommand : public IoBoardCommand
 {
 public:
 
@@ -39,11 +39,11 @@ public:
 }; // SetDIOServoModeCommand
 
 /// \class WriteServoOutCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Command to set servo output position and speed.
 /// After configuring the DIO0-7 to Servo control mode, this command is used to play the Servo
 /// with position and speed control.
-class UGV1VEHICLELIB_DLL_API WriteServoOutCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API WriteServoOutCommand : public IoBoardCommand
 {
 public:
     /// Default constructor creates a command with all positions and speeds set to 0.

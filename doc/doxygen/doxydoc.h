@@ -27,16 +27,16 @@
 
 /**
  * 
- * \defgroup vehicle Vehicle
- * Vehicle on-board systems
+ * \defgroup controller Vehicle Controller
+ * Vehicle controller
  *
- * \defgroup comms Comms
- * \ingroup vehicle
- * Control messages
+ * \defgroup cont_comms Vehicle Controller Messages
+ * \ingroup controller
+ * Vehicle controller messages
  * 
- * \defgroup exceptions Vehicle Exceptions
- * \ingroup vehicle
- * Exceptions raised by vehicle software
+ * \defgroup cont_exceptions Vehicle Controller Exceptions
+ * \ingroup controller
+ * Exceptions raised by vehicle controller
  *
  * \defgroup remote Remote
  * Remote systems

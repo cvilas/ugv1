@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : Vehicle
+// Module   : Controller
 // File     : IoBoardMessage_motor.h
 // Brief    : UGV1 driver board messages - motor commands
 //==============================================================================
@@ -14,9 +14,9 @@ namespace Ugv1
 {
 
 /// \class SetMotorParametersCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Sets parameters for DC motor speed control
-class UGV1VEHICLELIB_DLL_API SetMotorParametersCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API SetMotorParametersCommand : public IoBoardCommand
 {
 public:
 
@@ -47,11 +47,11 @@ public:
 };
 
 /// \class WriteMotorSpeedCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief command to set motor speeds
 /// The motor constroller mode must be set to PID control for this to work
 /// \see SetMotorDriveModeCommand
-class UGV1VEHICLELIB_DLL_API WriteMotorSpeedCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API WriteMotorSpeedCommand : public IoBoardCommand
 {
 public:
     WriteMotorSpeedCommand();
@@ -68,9 +68,9 @@ public:
 };
 
 /// \class ReadMotorSpeedCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Command to read motor speeds
-class UGV1VEHICLELIB_DLL_API ReadMotorSpeedCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API ReadMotorSpeedCommand : public IoBoardCommand
 {
 public:
     ReadMotorSpeedCommand() : IoBoardCommand()
@@ -80,9 +80,9 @@ public:
 };
 
 /// \class ReadMotorSpeedResponse
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Response to ReadMotorSpeedCommand
-class UGV1VEHICLELIB_DLL_API ReadMotorSpeedResponse : public IoBoardResponse
+class UGV1CONTROLLER_DLL_API ReadMotorSpeedResponse : public IoBoardResponse
 {
 public:
     ReadMotorSpeedResponse() : IoBoardResponse() {}
@@ -97,9 +97,9 @@ public:
 };
 
 /// \class ReadMotorCurrentCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Command to read motor current consumption
-class UGV1VEHICLELIB_DLL_API ReadMotorCurrentCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API ReadMotorCurrentCommand : public IoBoardCommand
 {
 public:
     ReadMotorCurrentCommand() : IoBoardCommand()
@@ -109,9 +109,9 @@ public:
 };
 
 /// \class ReadMotorCurrentResponse
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Response to ReadMotorCurrentCommand
-class UGV1VEHICLELIB_DLL_API ReadMotorCurrentResponse : public IoBoardResponse
+class UGV1CONTROLLER_DLL_API ReadMotorCurrentResponse : public IoBoardResponse
 {
 public:
     ReadMotorCurrentResponse() : IoBoardResponse() {}
@@ -125,9 +125,9 @@ public:
 };
 
 /// \class SetMotorPidGainsCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Command to set closed loop motor control gains
-class UGV1VEHICLELIB_DLL_API SetMotorPidGainsCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API SetMotorPidGainsCommand : public IoBoardCommand
 {
 public:
     SetMotorPidGainsCommand();
@@ -149,10 +149,10 @@ public:
 };
 
 /// \class SetMotorDriveModeCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Command to set motor control in open or closed loop mode
 /// \see WriteMotorPowerCommand, WriteMotorSpeedCommand
-class UGV1VEHICLELIB_DLL_API SetMotorDriveModeCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API SetMotorDriveModeCommand : public IoBoardCommand
 {
 public:
     /// Default command sets PID control mode
@@ -164,10 +164,10 @@ public:
 };
 
 /// \class WriteMotorPowerCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Command to directly set motor power percent
 /// \see SetMotorDriveModeCommand
-class UGV1VEHICLELIB_DLL_API WriteMotorPowerCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API WriteMotorPowerCommand : public IoBoardCommand
 {
 public:
     WriteMotorPowerCommand();
@@ -184,9 +184,9 @@ public:
 };
 
 /// \class ReadMotorEncodersCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief command to read motor encoder counts
-class UGV1VEHICLELIB_DLL_API ReadMotorEncodersCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API ReadMotorEncodersCommand : public IoBoardCommand
 {
 public:
     ReadMotorEncodersCommand() : IoBoardCommand()
@@ -196,9 +196,9 @@ public:
 };
 
 /// \class ReadMotorEncodersResponse
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Response to ReadMotorEncodersCommand
-class UGV1VEHICLELIB_DLL_API ReadMotorEncodersResponse : public IoBoardResponse
+class UGV1CONTROLLER_DLL_API ReadMotorEncodersResponse : public IoBoardResponse
 {
 public:
     ReadMotorEncodersResponse() : IoBoardResponse() {}
@@ -213,9 +213,9 @@ public:
 };
 
 /// \class ResetMotorEncodersCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief command to reset motor encoder counters
-class UGV1VEHICLELIB_DLL_API ResetMotorEncodersCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API ResetMotorEncodersCommand : public IoBoardCommand
 {
 public:
     ResetMotorEncodersCommand() : IoBoardCommand()

@@ -2,8 +2,8 @@
 include(../version)
 
 # library description
-TARGET = Vehicle
-VERSION = $${VEHICLELIB_VERSION}
+TARGET = Ugv1Controller
+VERSION = $${CONTROLLER_VERSION}
 
 # common settings
 include(../ugvlibs.pri)
@@ -12,7 +12,7 @@ include(../ugvlibs.pri)
 INCLUDEPATH += ./../common
 DEPENDPATH += 
 
-win32:DEFINES += UGV1VEHICLELIB_DLL UGV1VEHICLELIB_DLL_EXPORT
+win32:DEFINES += UGV1CONTROLLER_DLL UGV1CONTROLLER_DLL_EXPORT
 
 HEADERS += IoBoard.h \ 
     IoBoardMessage.h \
@@ -24,8 +24,8 @@ HEADERS += IoBoard.h \
     IoBoardMessage_servo.h \
     IoBoardModel.h \
     Controller.h \
-	VehicleException.h \
-    vehiclelib_common.h
+	ControllerException.h \
+    controller_common.h
 SOURCES += IoBoard.cpp \
     IoBoardMessage.cpp \
     IoBoardMessage_analog.cpp \
@@ -34,7 +34,7 @@ SOURCES += IoBoard.cpp \
     IoBoardMessage_servo.cpp \
     IoBoardModel.cpp \
     Controller.cpp \
-	VehicleException.cpp
+	ControllerException.cpp
 win32:SOURCES += 
 unix:SOURCES += 
 win32:LIBS += 

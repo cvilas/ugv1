@@ -112,7 +112,7 @@ void MainWindow::on_configBtn_clicked()
         _model.writeConfig();
         _pErrorInfo->setText("Configure succeeded");
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
     }
@@ -187,7 +187,7 @@ void MainWindow::onTimer()
         _pErrorInfo->setText("");
 
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
     }

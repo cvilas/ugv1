@@ -5,7 +5,7 @@
 // Brief    : Console based test program for IoBoard
 //==============================================================================
 
-#include "Vehicle/IoBoard.h"
+#include "Controller/IoBoard.h"
 #include "io/SerialPort.h"
 #include <iostream>
 
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
         }
         std::cout << std::endl;
     }
-    catch(Ugv1::VehicleException& ex )
+    catch(Ugv1::ControllerException& ex )
     {
         std::cerr << ex.what() << std::endl;
         return -1;

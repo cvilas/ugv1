@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : Vehicle
+// Module   : Controller
 // File     : IoBoardMessage.cpp
 //==============================================================================
 
@@ -88,7 +88,7 @@ IoBoardResponse::~IoBoardResponse()
 {}
 
 //-----------------------------------------------------------------------------
-void IoBoardResponse::validate() throw(VehicleException)
+void IoBoardResponse::validate() throw(ControllerException)
 //-----------------------------------------------------------------------------
 {
     // check length

@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : Vehicle
+// Module   : Controller
 // File     : IoBoard.cpp
 //==============================================================================
 
@@ -78,7 +78,7 @@ void IoBoard::resetMotorEncoders()
 }
 
 //-----------------------------------------------------------------------------
-void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(VehicleException)
+void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(ControllerException)
 //-----------------------------------------------------------------------------
 {
     send(cmd);
@@ -141,7 +141,7 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Vehi
 }
 
 //-----------------------------------------------------------------------------
-void IoBoard::send(const IoBoardCommand& cmd) throw (VehicleException)
+void IoBoard::send(const IoBoardCommand& cmd) throw (ControllerException)
 //-----------------------------------------------------------------------------
 {
     // write message

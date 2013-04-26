@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : Vehicle
+// Module   : Controller
 // File     : IoBoardMessage.h
 // Brief    : base class for UGV1 driver board messages
 //==============================================================================
@@ -8,7 +8,7 @@
 #ifndef UGV1_IOBOARDMESSAGE_H
 #define UGV1_IOBOARDMESSAGE_H
 
-#include "VehicleException.h"
+#include "ControllerException.h"
 #include <vector>
 #include <cstddef>
 
@@ -16,12 +16,12 @@ namespace Ugv1
 {
 
 /// \class IoBoardMessage
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Base class for UGV1 I/O board messages
 /// See Sensor/Motor Drive Board - Version 2.2 (SKU:DFR0057) Wiki for command format:
 /// in docs/Sensor Driver Board V2 - wiki.pdf, or the webpage
 /// http://www.dfrobot.com/wiki/index.php?title=Sensor/Motor_Drive_Board_-_Version_2.2_(SKU:DFR0057)
-class UGV1VEHICLELIB_DLL_API IoBoardMessage : public std::vector<unsigned char>
+class UGV1CONTROLLER_DLL_API IoBoardMessage : public std::vector<unsigned char>
 {
 public:
 
@@ -73,10 +73,10 @@ protected:
 };
 
 /// \class IoBoardCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief IO board command message builder. Base class for all IoBoard commands.
 /// \see IoBoardReply, IoBoardMessage
-class UGV1VEHICLELIB_DLL_API IoBoardCommand : public IoBoardMessage
+class UGV1CONTROLLER_DLL_API IoBoardCommand : public IoBoardMessage
 {
 public:
 
@@ -105,10 +105,10 @@ private:
 }; // IoBoardCommand
 
 /// \class IoBoardResponse
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Response from the IoBoard for IoBoardCommand messages
 /// \note Always check that the message is valid before using it.
-class UGV1VEHICLELIB_DLL_API IoBoardResponse : public IoBoardMessage
+class UGV1CONTROLLER_DLL_API IoBoardResponse : public IoBoardMessage
 {
 public:
     IoBoardResponse();
@@ -123,7 +123,7 @@ public:
 	/// - InvalidMessageChecksumException
 	/// - InvalidMessageIdException
     /// \return true if the message format is correct
-    void validate() throw(VehicleException);
+    void validate() throw(ControllerException);
 
     /// Implemented by derived classes.
     /// \return The expected length for the message, including header and checksum
@@ -142,9 +142,9 @@ public:
 }; // IoBoardResponse
 
 /// \class ReadBoardVersionCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Create command to read board version info.
-class UGV1VEHICLELIB_DLL_API ReadBoardVersionCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API ReadBoardVersionCommand : public IoBoardCommand
 {
 public:
     ReadBoardVersionCommand() : IoBoardCommand()
@@ -154,9 +154,9 @@ public:
 };
 
 /// \class ReadBoardVersionResponse
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Response to ReadBoardVersionCommand
-class UGV1VEHICLELIB_DLL_API ReadBoardVersionResponse : public IoBoardResponse
+class UGV1CONTROLLER_DLL_API ReadBoardVersionResponse : public IoBoardResponse
 {
 public:
     ReadBoardVersionResponse() : IoBoardResponse() {}

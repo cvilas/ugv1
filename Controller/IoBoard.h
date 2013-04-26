@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : Vehicle
+// Module   : Controller
 // File     : IoBoard.h
 // Brief    : IO board interface
 //==============================================================================
@@ -18,13 +18,13 @@ namespace Ugv1
 {
 
 /// \class IoBoard
-/// \ingroup vehicle
+/// \ingroup controller
 /// \brief UGV1 IO board communication interface.
 /// This class mainly provides a mechanism for passing messages back and forth
 /// from the hardware. A compatible external transport mechanism is used
 /// for message passing (i.e. RS232 serial port).
 /// \see IoBoardMessage, IoBoardCommand, IoBoardResponse
-class UGV1VEHICLELIB_DLL_API IoBoard
+class UGV1CONTROLLER_DLL_API IoBoard
 {
 
 public:
@@ -86,13 +86,13 @@ public:
 	/// - IoWaitException
 	/// - IoWriteException
 	/// - IoReadException
-    void send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(VehicleException);
+    void send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(ControllerException);
 
 	/// Send command that generate a response from the IoBoard.
 	/// On error the following exceptions are thrown
 	/// - IoWaitException
 	/// - IoWriteException
-    void send(const IoBoardCommand& cmd) throw(VehicleException);
+    void send(const IoBoardCommand& cmd) throw(ControllerException);
 
 private:
     IoBoard(const IoBoard&); // disable copy

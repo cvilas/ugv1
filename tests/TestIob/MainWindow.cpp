@@ -95,7 +95,7 @@ void MainWindow::on_getVersionBtn_clicked()
                     + QString::number(response.getBoardRevision());
         _pUi->versionTxt->setText(vinfo);
     }
-    catch( Ugv1::VehicleException& ex)
+    catch( Ugv1::ControllerException& ex)
     {
         _pErrorInfo->setText( ex.what() );
         _pUi->versionTxt->setText("error");
@@ -120,7 +120,7 @@ void MainWindow::on_getAnalogBtn_clicked()
         _pUi->analog6->setText(QString::number(response.getVolts(6)));
         _pUi->analog7->setText(QString::number(response.getVolts(7)));
     }
-    catch( Ugv1::VehicleException& ex)
+    catch( Ugv1::ControllerException& ex)
     {
         _pErrorInfo->setText( ex.what() );
     }
@@ -147,7 +147,7 @@ void MainWindow::on_dioConfigBtn_clicked()
         _iob.configureDigitalInPins(cmd);
         _pErrorInfo->setText("");
     }
-    catch( Ugv1::VehicleException& ex)
+    catch( Ugv1::ControllerException& ex)
     {
         _pErrorInfo->setText( ex.what() );
     }
@@ -174,7 +174,7 @@ void MainWindow::on_doSetBtn_clicked()
         _iob.setDigitalOut(cmd);
         _pErrorInfo->setText("");
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
     }
@@ -198,7 +198,7 @@ void MainWindow::on_configServoBtn_clicked()
         _iob.configureServoOutPins(cmd);
         _pErrorInfo->setText("");
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
     }
@@ -222,7 +222,7 @@ void MainWindow::on_setServoBtn_clicked()
         _iob.setServo(cmd);
         _pErrorInfo->setText("");
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
     }
@@ -249,7 +249,7 @@ void MainWindow::on_getDinBtn_clicked()
         _pUi->din9->setText(QString::number(response.isHigh(9)));
         _pUi->din10->setText(QString::number(response.isHigh(10)));
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
         _pUi->din0->setText("E");
@@ -279,7 +279,7 @@ void MainWindow::on_setDrvTrainBtn_clicked()
         _iob.configureDriveTrain(cmd);
         _pErrorInfo->setText("");
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
     }
@@ -298,7 +298,7 @@ void MainWindow::on_setPidBtn_clicked()
         _iob.configureMotorControlGains(cmd);
         _pErrorInfo->setText("");
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
     }
@@ -313,7 +313,7 @@ void MainWindow::on_resetEncBtn_clicked()
         _iob.resetMotorEncoders();
         _pErrorInfo->setText("");
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
     }
@@ -331,7 +331,7 @@ void MainWindow::on_getEncBtn_clicked()
         _pUi->encoder0->setText( QString::number(response.getEncoder(0)) );
         _pUi->encoder1->setText( QString::number(response.getEncoder(1)) );
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
         _pUi->encoder0->setText( "Error" );
@@ -361,7 +361,7 @@ void MainWindow::on_pidControlOn_toggled(bool checked)
         _motorPowerCmd.setPower(0,0);
         _motorPowerCmd.setPower(1,0);
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
     }
@@ -386,7 +386,7 @@ void MainWindow::on_motor1Slider_sliderMoved(int position)
         }
         _pErrorInfo->setText("");
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
     }
@@ -413,7 +413,7 @@ void MainWindow::on_motor2Slider_sliderMoved(int position)
         }
         _pErrorInfo->setText("");
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
     }
@@ -434,7 +434,7 @@ void MainWindow::on_getCurrentBtn_clicked()
         _pUi->motor1Current->setText(QString::number(response.getMotorCurrent(0)));
         _pUi->motor2Current->setText(QString::number(response.getMotorCurrent(1)));
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
         _pUi->motor1Speed->setText("Error");
@@ -454,7 +454,7 @@ void MainWindow::on_getSpeedBtn_clicked()
         _pUi->motor1Speed->setText(QString::number(response.getMotorSpeed(0)));
         _pUi->motor2Speed->setText(QString::number(response.getMotorSpeed(1)));
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         _pErrorInfo->setText( ex.what() );
         _pUi->motor1Speed->setText("Error");

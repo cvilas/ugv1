@@ -10,7 +10,7 @@
 
 #include <QMainWindow>
 #include <io/SerialPort.h>
-#include <Vehicle/IoBoard.h>
+#include <Controller/IoBoard.h>
 
 namespace Ui {
 class MainWindow;

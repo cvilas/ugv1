@@ -41,7 +41,7 @@ CONFIG(debug, release|debug) {
 # don't want linking against qtmain.lib
 QMAKE_LIBS_QT_ENTRY=
 INCLUDEPATH += $${PWD} \
-                $${PWD}/Vehicle \
+                $${PWD}/Controller \
                 $${GRAPE_DIR} \
                 $${GRAPE_DIR}/core \
                 $${GRAPE_DIR}/io

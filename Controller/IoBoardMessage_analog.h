@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : Vehicle
+// Module   : Controller
 // File     : IoBoardMessage_analog.h
 // Brief    : UGV1 driver board messages - analog commands
 //==============================================================================
@@ -14,18 +14,18 @@ namespace Ugv1
 {
 
 /// \class ReadAnalogInCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Command a read of analog inputs
-class UGV1VEHICLELIB_DLL_API ReadAnalogInCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API ReadAnalogInCommand : public IoBoardCommand
 {
 public:
     ReadAnalogInCommand();
 }; // ReadAnalogInCommand
 
 /// \class ReadAnalogInResponse
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Response message for ReadAnalogInCommand
-class UGV1VEHICLELIB_DLL_API ReadAnalogInResponse : public IoBoardResponse
+class UGV1CONTROLLER_DLL_API ReadAnalogInResponse : public IoBoardResponse
 {
 public:
     ReadAnalogInResponse() : IoBoardResponse() {}

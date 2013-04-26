@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : Vehicle
+// Module   : Controller
 // File     : IoBoardMessage_dio.h
 // Brief    : UGV1 driver board messages - digital IO
 //==============================================================================
@@ -14,9 +14,9 @@ namespace Ugv1
 {
 
 /// \class SetDioIoModeCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Configure digital IO pins as inputs and outputs
-class UGV1VEHICLELIB_DLL_API SetDioIoModeCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API SetDioIoModeCommand : public IoBoardCommand
 {
 public:
     /// Default constructor. Sets all digital pins as inputs.
@@ -50,9 +50,9 @@ public:
 }; // SetDioIoModeCommand
 
 /// \class WriteDioOutCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Command to write digital outputs
-class UGV1VEHICLELIB_DLL_API WriteDioOutCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API WriteDioOutCommand : public IoBoardCommand
 {
 public:
     /// Default constructor. Creates command with all output pins set to low.
@@ -77,18 +77,18 @@ public:
 }; // WriteDioOutCommand
 
 /// \class ReadDioInCommand
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Command a read of digital lines configured as inputs
-class UGV1VEHICLELIB_DLL_API ReadDioInCommand : public IoBoardCommand
+class UGV1CONTROLLER_DLL_API ReadDioInCommand : public IoBoardCommand
 {
 public:
     ReadDioInCommand();
 }; // ReadDioInCommand
 
 /// \class ReadDioInResponse
-/// \ingroup comms
+/// \ingroup cont_comms
 /// \brief Response to ReadDioInCommand
-class UGV1VEHICLELIB_DLL_API ReadDioInResponse : public IoBoardResponse
+class UGV1CONTROLLER_DLL_API ReadDioInResponse : public IoBoardResponse
 {
 public:
     ReadDioInResponse() : IoBoardResponse(){}

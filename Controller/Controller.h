@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : Vehicle
+// Module   : Controller
 // File     : Controller.h
 // Brief    : UGV1 controller class
 //==============================================================================
@@ -14,7 +14,7 @@ namespace Ugv1
 {
 
 /// \class Controller
-/// \ingroup vehicle
+/// \ingroup controller
 /// \brief UGV1 controller class.
 /*
  * Design notes:
@@ -25,7 +25,7 @@ namespace Ugv1
  * after exiting loop(), io outputs get written from devices
  * cleanup() to shutdown bits before exit
  */
-class UGV1VEHICLELIB_DLL_API IController
+class UGV1CONTROLLER_DLL_API IController
 {
 public:
     IController();

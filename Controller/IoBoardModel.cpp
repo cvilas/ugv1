@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : Vehicle
+// Module   : Controller
 // File     : IoBoardModel.cpp
 //==============================================================================
 
@@ -360,7 +360,7 @@ void IoBoardModel::addResponseMessage(IoBoardMessage::MessageID id, IoBoardRespo
 }
 
 //-----------------------------------------------------------------------------
-void IoBoardModel::writeConfig() throw(VehicleException)
+void IoBoardModel::writeConfig() throw(ControllerException)
 //-----------------------------------------------------------------------------
 {
     _board.send(*_commandMap[IoBoardMessage::SET_DIO_IOMODE]);
@@ -382,7 +382,7 @@ void IoBoardModel::writeConfig() throw(VehicleException)
 }
 
 //-----------------------------------------------------------------------------
-void IoBoardModel::writeOutputs() throw(VehicleException)
+void IoBoardModel::writeOutputs() throw(ControllerException)
 //-----------------------------------------------------------------------------
 {
     if( _dioCmdChanged )
@@ -454,7 +454,7 @@ void IoBoardModel::writeOutputs() throw(VehicleException)
 }
 
 //-----------------------------------------------------------------------------
-void IoBoardModel::readInputs() throw(VehicleException)
+void IoBoardModel::readInputs() throw(ControllerException)
 //-----------------------------------------------------------------------------
 {
     _board.getDigitalIn(*dynamic_cast<ReadDioInResponse*>(_responseMap[IoBoardMessage::READ_DIO]));

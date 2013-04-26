@@ -1,8 +1,8 @@
 #include <QString>
 #include <QtTest>
-#include <Vehicle/IoBoardMessage_servo.h>
-#include <Vehicle/IoBoardMessage_dio.h>
-#include <Vehicle/IoBoardMessage_motor.h>
+#include <Controller/IoBoardMessage_servo.h>
+#include <Controller/IoBoardMessage_dio.h>
+#include <Controller/IoBoardMessage_motor.h>
 
 //=============================================================================
 /// \class Test class for IoBoard messages
@@ -263,7 +263,7 @@ void IoBoardMessageTests::test_IoBoardResponse_validate()
     {
         resp.validate();
     }
-    catch( Ugv1::VehicleException& ex )
+    catch( Ugv1::ControllerException& ex )
     {
         qDebug() << ex.what();
         QFAIL("Valid message but test failed");
@@ -278,7 +278,7 @@ void IoBoardMessageTests::test_IoBoardResponse_validate()
         resp1.validate();
         QFAIL("Invalid message (length) but test failed");
     }
-    catch(Ugv1::VehicleException& ex)
+    catch(Ugv1::ControllerException& ex)
     {
         qDebug() << ex.what();
     }
@@ -292,7 +292,7 @@ void IoBoardMessageTests::test_IoBoardResponse_validate()
         resp2.validate();
         QFAIL("Invalid message (header) but test failed");
     }
-    catch(Ugv1::VehicleException& ex)
+    catch(Ugv1::ControllerException& ex)
     {
         qDebug() << ex.what();
     }
@@ -306,7 +306,7 @@ void IoBoardMessageTests::test_IoBoardResponse_validate()
         resp3.validate();
         QFAIL("Invalid message (id) but test failed");
     }
-    catch(Ugv1::VehicleException& ex)
+    catch(Ugv1::ControllerException& ex)
     {
         qDebug() << ex.what();
     }
@@ -320,7 +320,7 @@ void IoBoardMessageTests::test_IoBoardResponse_validate()
         resp4.validate();
         QFAIL("Invalid message (checksum) but test failed");
     }
-    catch(Ugv1::VehicleException& ex)
+    catch(Ugv1::ControllerException& ex)
     {
         qDebug() << ex.what();
     }

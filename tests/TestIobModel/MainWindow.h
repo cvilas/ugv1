@@ -9,7 +9,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <Vehicle/IoBoardModel.h>
+#include <Controller/IoBoardModel.h>
 #include <io/SerialPort.h>
 #include <QTimer>
 

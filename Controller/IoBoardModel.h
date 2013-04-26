@@ -1,6 +1,6 @@
 //==============================================================================
 // Project  : UGV1
-// Module   : Vehicle
+// Module   : Controller
 // File     : IoBoardModel.h
 // Brief    : IoBoard state class
 //==============================================================================
@@ -19,7 +19,7 @@ namespace Ugv1
 /// change faster than expected
 
 /// \class IoBoardModel
-/// \ingroup vehicle
+/// \ingroup controller
 /// \brief IO state model
 /// The class provides a state model for various inputs and outputs on the IO board.
 /// State can be changed by calling set..() methods and the current state are returned
@@ -36,7 +36,7 @@ namespace Ugv1
 /// writeOutputs() to write them to the board.
 /// - A get...() method do not return instantaneous state; they return state at the instant
 /// of last call to readInputs()
-class UGV1VEHICLELIB_DLL_API IoBoardModel
+class UGV1CONTROLLER_DLL_API IoBoardModel
 {
 public:
 
@@ -201,15 +201,15 @@ public:
 
     /// Write configuration to the board. None of the setConfig..() calls take effect until
     /// a call to this method.
-    virtual void writeConfig() throw(VehicleException);
+    virtual void writeConfig() throw(ControllerException);
 
     /// Apply all outputs on the board, i.e. digital output pins, servo outputs and motor control.
     /// None of the set() calls take effect until calls to this method.
-    virtual void writeOutputs() throw(VehicleException);
+    virtual void writeOutputs() throw(ControllerException);
 
     /// Read in inputs on the IO board, i.e. digital inputs, analog inputs, motor currents, etc.
     /// Call get...() methods after this method to obtain the latest input state.
-    virtual void readInputs() throw(VehicleException);
+    virtual void readInputs() throw(ControllerException);
 
 protected:
 
