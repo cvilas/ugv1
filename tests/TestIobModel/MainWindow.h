@@ -31,7 +31,6 @@ public:
 private slots:
     void onConnectSerialPort();
     void onTimer();
-    void on_configBtn_clicked();
     void on_startStopBtn_clicked();
     void on_dioconf0_currentIndexChanged(int index);
     void on_dioconf1_currentIndexChanged(int index);

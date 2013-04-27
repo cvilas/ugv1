@@ -12,7 +12,14 @@ namespace Ugv1
 //==============================================================================
 IoBoardModel::IoBoardModel(IoBoard& board)
 //==============================================================================
-    : _board(board), _dioCmdChanged(true), _servoCmdChanged(true)
+    : _board(board),
+      _dioCmdChanged(true),
+      _servoCmdChanged(true),
+      _speedCmdChanged(true),
+      _dioCfgChanged(true),
+      _pidGainsChanged(true),
+      _driveParamsChanged(true),
+      _driveModeChanged(true)
 {
     for(int i = 0; i < 2; ++i)
     {
@@ -74,6 +81,7 @@ void IoBoardModel::setConfigDioMode(unsigned int channel, IoBoardModel::DioMode 
         dynamic_cast<SetDioServoModeCommand*>(_commandMap[IoBoardMessage::SET_DIO_SERVOMODE])->setModeServo(channel, true);
         break;
     };
+    _dioCfgChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -99,6 +107,7 @@ void IoBoardModel::setConfigEncoderPPR(unsigned short ppr)
 //-----------------------------------------------------------------------------
 {
     dynamic_cast<SetMotorParametersCommand*>(_commandMap[IoBoardMessage::SET_MOTOR_PARAM])->setEncoderPPR(ppr);
+    _driveParamsChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -113,6 +122,7 @@ void IoBoardModel::setConfigMotorGearRatio(unsigned short ratio10)
 //-----------------------------------------------------------------------------
 {
     dynamic_cast<SetMotorParametersCommand*>(_commandMap[IoBoardMessage::SET_MOTOR_PARAM])->setGearRatio(ratio10);
+    _driveParamsChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -127,6 +137,7 @@ void IoBoardModel::setConfigWheelPerimeter(unsigned short mm)
 //-----------------------------------------------------------------------------
 {
     dynamic_cast<SetMotorParametersCommand*>(_commandMap[IoBoardMessage::SET_MOTOR_PARAM])->setWheelPerimeter(mm);
+    _driveParamsChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -149,6 +160,7 @@ void IoBoardModel::setConfigMotorDriveMode(DriveControlMode mode)
     default:
         dynamic_cast<SetMotorDriveModeCommand*>(_commandMap[IoBoardMessage::SET_MOTOR_DRIVEMODE])->setModeSpeedControl();
     };
+    _driveModeChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -174,6 +186,7 @@ void IoBoardModel::setConfigPGain(unsigned char gain)
 //-----------------------------------------------------------------------------
 {
     dynamic_cast<SetMotorPidGainsCommand*>(_commandMap[IoBoardMessage::SET_MOTOR_PID_GAINS])->setProportionalGain(gain);
+    _pidGainsChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -188,6 +201,7 @@ void IoBoardModel::setConfigIGain(unsigned char gain)
 //-----------------------------------------------------------------------------
 {
     dynamic_cast<SetMotorPidGainsCommand*>(_commandMap[IoBoardMessage::SET_MOTOR_PID_GAINS])->setIntegralGain(gain);
+    _pidGainsChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -202,6 +216,7 @@ void IoBoardModel::setConfigDGain(unsigned char gain)
 //-----------------------------------------------------------------------------
 {
     dynamic_cast<SetMotorPidGainsCommand*>(_commandMap[IoBoardMessage::SET_MOTOR_PID_GAINS])->setDerivativeGain(gain);
+    _pidGainsChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -254,6 +269,7 @@ void IoBoardModel::setMotorSpeed(unsigned int channel, int cmps)
     {
         dynamic_cast<WriteMotorSpeedCommand*>(_commandMap[IoBoardMessage::WRITE_MOTOR_SPEED])->setSpeed(channel, cmps);
     }
+    _speedCmdChanged = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -360,38 +376,60 @@ void IoBoardModel::addResponseMessage(IoBoardMessage::MessageID id, IoBoardRespo
 }
 
 //-----------------------------------------------------------------------------
-void IoBoardModel::writeConfig() throw(ControllerException)
+void IoBoardModel::readBoardVersion() throw(ControllerException)
 //-----------------------------------------------------------------------------
-{
-    _board.send(*_commandMap[IoBoardMessage::SET_DIO_IOMODE]);
-    _board.send(*_commandMap[IoBoardMessage::SET_DIO_SERVOMODE]);
-    _board.send(*_commandMap[IoBoardMessage::SET_MOTOR_PARAM]);
-    _board.send(*_commandMap[IoBoardMessage::SET_MOTOR_PID_GAINS]);
-    _board.send(*_commandMap[IoBoardMessage::SET_MOTOR_DRIVEMODE]);
+{    
     _board.getVersion( *dynamic_cast<ReadBoardVersionResponse*>(_responseMap[IoBoardMessage::READ_BOARD_VERSION]));
-
-    // motor controller mode may have changed. reset encoders
-    for(int i = 0; i < 2; ++i)
-    {
-        _wasMotorCmdDirFwd[i] = true;
-        _isMotorCmdDirFwd[i] = true;
-        _isMotorRespDirFwd[i] = true;
-        _encoderResidual[i] = 0;
-    }
-    _board.resetMotorEncoders();
 }
 
 //-----------------------------------------------------------------------------
-void IoBoardModel::writeOutputs() throw(ControllerException)
+void IoBoardModel::writeOutputs(bool forceAll) throw(ControllerException)
 //-----------------------------------------------------------------------------
 {
-    if( _dioCmdChanged )
+    // configuration
+
+    if( _dioCfgChanged || forceAll )
+    {
+        _board.send(*_commandMap[IoBoardMessage::SET_DIO_IOMODE]);
+        _board.send(*_commandMap[IoBoardMessage::SET_DIO_SERVOMODE]);
+        _dioCfgChanged = false;
+    }
+
+    if( _driveParamsChanged || forceAll )
+    {
+        _board.send(*_commandMap[IoBoardMessage::SET_MOTOR_PARAM]);
+        _driveParamsChanged = false;
+    }
+
+    if( _pidGainsChanged || forceAll )
+    {
+        _board.send(*_commandMap[IoBoardMessage::SET_MOTOR_PID_GAINS]);
+        _pidGainsChanged = false;
+    }
+
+    if( _driveModeChanged || forceAll )
+    {
+        _board.send(*_commandMap[IoBoardMessage::SET_MOTOR_DRIVEMODE]);
+        for(int i = 0; i < 2; ++i)
+        {
+            _wasMotorCmdDirFwd[i] = true;
+            _isMotorCmdDirFwd[i] = true;
+            _isMotorRespDirFwd[i] = true;
+            _encoderResidual[i] = 0;
+        }
+        _board.resetMotorEncoders();
+        _driveModeChanged = false;
+    }
+
+    // state change commands
+
+    if( _dioCmdChanged || forceAll )
     {
         _board.send( *_commandMap[IoBoardMessage::WRITE_DIO]);
         _dioCmdChanged = false;
     }
 
-    if( _servoCmdChanged )
+    if( _servoCmdChanged || forceAll )
     {
         _board.send(*_commandMap[IoBoardMessage::WRITE_SERVO]);
         _servoCmdChanged = false;
@@ -443,13 +481,17 @@ void IoBoardModel::writeOutputs() throw(ControllerException)
     }
 
     // go again
-    if( pModeCmd->isModeSpeedControl() )
+    if( _speedCmdChanged || forceAll )
     {
-        _board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_SPEED]);
-    }
-    else
-    {
-        _board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_POWER]);
+        if( pModeCmd->isModeSpeedControl() )
+        {
+            _board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_SPEED]);
+        }
+        else
+        {
+            _board.send(*_commandMap[IoBoardMessage::WRITE_MOTOR_POWER]);
+        }
+        _speedCmdChanged = false;
     }
 }
 

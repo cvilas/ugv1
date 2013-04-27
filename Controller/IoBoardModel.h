@@ -29,11 +29,11 @@ namespace Ugv1
 /// these instances, the corresponding get..() returns the last user setting for the parameter,
 /// and not the actual state. Such get methods are identified by the getSetting..() or
 /// getConfigSetting...() prefix.
-/// - The board does not retain settings when power cycled. On power up, reconfigure using
-/// setConfig..() and call writeConfig() to ensure the state maintained by the class is
-/// consistent with actual settings on the board.
-/// - Calling a set...() method does not immediately set state. Call writeConfig() and
-/// writeOutputs() to write them to the board.
+/// - The board does not retain settings when power cycled. On power up, reconfigure by
+/// first calling setConfigDefault() followed by other setConfig..() as necessary to ensure
+/// the state maintained by the class is consistent with actual settings on the board.
+/// - Calling a set...() method does not immediately set state. Call writeOutputs() to write
+/// them to the board.
 /// - A get...() method do not return instantaneous state; they return state at the instant
 /// of last call to readInputs()
 class UGV1CONTROLLER_DLL_API IoBoardModel
@@ -87,64 +87,63 @@ public:
 
     // -------------- configuration ---------------
 
-    /// Set default configuration parameters. Call writeConfig to activate
-    /// the configuration by writing it to the board.
+    /// Set default configuration parameters.
     /// - All 11 digital lines are configured as inputs
     /// - encoder ppr = 13
     /// - gear ratio = 51:1
     /// - wheel perimeter = 430 mm
     /// - motor drive mode = speed control
     /// - p,i,d gains = 10,30,1 respectively
-    /// \see writeConfig
+    /// \see writeOutputs
     void setConfigDefaults();
 
     /// Configure digital pins as input, output or servo lines.
     /// \param channel  IO pin in range 0 - 10. Note that only pins 0 - 7
     ///                 are configurable in servo mode.
     /// \param mode     Desired mode
-    /// \see writeConfig
+    /// \see writeOutputs
     void setConfigDioMode(unsigned int channel, DioMode mode);
     DioMode getConfigSettingDioMode(unsigned int channel);
 
     /// Specify the pulses per rotation for motor encoders.
-    /// \see writeConfig
+    /// \see writeOutputs
     void setConfigEncoderPPR(unsigned short ppr);
     unsigned short getConfigSettingEncoderPPR();
 
     /// Set drive train gear ratio.
     /// \param gr10 Gear ratio multiplied by 10. i.e. If the actual ratio is
     ///             64:1, set 640.
-    /// \see writeConfig
+    /// \see writeOutputs
     void setConfigMotorGearRatio(unsigned short gr10);
     unsigned short getConfigSettingMotorGearRatio();
 
     /// Set the wheel perimeter
     /// \param mm   Wheel perimeter in millimeters.
-    /// \see writeConfig
+    /// \see writeOutputs
     void setConfigWheelPerimeter(unsigned short mm);
     unsigned short getConfigSettingWheelPerimeter();
 
     /// Configure motor control in open-loop direct power mode or closed-loop
     /// speed control mode
-    /// \see writeConfig
+    /// \see writeOutputs
     void setConfigMotorDriveMode(DriveControlMode mode);
     DriveControlMode getConfigSettingMotorDriveMode();
 
     /// Set motor controller PID proportional gain
     /// \param gain    Proportional gain multiplied by 10. Range 0 - 255.
-    /// \see writeConfig
+    /// \see writeOutputs
     void setConfigPGain(unsigned char gain);
     unsigned char getConfigSettingPGain();
 
     /// Set motor controller PID integral gain
     /// \param gain    Integral gain multiplied by 10. Range 0 - 255.
-    /// \see writeConfig
+    /// \see writeOutputs
     void setConfigIGain(unsigned char gain);
     unsigned char getConfigSettingIGain();
 
     /// Set motor controller PID damping gain
     /// \param gain    Damping gain multiplied by 10. Range 0 - 255.
-    /// \see writeConfig
+    /// \see writeOutputs
     void setConfigDGain(unsigned char gain);
     unsigned char getConfigSettingDGain();
 
@@ -193,19 +192,23 @@ public:
     /// \see readInputs
     long long int getMotorEncoder(unsigned int channel);
 
-    /// \return board version information retrieved after writeConfig()
-    /// \see writeConfig
+    /// \return board version information retrieved after readBoardVersion()
+    /// \see readBoardVersion
     Version getBoardVersion();
 
     // --------------- update -----------------
 
-    /// Write configuration to the board. None of the setConfig..() calls take effect until
-    /// a call to this method.
-    virtual void writeConfig() throw(ControllerException);
+    /// Read version from the board. Also serves as a comms test.
+    virtual void readBoardVersion() throw(ControllerException);
 
-    /// Apply all outputs on the board, i.e. digital output pins, servo outputs and motor control.
-    /// None of the set() calls take effect until calls to this method.
-    virtual void writeOutputs() throw(ControllerException);
+    /// Apply any configuration or outputs changed since last time a call to
+    /// this method was made.
+    /// None of the set() calls take effect until this method is called.
+    /// \param forceAll When true, all configuration parameters and outputs are forced
+    ///                 to the board, whether they have changed or not. This is useful
+    ///                 when calling writeOutputs for the first time in a loop in order
+    ///                 force all IO on the board to a known state.
+    virtual void writeOutputs(bool forceAll = false) throw(ControllerException);
 
     /// Read in inputs on the IO board, i.e. digital inputs, analog inputs, motor currents, etc.
     /// Call get...() methods after this method to obtain the latest input state.
@@ -230,6 +233,11 @@ protected:
     unsigned int                                            _encoderResidual[2];    //!< value at reset
     bool                                                    _dioCmdChanged;         //!< set if a change if commanded for io bits
     bool                                                    _servoCmdChanged;
+    bool                                                    _speedCmdChanged;
+    bool                                                    _dioCfgChanged;
+    bool                                                    _pidGainsChanged;
+    bool                                                    _driveParamsChanged;
+    bool                                                    _driveModeChanged;
 }; // IoBoardModel
 
 } // namespace Ugv1

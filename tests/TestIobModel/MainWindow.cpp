@@ -62,8 +62,6 @@ void MainWindow::initialiseUi()
     _model.setConfigPGain( _pUi->gainP->value() );
     _model.setConfigIGain( _pUi->gainI->value() );
     _model.setConfigDGain( _pUi->gainD->value() );
-
-    on_configBtn_clicked();
 }
 
 //-----------------------------------------------------------------------------
@@ -104,21 +102,6 @@ void MainWindow::updateStatusBar()
 }
 
 //-----------------------------------------------------------------------------
-void MainWindow::on_configBtn_clicked()
-//-----------------------------------------------------------------------------
-{
-    try
-    {
-        _model.writeConfig();
-        _pErrorInfo->setText("Configure succeeded");
-    }
-    catch( Ugv1::ControllerException& ex )
-    {
-        _pErrorInfo->setText( ex.what() );
-    }
-}
-
-//-----------------------------------------------------------------------------
 void MainWindow::on_startStopBtn_clicked()
 //-----------------------------------------------------------------------------
 {
@@ -126,15 +109,23 @@ void MainWindow::on_startStopBtn_clicked()
     {
         _timer.stop();
         _pUi->msconf->setEnabled(true);
-        _pUi->configBtn->setEnabled(true);
         _pUi->startStopBtn->setText("Start");
     }
     else
     {
-        _pUi->msconf->setEnabled(false);
-        _pUi->configBtn->setEnabled(false);
-        _timer.start( _pUi->msconf->value() );
-        _pUi->startStopBtn->setText("Stop");
+        try
+        {
+            _model.readBoardVersion();
+            _model.writeOutputs(true);
+            _pErrorInfo->setText("Go..");
+            _pUi->msconf->setEnabled(false);
+            _timer.start( _pUi->msconf->value() );
+            _pUi->startStopBtn->setText("Stop");
+        }
+        catch( Ugv1::ControllerException& ex )
+        {
+            _pErrorInfo->setText( ex.what() );
+        }
     }
 }
 
@@ -182,7 +173,7 @@ void MainWindow::onTimer()
         _pUi->speed0set->display( _model.getSettingMotorSpeed(0) );
         _pUi->speed1set->display( _model.getSettingMotorSpeed(1) );
 
-        _model.writeOutputs();
+        _model.writeOutputs(false);
 
         _pErrorInfo->setText("");
 

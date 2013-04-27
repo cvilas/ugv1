@@ -2,7 +2,7 @@
 include(../version)
 
 # library description
-TARGET = HMI
+TARGET = Ugv1Hmi
 VERSION = $${HMI_VERSION}
 
 # common settings
