@@ -8,19 +8,11 @@ Objective: Teleoperation within the local wireless network
     - RS232 adapter
     - Joystick for android device
 
-- Replace error return codes with exceptions where possible. See http://stackoverflow.com/questions/99683/which-and-why-do-you-prefer-exceptions-or-return-codes
-- Remove Status objects and use exceptions where possible.
-
 - Grape libs
     - Config
-    - Stopwatch and timestamping
     - Status (fixed size circular buffer to a message and code)
 
 - IoBoard
-    - Resolve the need to handle READ_MOTOR_SPEED as a special case. Note: ID (0x0D) 
-      is ASCII code for carriage return. Is the ID not being received due to serial port configuration error?
-    - Remove character insertion for the above, or ensure that response size after insertion 
-      is trimmed to expected length.
     - timestamp message arrival time
 	
 - IoBoardModel
@@ -35,8 +27,6 @@ Objective: Teleoperation within the local wireless network
         - Accepts DesiredState from HMI, replies with CurrentState
         - Resets DesiredState motor power after timeout with HMI and stops processing further inputs
     - Deploy controller on Android 
-
-- Replace all individual Status objects with one error logging mechanism
 
 - HMI
     - Desktop based HMI
@@ -65,3 +55,6 @@ Objective: Teleoperation within the local wireless network
 	
 - Mechanical
     - Mount joystick securely in a box
+
+- Webpage
+	- Videos, pictures, source code
