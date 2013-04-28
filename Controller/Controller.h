@@ -55,6 +55,7 @@ public:
     bool isAnyBumperActive() { return isBumperPortActive() || isBumperMiddleActive() || isBumperStbdActive(); }
 
     // battery monitor
+    // todo: getBatteryLevelPercent
     unsigned short getBatteryVoltageCount() { return _model.getAnalogCountIn(BATTV_AICHANNEL); }
     bool isBatteryLow() { return getBatteryVoltageCount() < MIN_BATTERY_VOLTAGE_COUNT; }
 
