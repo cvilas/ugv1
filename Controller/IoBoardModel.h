@@ -58,7 +58,7 @@ public:
     }Version;
 
     /// \brief Digital IO configuration options
-    /// \see setDioMode, getDioMode
+    /// \see setConfigDioMode, getConfigSettingDioMode
     enum DioMode
     {
         OUTPUT_MODE,    //!< Configure pin as digital output
@@ -68,7 +68,7 @@ public:
     };
 
     ///\brief Motor control modes
-    /// \see setMotorDriveMode, getMotorDriveMode
+    /// \see setConfigMotorDriveMode, getConfigSettingMotorDriveMode
     enum DriveControlMode
     {
         DIRECT_POWER_CONTROL, //!< open loop direct power control
@@ -78,14 +78,17 @@ public:
 
 public:
 
-    /// Constructor. Takes a reference to the IO board as the only
-    /// parameter. Configures the board with default parameters.
-    IoBoardModel(IoBoard& board);
+    /// Constructor initialises the state with default parameters.
+    IoBoardModel(Grape::IPort& transport);
 
     /// Destructor. Does nothing.
     ~IoBoardModel();
 
     // -------------- configuration ---------------
+
+    /// \param ms   Milliseconds to wait for response from hardware. Specify
+    ///             negative number for infinite wait.
+    void setResponseTimeOut(int ms) { _board.setResponseTimeOut(ms); }
 
     /// Set default configuration parameters.
     /// - All 11 digital lines are configured as inputs
@@ -159,7 +162,7 @@ public:
     /// \param degrees Position value in range 0 to 180. Center position is 90.
     /// \param speed    Speed value from 0 to 0xFF.
     /// \see writeOutputs
-    void setServoOut(unsigned int channel, unsigned char degrees, unsigned char speed=0xFF);
+    void setServoPosition(unsigned int channel, unsigned char degrees, unsigned char speed=0xFF);
     unsigned char getSettingServoPosition(unsigned int channel);
 
     /// Set motor drive signal.
@@ -179,6 +182,10 @@ public:
     /// \return State of an analog input pin (0 - 3.3 volts)
     /// \see readInputs
     double getAnalogIn(unsigned int channel);
+
+    /// \return Raw ADC count at an analog input pin. 12 bits long. 0x0000 maps to 0V and 0x0FFF maps to 3.3V
+    /// \see readInputs
+    unsigned short getAnalogCountIn(unsigned int channel);
 
     /// Get motor speed. The output is 0 if the motors are configured in direct power mode.
     /// \see readInputs
@@ -216,28 +223,23 @@ public:
 
 protected:
 
-    /// Derived classes can support additional command and response types
-    /// by adding them via these methods. (Eg: Messages RS485 or i2c devices)
-    void addCommandMessage(IoBoardMessage::MessageID, IoBoardCommand*);
-    void addResponseMessage(IoBoardMessage::MessageID, IoBoardResponse*);
+    virtual void constructMessageMap();
 
-private:
-    void constructMessageMap();
 protected:
+    bool    _wasMotorCmdDirFwd[2]; //!< motor direction at previous write
+    bool    _isMotorCmdDirFwd[2];  //!< motor direction at latest write
+    bool    _isMotorRespDirFwd[2]; //!< motor direction sign after read
+    bool    _dioCmdChanged;         //!< set if a change if commanded for io bits
+    bool    _servoCmdChanged;
+    bool    _speedCmdChanged;
+    bool    _dioCfgChanged;
+    bool    _pidGainsChanged;
+    bool    _driveParamsChanged;
+    bool    _driveModeChanged;
+    IoBoard _board;
+    unsigned int _encoderResidual[2];    //!< value at reset
     std::map<IoBoardMessage::MessageID, IoBoardCommand*>    _commandMap;
     std::map<IoBoardMessage::MessageID, IoBoardResponse*>   _responseMap;
-    IoBoard&                                                _board;
-    bool                                                    _wasMotorCmdDirFwd[2]; //!< motor direction at previous write
-    bool                                                    _isMotorCmdDirFwd[2];  //!< motor direction at latest write
-    bool                                                    _isMotorRespDirFwd[2]; //!< motor direction sign after read
-    unsigned int                                            _encoderResidual[2];    //!< value at reset
-    bool                                                    _dioCmdChanged;         //!< set if a change if commanded for io bits
-    bool                                                    _servoCmdChanged;
-    bool                                                    _speedCmdChanged;
-    bool                                                    _dioCfgChanged;
-    bool                                                    _pidGainsChanged;
-    bool                                                    _driveParamsChanged;
-    bool                                                    _driveModeChanged;
 }; // IoBoardModel
 
 } // namespace Ugv1

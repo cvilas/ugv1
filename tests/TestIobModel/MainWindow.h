@@ -76,7 +76,6 @@ private:
 private:
     Ui::MainWindow *_pUi;
     Grape::SerialPort _port;
-    Ugv1::IoBoard _iob;
     Ugv1::IoBoardModel _model;
     QLabel* _pConnectionStatus;
     QLabel* _pErrorInfo;

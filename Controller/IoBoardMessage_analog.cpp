@@ -18,7 +18,7 @@ ReadAnalogInCommand::ReadAnalogInCommand()
 }
 
 //=============================================================================
-unsigned short ReadAnalogInResponse::getRaw(unsigned int channel)
+unsigned short ReadAnalogInResponse::getCount(unsigned int channel)
 //=============================================================================
 {
     iterator it = begin() + MESSAGE_PAYLOAD_INDEX + (channel * 2);
@@ -30,7 +30,7 @@ unsigned short ReadAnalogInResponse::getRaw(unsigned int channel)
 double ReadAnalogInResponse::getVolts(unsigned int channel)
 //-----------------------------------------------------------------------------
 {
-    return 3.3 * getRaw(channel) / (double)0xfff;
+    return 3.3 * getCount(channel) / (double)0xfff;
 }
 
 } //Ugv1

@@ -12,7 +12,7 @@
 //==============================================================================
 MainWindow::MainWindow(QWidget *parent)
 //==============================================================================
-    : QMainWindow(parent), _pUi(new Ui::MainWindow), _iob(_port), _model(_iob)
+    : QMainWindow(parent), _pUi(new Ui::MainWindow), _model(_port)
 {
     _pUi->setupUi(this);
 
@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     _timer.setSingleShot(false);
 
-    _iob.setResponseTimeOut(5000);
+    _model.setResponseTimeOut(5000);
 
     QObject::connect(_pUi->actionSerial_Port, SIGNAL(triggered()), this, SLOT(onConnectSerialPort()));
     QObject::connect(&_timer, SIGNAL(timeout()), this, SLOT(onTimer()));
@@ -284,35 +284,35 @@ void MainWindow::on_gainD_valueChanged(int arg1)
 void MainWindow::on_s0_valueChanged(int arg1)
 //-----------------------------------------------------------------------------
 {
-    _model.setServoOut(0, arg1&0xff);
+    _model.setServoPosition(0, arg1&0xff);
 }
 void MainWindow::on_s1_valueChanged(int arg1)
 {
-    _model.setServoOut(1, arg1&0xff);
+    _model.setServoPosition(1, arg1&0xff);
 }
 void MainWindow::on_s2_valueChanged(int arg1)
 {
-    _model.setServoOut(2, arg1&0xff);
+    _model.setServoPosition(2, arg1&0xff);
 }
 void MainWindow::on_s3_valueChanged(int arg1)
 {
-    _model.setServoOut(3, arg1&0xff);
+    _model.setServoPosition(3, arg1&0xff);
 }
 void MainWindow::on_s4_valueChanged(int arg1)
 {
-    _model.setServoOut(4, arg1&0xff);
+    _model.setServoPosition(4, arg1&0xff);
 }
 void MainWindow::on_s5_valueChanged(int arg1)
 {
-    _model.setServoOut(5, arg1&0xff);
+    _model.setServoPosition(5, arg1&0xff);
 }
 void MainWindow::on_s6_valueChanged(int arg1)
 {
-    _model.setServoOut(6, arg1&0xff);
+    _model.setServoPosition(6, arg1&0xff);
 }
 void MainWindow::on_s7_valueChanged(int arg1)
 {
-    _model.setServoOut(7, arg1&0xff);
+    _model.setServoPosition(7, arg1&0xff);
 }
 
 //-----------------------------------------------------------------------------

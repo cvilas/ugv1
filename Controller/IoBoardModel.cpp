@@ -10,16 +10,16 @@ namespace Ugv1
 {
 
 //==============================================================================
-IoBoardModel::IoBoardModel(IoBoard& board)
+IoBoardModel::IoBoardModel(Grape::IPort& transport)
 //==============================================================================
-    : _board(board),
-      _dioCmdChanged(true),
+    : _dioCmdChanged(true),
       _servoCmdChanged(true),
       _speedCmdChanged(true),
       _dioCfgChanged(true),
       _pidGainsChanged(true),
       _driveParamsChanged(true),
-      _driveModeChanged(true)
+      _driveModeChanged(true),
+      _board(transport)
 {
     for(int i = 0; i < 2; ++i)
     {
@@ -242,7 +242,7 @@ bool IoBoardModel::getSettingDigitalOut(unsigned int channel)
 }
 
 //-----------------------------------------------------------------------------
-void IoBoardModel::setServoOut(unsigned int channel, unsigned char degrees, unsigned char speed)
+void IoBoardModel::setServoPosition(unsigned int channel, unsigned char degrees, unsigned char speed)
 //-----------------------------------------------------------------------------
 {
     dynamic_cast<WriteServoOutCommand*>(_commandMap[IoBoardMessage::WRITE_SERVO])->setChannel(channel, degrees, speed);
@@ -303,6 +303,13 @@ double IoBoardModel::getAnalogIn(unsigned int channel)
 }
 
 //-----------------------------------------------------------------------------
+unsigned short IoBoardModel::getAnalogCountIn(unsigned int channel)
+//-----------------------------------------------------------------------------
+{
+    return dynamic_cast<ReadAnalogInResponse*>(_responseMap[IoBoardMessage::READ_ANALOG])->getCount(channel);
+}
+
+//-----------------------------------------------------------------------------
 int IoBoardModel::getMotorSpeed(unsigned int channel)
 //-----------------------------------------------------------------------------
 {
@@ -359,20 +366,6 @@ void IoBoardModel::constructMessageMap()
     _responseMap[IoBoardMessage::READ_MOTOR_CURRENT]     = new ReadMotorCurrentResponse;
     _responseMap[IoBoardMessage::READ_MOTOR_ENCODERS]    = new ReadMotorEncodersResponse;
     _responseMap[IoBoardMessage::READ_BOARD_VERSION]     = new ReadBoardVersionResponse;
-}
-
-//-----------------------------------------------------------------------------
-void IoBoardModel::addCommandMessage(IoBoardMessage::MessageID id, IoBoardCommand* pCmd)
-//-----------------------------------------------------------------------------
-{
-    _commandMap[id] = pCmd;
-}
-
-//-----------------------------------------------------------------------------
-void IoBoardModel::addResponseMessage(IoBoardMessage::MessageID id, IoBoardResponse* pResp)
-//-----------------------------------------------------------------------------
-{
-    _responseMap[id] = pResp;
 }
 
 //-----------------------------------------------------------------------------
