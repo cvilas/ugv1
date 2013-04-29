@@ -65,7 +65,7 @@ public:
 public slots:
     void setup() throw(ControllerException);
     void loop() throw(ControllerException);
-    bool teardown() throw(/*nothing*/);
+    void teardown() throw(/*nothing*/);
 private:
     IoBoardModel    _model;
     QTimer          _loopTimer;

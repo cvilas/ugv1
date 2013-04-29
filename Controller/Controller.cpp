@@ -79,7 +79,7 @@ void Controller::loop() throw(ControllerException)
 }
 
 //-----------------------------------------------------------------------------
-bool Controller::teardown() throw()
+void Controller::teardown() throw()
 //-----------------------------------------------------------------------------
 {
     stop();
