@@ -18,7 +18,7 @@ namespace Ugv1
 	class UGV1CONTROLLER_DLL_API ControllerException : public Grape::Exception
 	{
 	public:
-		ControllerException() throw() : Exception(0, "Unspecified Exception") {}
+        ControllerException() throw() : Exception(0, "Unspecified Controller Exception") {}
 		ControllerException(int code, const std::string& msg) throw() : Exception(code, msg.c_str()) {}
 		ControllerException(const ControllerException& ve) throw() : Exception(ve) {}
 		ControllerException& operator=(const ControllerException& other) throw() { Exception::operator=(other); return *this; }

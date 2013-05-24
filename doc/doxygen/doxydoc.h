@@ -26,7 +26,12 @@
 // See http://www.doxygen.nl/grouping.html for more on grouping.
 
 /**
- * 
+ * \defgroup agent Agents
+ * UGV agent nodes
+ *
+ * \defgroup agent_exceptions Agent Exceptions
+ * Exceptions raised by agent nodes
+ *
  * \defgroup controller Vehicle Controller
  * Vehicle controller
  *
