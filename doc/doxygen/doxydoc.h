@@ -30,6 +30,7 @@
  * UGV agent nodes
  *
  * \defgroup agent_exceptions Agent Exceptions
+ * \ingroup agent
  * Exceptions raised by agent nodes
  *
  * \defgroup controller Vehicle Controller

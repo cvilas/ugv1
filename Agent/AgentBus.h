@@ -17,6 +17,7 @@ namespace Ugv1
 {
 
 /// \class AgentBus
+/// \ingroup agent
 /// \brief Communication bus for multiple agents
 ///
 /// AgentBus provides a common bus over which multiple agents can communicate

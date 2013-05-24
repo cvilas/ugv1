@@ -22,6 +22,7 @@ UGV1AGENT_DLL_API void deleteAgent(IAgent* ptr);
 }
 
 /// \class IAgent
+/// \ingroup agent
 /// \brief Abstract interface for communication/computation nodes
 ///
 /// At the fundamental level, UGV1 consists of distributed software agents that

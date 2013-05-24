@@ -16,6 +16,8 @@
 namespace Ugv1
 {
 
+/// \class AgentMessenger
+/// \ingroup agent
 class UGV1AGENT_DLL_API AgentMessenger : public QThread
 {
 public:
