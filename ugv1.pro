@@ -9,4 +9,6 @@ ControllerApp.depends = Controller
 OTHER_FILES += \
     doc/doxygen/doxydoc.h \
     doc/doxygen/doxygen.cfg \
-    etc/tasklist
+    etc/tasklist \
+    config/ugv1_linux.cfg \
+    config/ugv1_windows.cfg

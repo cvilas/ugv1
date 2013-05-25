@@ -18,6 +18,11 @@ class IAgent;
 
 extern "C"
 {
+/// Helper function for the dynamic loader - deletes agent when called. The following
+/// function must also be provided in the implementation of agents
+/// \code
+/// extern "C" { IAgent* createAgent(AgentBus& man); }
+/// \endcode
 UGV1AGENT_DLL_API void deleteAgent(IAgent* ptr);
 }
 

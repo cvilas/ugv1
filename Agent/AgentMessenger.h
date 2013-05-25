@@ -20,14 +20,14 @@ namespace Ugv1
 /// \ingroup agent
 /// \brief Communication backend
 ///
-/// The messenger backend uses LCM (https://code.google.com/p/lcm/). Distributed
+/// The messenger backend is a wrapper over LCM (https://code.google.com/p/lcm/). Distributed
 /// agents communicate with each other through a publish/subscribe mechanism that is
-/// provided by this class. An instance of this class can be utilised to publish or subscribe
-/// to messages over one of more 'channels', where each channel carries messages
+/// provided by this class. An instance of this class can be utilised to communicate
+/// messages over one of more 'channels', where each channel carries messages
 /// of a particular 'type'.
 ///
-/// LCM is used as the back-end mechanism. Read the LCM C++ API documentation
-/// for details: http://lcm.googlecode.com/svn/www/reference/lcm/index.html.
+/// Read the LCM C++ API documentation for details:
+/// http://lcm.googlecode.com/svn/www/reference/lcm/index.html.
 ///
 /// <b>Example programs:</b>
 /// Publisher:

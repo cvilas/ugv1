@@ -83,20 +83,20 @@ void AgentBus::createMessenger() throw(AgentException)
 
     // Configuration of messenger and channels look like this...
     //
-    //<!-- Messenger configuration and channels available -->
-    //<Messenger Url="udpm://239.255.76.67:7667?ttl=0">
-    //    <Channel Name="JOYSTICK_INPUT" Type="JoyMessage"></Channel>
+    //<!-- Message bus configuration and channels available -->
+    //<MessageBus Url="udpm://239.255.76.67:7667?ttl=0">
+    //    <Channel Name="JOYSTICK" Type="JoyMessage"></Channel>
     //    <Channel Name="USER_COMMAND" Type="CommandMessage"></Channel>
     //    <Channel Name="RGBCAMERA_IMAGE" Type="ImageMessage"></Channel>
     //    <Channel Name="DEPTHCAMERA_IMAGE" Type="ImageMessage"></Channel>
-    //</Messenger>
+    //</MessageBus>
 
     // Get configuration for messsenger backend
-    QDomNodeList messengerNodes = _config.documentElement().elementsByTagName("Messenger");
+    QDomNodeList messengerNodes = _config.documentElement().elementsByTagName("MessageBus");
     if( messengerNodes.isEmpty() )
     {
         std::ostringstream str;
-        str << __FUNCTION__ << ": No messenger configuration found";
+        str << __FUNCTION__ << ": No message bus configuration found";
         throw ConfigException(0, str.str());
     }
 
@@ -105,7 +105,7 @@ void AgentBus::createMessenger() throw(AgentException)
     if( _url.empty() )
     {
         std::ostringstream str;
-        str << __FUNCTION__ << ": Url not found for Messenger configuration";
+        str << __FUNCTION__ << ": Url not found in message bus configuration";
         throw ConfigException(0, str.str());
     }
 
