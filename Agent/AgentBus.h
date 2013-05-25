@@ -34,12 +34,15 @@ public:
     /// that looks something like this:
     ///
     /// \code
+    /// <?xml version="1.0" encoding="UTF-8" ?>
+    ///<Ugv1>
     ///<!-- Message bus configuration and channels available -->
-    ///<MessageBus Url="udpm://239.255.76.67:7667?ttl=0">
-    ///    <Channel Name="JOYSTICK" Type="JoyMessage"></Channel>
-    ///    <Channel Name="COMMAND" Type="CommandMessage"></Channel>
-    ///    <Channel Name="CAMERA" Type="ImageMessage"></Channel>
-    ///</MessageBus>
+    /// <MessageBus Url="udpm://239.255.76.67:7667?ttl=0">
+    ///     <Channel Name="JOYSTICK" Type="JoyMessage"></Channel>
+    ///     <Channel Name="COMMAND" Type="CommandMessage"></Channel>
+    ///     <Channel Name="CAMERA" Type="ImageMessage"></Channel>
+    /// </MessageBus>
+    ///</Ugv1>
     /// \endcode
     AgentBus(const std::string& cfgFileName) throw(AgentException);
 
