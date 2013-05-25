@@ -1,5 +1,3 @@
-# Common settings for Puce project executables
-
 include(../ugvapps.pri)
 
 TARGET = AgentRunner
