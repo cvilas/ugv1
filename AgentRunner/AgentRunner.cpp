@@ -29,7 +29,7 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    std::string configFile = "../config/puce.cfg";
+    std::string configFile = "../config/ugv1.cfg";
     std::string agentFile = "";
 
     // get config file
@@ -111,6 +111,8 @@ int main(int argc, char** argv)
     }
 
     // cleanup
+    pAgent->stop();
+
     typedef void (*deleteInstance_t)(Ugv1::IAgent*);
     deleteInstance_t deleteInstance = (deleteInstance_t) agentLib.resolve("deleteAgent");
     if( deleteInstance )
