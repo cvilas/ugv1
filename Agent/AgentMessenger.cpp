@@ -76,8 +76,9 @@ void AgentMessenger::stop()
 void AgentMessenger::run()
 //------------------------------------------------------------------------------
 {
+#ifdef _DEBUG
     qDebug() << "[AgentMessenger::run] Entered";
-
+#endif
     while( !isExitFlag() )
     {
         // use file descriptor here rather than wait(), because we want to
@@ -99,7 +100,9 @@ void AgentMessenger::run()
         if(0 == status)
         {
             // no messages
+#ifdef _DEBUG
             qDebug() << "[AgentMessenger::run] Waiting for message";
+#endif
         }
         else if( FD_ISSET(fd, &fds) )
         {
@@ -110,8 +113,9 @@ void AgentMessenger::run()
             }
         }
     }
-
+#ifdef _DEBUG
     qDebug() << "[AgentMessenger::run] Exiting";
+#endif
 }
 
 } // Ugv1

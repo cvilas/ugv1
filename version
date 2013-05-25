@@ -1,5 +1,6 @@
 # version numbers for various libraries in ugv1
 
 AGENTLIB_VERSION = 0.1.0
+JOYSTICKAGENTLIB_VERSION = 1.0.0
 CONTROLLER_VERSION = 0.5.0
 HMI_VERSION = 0.1.0

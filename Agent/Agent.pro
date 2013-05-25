@@ -9,7 +9,7 @@ VERSION = $${AGENTLIB_VERSION}
 include(../ugvlibs.pri)
 
 # library specific settings
-INCLUDEPATH += ./ ../common
+INCLUDEPATH += ./
 DEPENDPATH +=
 
 win32:DEFINES += UGV1AGENTLIB_DLL UGV1AGENTLIB_DLL_EXPORT

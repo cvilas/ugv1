@@ -1,0 +1,9 @@
+package Ugv1Messages;
+
+struct JoyMessage
+{
+    int64_t uTime;              /* Timestamp for this data in microseconds. */
+    int16_t rawSurgeRate;       /* Range: -32768 to +32767. +ve: forward speed, -ve: retract speed */
+    int16_t rawYawRate;         /* Range: -32768 to +32767. Rate of turn about vertical */
+    boolean deadMansHandle;     /* Dead man's handle */
+}

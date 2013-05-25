@@ -36,7 +36,7 @@ AgentBus::AgentBus(const std::string& cfgFileName) throw(AgentException)
 
     // run a basic check
     QDomElement docElem = _config.documentElement();
-    if( docElem.tagName() != "Puce" )
+    if( docElem.tagName() != "Ugv1" )
     {
         std::ostringstream str;
         str << __FUNCTION__ << ": Incorrect root element in configuration file " << cfgFileName;

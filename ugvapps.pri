@@ -2,6 +2,7 @@
 
 GRAPE_DIR = ../../grape
 LCM_DIR = /usr/local
+
 QT       += core gui xml
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

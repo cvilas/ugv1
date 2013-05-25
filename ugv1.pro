@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 CONFIG += ordered
-SUBDIRS += Agent Controller HMI tests AgentRunner AgentExamples ControllerApp
+SUBDIRS += Agent Controller HMI tests AgentRunner AgentExamples JoystickAgent ControllerApp
 
 tests.depends = Controller
 HMI.depends = Controller
