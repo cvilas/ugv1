@@ -33,8 +33,18 @@ namespace Ugv1
         ConfigException(int code, const std::string& msg) throw() : AgentException(code, msg) {}
         ConfigException(const ConfigException& ve) throw() : AgentException(ve) {}
         ConfigException& operator=(const ConfigException& other) throw() { AgentException::operator=(other); return *this; }
-    }; // InvalidMessageIdException
+    }; // ConfigException
 
+    /// \brief Exception raised by messenger backend
+    /// \ingroup agent_exceptions
+    class UGV1AGENT_DLL_API MessengerException : public AgentException
+    {
+    public:
+        MessengerException() throw() : AgentException(0, "Messenger exception") {}
+        MessengerException(int code, const std::string& msg) throw() : AgentException(code, msg) {}
+        MessengerException(const MessengerException& ve) throw() : AgentException(ve) {}
+        MessengerException& operator=(const MessengerException& other) throw() { AgentException::operator=(other); return *this; }
+    }; // MessengerException
 
 } // Ugv1
 

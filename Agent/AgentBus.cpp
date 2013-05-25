@@ -52,7 +52,6 @@ AgentBus::~AgentBus()
 {
     if( _pMessenger )
     {
-        _pMessenger->stop();
         delete _pMessenger;
     }
 }
