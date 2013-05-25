@@ -47,6 +47,7 @@ public:
 
     Type type() const { return _type; }
 
+    void invalidate() { _type = Type_MAX; }
     bool isValid() const { return (_type != Type_MAX); }
 
     /// Attach a control input.

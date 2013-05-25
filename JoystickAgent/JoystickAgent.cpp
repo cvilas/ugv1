@@ -106,6 +106,9 @@ bool JoystickAgent::configure()
 {
     stop();
     _isConfigured = false;
+    _surgeCtrl.invalidate();
+    _yawCtrl.invalidate();
+    _deadMansCtrl.invalidate();
     _pJoystick->disconnect();
 
     /*
@@ -327,9 +330,9 @@ void JoystickAgent::run()
             // translate
             const Grape::SimpleJoystick::JoystickState& state = _pJoystick->getState();
             message.uTime = 1000 * state.ms;
-            message.rawSurgeRate = _surgeCtrl.value();
-            message.rawYawRate = _yawCtrl.value();
-            message.deadMansHandle = (_deadMansCtrl.value() != 0);
+            message.rawSurgeRate = (_surgeCtrl.isValid() ? _surgeCtrl.value() : 0);
+            message.rawYawRate = (_yawCtrl.isValid() ? _yawCtrl.value() : 0);
+            message.deadMansHandle = (_deadMansCtrl.isValid() ? (_deadMansCtrl.value() != 0) : false);
         }
 
         // unable to read JS
