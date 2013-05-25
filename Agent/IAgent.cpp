@@ -20,7 +20,7 @@ void deleteAgent(IAgent* ptr)
 }
 
 //==============================================================================
-IAgent::IAgent(AgentBus& man)
+IAgent::IAgent(AgentBus& man) throw(AgentException)
 //==============================================================================
     : _agentBus(man)
 {}

@@ -95,7 +95,7 @@ public:
     inline bool publish(const std::string& channel, const MessageType* pMsg);
 
 private:
-    bool start();   //!< Start message handling thread
+    void start() throw(AgentException);   //!< Start message handling thread
     void stop();    //!< Stop message handling thread
     void run();     //!< The handler thread function
     bool isExitFlag() const;

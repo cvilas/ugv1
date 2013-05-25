@@ -77,7 +77,7 @@ void JoyCtrl::attach (const std::string& type, unsigned int i, int scale, const 
 }
 
 //==============================================================================
-JoystickAgent::JoystickAgent(AgentBus& man)
+JoystickAgent::JoystickAgent(AgentBus& man) throw(AgentException)
 //==============================================================================
     : IAgent(man), QThread(), _periodMs(MAX_PERIOD_MS), _exitFlag(true), _isConfigured(false)
 {
@@ -101,11 +101,12 @@ JoystickAgent::~JoystickAgent()
 }
 
 //------------------------------------------------------------------------------
-bool JoystickAgent::configure()
+void JoystickAgent::configure() throw(AgentException)
 //------------------------------------------------------------------------------
 {
     stop();
     _isConfigured = false;
+    _jsPort = "";
     _surgeCtrl.invalidate();
     _yawCtrl.invalidate();
     _deadMansCtrl.invalidate();
@@ -142,7 +143,6 @@ bool JoystickAgent::configure()
 
     _periodMs = MAX_PERIOD_MS;
     _lcmChannel.clear();
-    std::string port = "0";
 
     // first read off entries to get joystick connection info
     QDomNode pEntries = nodeList.at(0).toElement().firstChild();
@@ -150,14 +150,18 @@ bool JoystickAgent::configure()
     {
         QDomElement peData = pEntries.toElement();
         QString tagName = peData.tagName();
-        if( tagName == "DevicePort" ) { port = peData.text().toStdString(); }
+        if( tagName == "DevicePort" ) { _jsPort = peData.text().toStdString(); }
         if( tagName == "Publish0" ) { _lcmChannel = peData.text().toStdString(); }
         pEntries = pEntries.nextSibling();
     }
 
+    if( _jsPort.length() == 0 )
+    {
+        throw ConfigException(0, "[JoystickAgent::configure] : Port not set");
+    }
     if( _lcmChannel.empty() )
     {
-        throw ConfigException(0,"[JoystickAgent::configure] Message channel not set");
+        throw ConfigException(0, "[JoystickAgent::configure] : Message channel not set");
     }
 
     if( bus.getMessageType(_lcmChannel) != Ugv1Messages::JoyMessage::getTypeName() )
@@ -171,10 +175,10 @@ bool JoystickAgent::configure()
     }
 
     // connect to device
-    if( !_pJoystick->connect(port) )
+    if( !_pJoystick->connect(_jsPort) )
     {
         std::ostringstream str;
-        str << "[JoystickAgent::configure] Unable to connect to " << port;
+        str << "[JoystickAgent::configure] Unable to connect to " << _jsPort;
         throw AgentException(0, str.str());
     }
 
@@ -254,7 +258,6 @@ bool JoystickAgent::configure()
               << std::endl;
 #endif
 
-    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -278,20 +281,23 @@ void JoystickAgent::setExitFlag(bool isExit)
 }
 
 //------------------------------------------------------------------------------
-bool JoystickAgent::start()
+void JoystickAgent::start() throw(AgentException)
 //------------------------------------------------------------------------------
 {
     if( !_isConfigured )
     {
-        return false;
+        throw AgentException(0, "[JoystickAgent::start] : Attempted to start without configuring");
     }
     setExitFlag(false);
     QThread::start();
-    return QThread::isRunning();
+    if( !QThread::isRunning() )
+    {
+        throw AgentException(0, "[JoystickAgent::start] : Error starting thread");
+    }
 }
 
 //------------------------------------------------------------------------------
-void JoystickAgent::stop()
+void JoystickAgent::stop() throw()
 //------------------------------------------------------------------------------
 {
     setExitFlag(true);
@@ -314,13 +320,6 @@ void JoystickAgent::run()
         message.rawSurgeRate = 0;
         message.rawYawRate = 0;
 
-        // if we lost connection, try again
-        if( !_pJoystick->isConnected() )
-        {
-            // we may have plugged in a different joystick
-            configure();
-        }
-
         // wait
         timer.timedWait(periodNs);
 
@@ -338,11 +337,16 @@ void JoystickAgent::run()
         // unable to read JS
         else
         {
-            _pJoystick->disconnect(); // will try to connect next time.
-            std::cerr << "[JoystickAgent] Joystick update failed" << std::endl;
+            std::cerr << "[JoystickAgent] update failed" << std::endl;
+
+            // attempt a reconnect
+            if( _pJoystick->connect(_jsPort) )
+            {
+                std::cerr << "[JoystickAgent] Reconnected" << std::endl;
+            }
         }
 
-        // publish
+        // publish (will send zeroes if joystick update failed)
         if( pMessenger )
         {
             if( !pMessenger->publish(_lcmChannel, &message) )

@@ -15,10 +15,7 @@ AgentMessenger::AgentMessenger(const std::string& url) throw(AgentException)
 //==============================================================================
     : QThread(), _exitFlag(false), _lcm(url)
 {
-    if( !start() )
-    {
-        throw MessengerException(0, "[AgentMessenger] Message handler did not start");
-    }
+    start();
 }
 
 //------------------------------------------------------------------------------
@@ -56,12 +53,16 @@ void AgentMessenger::setExitFlag(bool isExit)
 }
 
 //------------------------------------------------------------------------------
-bool AgentMessenger::start()
+void AgentMessenger::start() throw(AgentException)
 //------------------------------------------------------------------------------
 {
     setExitFlag(false);
     QThread::start();
-    return QThread::isRunning();
+    if( !QThread::isRunning() )
+    {
+        throw MessengerException(0, "[AgentMessenger::start] Thread didn't start");
+    }
+
 }
 
 //------------------------------------------------------------------------------

@@ -8,7 +8,7 @@
 #ifndef UGV1_IAGENT_H
 #define	UGV1_IAGENT_H
 
-#include "agent_common.h"
+#include "AgentException.h"
 
 namespace Ugv1
 {
@@ -45,20 +45,18 @@ public:
     /// Read the configuration object from the bus (getBus().getConfig())
     /// and initialise the node. The agent shouldn't start processing
     /// until start() is called.
-    /// \return true if configuration and initialisation succeeded.
-    virtual bool configure() = 0;
+    virtual void configure() throw(AgentException) = 0;
 
     /// Initiate node data processing and return immediately.
     /// The actual data processing itself may happen else where (eg. a separate
     /// thread).
-    /// \return true if data processing started successfully.
-    virtual bool start() = 0;
+    virtual void start() throw(AgentException) = 0;
 
     /// Stop processing.
-    virtual void stop() = 0;
+    virtual void stop() throw() = 0;
 
 protected:
-    IAgent(AgentBus& man);
+    IAgent(AgentBus& man) throw(AgentException);
 
     /// \return The bus over which this agent is commicating with others.
     AgentBus& getBus() { return _agentBus; }

@@ -20,7 +20,6 @@
 
 
 #include "IAgent.h"
-#include "AgentException.h"
 #include <QThread>
 #include <QMutex>
 #include <string>
@@ -81,11 +80,11 @@ public:
     static const int MAX_PERIOD_MS = 100;
 
 public:
-    JoystickAgent(AgentBus& man);
+    JoystickAgent(AgentBus& man) throw(AgentException);
     virtual ~JoystickAgent();
-    bool configure();
-    bool start();
-    void stop();
+    void configure() throw(AgentException);
+    void start() throw(AgentException);
+    void stop() throw();
 
 private:
     JoystickAgent(const JoystickAgent &);               //!< disable copy
@@ -100,6 +99,7 @@ private:
     bool                    _isConfigured;
     std::string             _lcmChannel;//!< publish on this channel
     Grape::SimpleJoystick*  _pJoystick;     //!< device
+    std::string             _jsPort;
 
     JoyCtrl _surgeCtrl;
     JoyCtrl _yawCtrl;

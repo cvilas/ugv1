@@ -82,36 +82,33 @@ int main(int argc, char** argv)
     }
 
     // configure
-    if( !pAgent->configure() )
+    try
     {
-        std::cerr << "[" << argv[0] << "] Error configuring " << agentFile << std::endl;
-        return -1;
-    }
+        pAgent->configure();
+        pAgent->start();
 
-    // start
-    if( !pAgent->start() )
-    {
-        std::cerr << "[" << argv[0] << "] Error starting " << agentFile << std::endl;
-        return -1;
-    }
+        std::cout << "[" << argv[0] << "] Press Q to exit" << std::endl;
 
-    std::cout << "[" << argv[0] << "] Press Q to exit" << std::endl;
-
-    while( 1 )
-    {
-        if( Grape::kbhit() )
+        while( 1 )
         {
-            char k = Grape::getch();
-            if( (k == 'q') || (k == 'Q') )
+            if( Grape::kbhit() )
             {
-                break;
+                char k = Grape::getch();
+                if( (k == 'q') || (k == 'Q') )
+                {
+                    break;
+                }
             }
+            app.processEvents();
         }
-        app.processEvents();
-    }
 
-    // cleanup
-    pAgent->stop();
+        // cleanup
+        pAgent->stop();
+    }
+    catch(Ugv1::AgentException &ex)
+    {
+        std::cerr << "AgentRunner caught exception:" << std::endl << ex.what() << std::endl;
+    }
 
     typedef void (*deleteInstance_t)(Ugv1::IAgent*);
     deleteInstance_t deleteInstance = (deleteInstance_t) agentLib.resolve("deleteAgent");
