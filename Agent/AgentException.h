@@ -15,7 +15,7 @@ namespace Ugv1
 {
     /// \brief common base class for exceptions thrown by agents
     /// \ingroup agent_exceptions
-    class UGV1AGENT_DLL_API AgentException : public Grape::Exception
+    class UGV1AGENTLIB_DLL_API AgentException : public Grape::Exception
     {
     public:
         AgentException() throw() : Exception(0, "Unspecified Agent Exception") {}
@@ -26,7 +26,7 @@ namespace Ugv1
 
     /// \brief Exception raised when dealing with configuration file
     /// \ingroup agent_exceptions
-    class UGV1AGENT_DLL_API ConfigException : public AgentException
+    class UGV1AGENTLIB_DLL_API ConfigException : public AgentException
     {
     public:
         ConfigException() throw() : AgentException(0, "Configuration exception") {}
@@ -37,7 +37,7 @@ namespace Ugv1
 
     /// \brief Exception raised by messenger backend
     /// \ingroup agent_exceptions
-    class UGV1AGENT_DLL_API MessengerException : public AgentException
+    class UGV1AGENTLIB_DLL_API MessengerException : public AgentException
     {
     public:
         MessengerException() throw() : AgentException(0, "Messenger exception") {}

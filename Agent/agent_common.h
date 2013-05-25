@@ -4,17 +4,17 @@
 // File     : Agent_common.h
 // Brief    : common header for UGV1 agents
 //==============================================================================
-#ifndef UGV1_AGENT_H
-#define	UGV1_AGENT_H
+#ifndef UGV1_AGENT_COMMON_H
+#define	UGV1_AGENT_COMMON_H
 
-#ifdef UGV1AGENT_DLL
-#	ifdef UGV1AGENT_DLL_EXPORT
-#		define UGV1AGENT_DLL_API __declspec(dllexport)
+#ifdef UGV1AGENTLIB_DLL
+#	ifdef UGV1AGENTLIB_DLL_EXPORT
+#		define UGV1AGENTLIB_DLL_API __declspec(dllexport)
 #	else
-#		define UGV1AGENT_DLL_API __declspec(dllimport)
+#		define UGV1AGENTLIB_DLL_API __declspec(dllimport)
 #	endif
 #else
-#	define UGV1AGENT_DLL_API
+#	define UGV1AGENTLIB_DLL_API
 #endif
 
 namespace Ugv1
@@ -26,4 +26,4 @@ namespace Ugv1
 
 } // Ugv1
 
-#endif // UGV1_AGENT_H
+#endif // UGV1_AGENT_COMMON_H

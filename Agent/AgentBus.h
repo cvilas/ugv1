@@ -25,7 +25,7 @@ namespace Ugv1
 /// Connected agents can configure themselves by reading the configuration object
 /// from this class, and get a pointer to the messaging backend to publish/subscribe
 /// messages on the bus.
-class UGV1AGENT_DLL_API AgentBus
+class UGV1AGENTLIB_DLL_API AgentBus
 {
 public:
 

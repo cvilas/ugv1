@@ -12,7 +12,7 @@ include(../ugvlibs.pri)
 INCLUDEPATH += ./ ../common
 DEPENDPATH +=
 
-win32:DEFINES += UGV1AGENT_DLL UGV1AGENT_DLL_EXPORT
+win32:DEFINES += UGV1AGENTLIB_DLL UGV1AGENTLIB_DLL_EXPORT
 
 HEADERS += \
     AgentException.h \

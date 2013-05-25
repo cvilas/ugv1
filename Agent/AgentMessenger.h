@@ -34,7 +34,7 @@ namespace Ugv1
 /// \include MessagePublisher.cpp
 /// Subscriber:
 /// \include MessageSubscriber.cpp
-class UGV1AGENT_DLL_API AgentMessenger : public QThread
+class UGV1AGENTLIB_DLL_API AgentMessenger : public QThread
 {
 public:
 

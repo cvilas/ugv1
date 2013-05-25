@@ -23,7 +23,7 @@ extern "C"
 /// \code
 /// extern "C" { IAgent* createAgent(AgentBus& man); }
 /// \endcode
-UGV1AGENT_DLL_API void deleteAgent(IAgent* ptr);
+UGV1AGENTLIB_DLL_API void deleteAgent(IAgent* ptr);
 }
 
 /// \class IAgent
@@ -37,7 +37,7 @@ UGV1AGENT_DLL_API void deleteAgent(IAgent* ptr);
 /// the AgentRunner program. Agents have the ability to configure themselves by
 /// reading a configuration file, and can be started and stopped at will without
 /// effecting the rest of the system.
-class UGV1AGENT_DLL_API IAgent
+class UGV1AGENTLIB_DLL_API IAgent
 {
 public:
     virtual ~IAgent() {}

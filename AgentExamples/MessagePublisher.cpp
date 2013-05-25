@@ -1,7 +1,7 @@
 //==============================================================================
 // Project  : UGV1
 // Module   : Agent
-// File     : MessengerPublisher.cpp
+// File     : MessagePublisher.cpp
 // Brief    : Example program for UGV1 AgentMessenger
 //==============================================================================
 
