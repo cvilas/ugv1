@@ -14,7 +14,7 @@
 int main()
 //==============================================================================
 {
-    Ugv1::AgentMessenger publisher;
+    Ugv1::AgentMessenger publisher(BUS_URL);
 
     if( !publisher.isGood() )
     {

@@ -46,7 +46,7 @@ public:
 int main()
 //==============================================================================
 {
-    Ugv1::AgentMessenger subscriber;
+    Ugv1::AgentMessenger subscriber(BUS_URL);
     MessageHandler handler;
 
     if( !subscriber.isGood() )
