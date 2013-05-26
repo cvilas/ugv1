@@ -1,7 +1,8 @@
 # Common settings for UGV1 project libraries
 
 GRAPE_DIR = ../../grape
-LCM_DIR = C:\GitHub\ugv1\ThirdParty\lcm
+win32:LCM_DIR = $${PWD}/ThirdParty/windows/lcm
+unix:LCM_DIR =/usr/local
 
 QT       += core gui xml
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
