@@ -1,7 +1,7 @@
 # Common settings for UGV1 project libraries
 
 GRAPE_DIR = ../../grape
-LCM_DIR = /usr/local
+LCM_DIR = C:\GitHub\ugv1\ThirdParty\lcm
 
 TEMPLATE = lib
 
@@ -32,10 +32,10 @@ DEFINES +=
 win32: DEFINES += GRAPECORE_DLL GRAPEIO_DLL UNICODE _UNICODE _CRT_SECURE_NO_WARNINGS
 CONFIG(debug, release|debug) {
     DEFINES += _DEBUG
-    win32:LIBS += -lws2_32 -lUser32 -lGrapeTimingd0 -lGrapeCored0 -lGrapeIod0 -lGrapeUtilsd0
+    win32:LIBS += -lws2_32 -lUser32 -lGrapeTimingd0 -lGrapeCored0 -lGrapeIod0 -lGrapeUtilsd0 -llcmd
     else:unix: LIBS += -lGrapeIod -lGrapeTimingd -lGrapeCored -lGrapeUtilsd -llcm -lpthread -lrt
 } else {
-    win32:LIBS += -lws2_32 -lUser32 -lGrapeTiming0 -lGrapeCore0 -lGrapeIo0 -lGrapeUtils0
+    win32:LIBS += -lws2_32 -lUser32 -lGrapeTiming0 -lGrapeCore0 -lGrapeIo0 -lGrapeUtils0 -llcm
     else:unix: LIBS += -lGrapeIo -lGrapeTiming -lGrapeCore -lGrapeUtils -llcm -lpthread -lrt
 }
 
@@ -46,7 +46,8 @@ INCLUDEPATH += $${PWD} \
                 $${PWD}/Agent \
                 $${GRAPE_DIR} \
                 $${GRAPE_DIR}/core \
-                $${GRAPE_DIR}/io
+                $${GRAPE_DIR}/io \
+                $${LCM_DIR}/include
 
 DEPENDPATH += ./
 

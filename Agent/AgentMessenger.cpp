@@ -6,6 +6,9 @@
 
 #include "AgentMessenger.h"
 #include <QDebug>
+#ifdef _MSC_VER
+#include <Windows.h>
+#endif
 
 namespace Ugv1
 {

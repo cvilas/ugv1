@@ -5,7 +5,7 @@
 //==============================================================================
 
 #include "JoystickAgent.h"
-#include "JoyMessage.hpp"
+#include "Ugv1Messages/JoyMessage.hpp"
 #include "io/SimpleJoystick.h"
 #include "timing/Timer.h"
 #include "AgentBus.h"

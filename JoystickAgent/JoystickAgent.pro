@@ -12,14 +12,22 @@ include(../ugvlibs.pri)
 INCLUDEPATH += ./ ../Ugv1Messages
 DEPENDPATH +=
 
-win32:DEFINES += UGV1JOYSTICKAGENT_DLL UGV1JOYSTICKAGENT_DLL_EXPORT
+win32:DEFINES += UGV1AGENTLIB_DLL UGV1JOYSTICKAGENT_DLL UGV1JOYSTICKAGENT_DLL_EXPORT
+CONFIG(debug, release|debug) {
+    DEFINES += _DEBUG
+    win32:LIBS += -lUgv1Agentd0
+    else:unix: LIBS += -lUgv1Agentd
+} else {
+    win32:LIBS += -lUgv1Agent0
+    else:unix: LIBS += -lUgv1Agent
+}
 
 HEADERS += \
     JoystickAgent.h
 SOURCES += \
     JoystickAgent.cpp
 
-lcmgen.target = JoyMessage.hpp
+lcmgen.target = JoyMessage
 lcmgen.commands = $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/JoyMessage.lcm
 QMAKE_EXTRA_TARGETS += lcmgen
 PRE_TARGETDEPS = $$lcmgen.target

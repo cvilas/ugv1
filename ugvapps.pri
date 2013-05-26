@@ -1,7 +1,7 @@
 # Common settings for UGV1 project libraries
 
 GRAPE_DIR = ../../grape
-LCM_DIR = /usr/local
+LCM_DIR = C:\GitHub\ugv1\ThirdParty\lcm
 
 QT       += core gui xml
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -47,7 +47,8 @@ INCLUDEPATH += $${PWD} \
                 $${PWD}/Agent \
                 $${GRAPE_DIR} \
                 $${GRAPE_DIR}/core \
-                $${GRAPE_DIR}/io
+                $${GRAPE_DIR}/io \
+                $${LCM_DIR}/include
 
 DEPENDPATH += ./
 
