@@ -79,7 +79,7 @@ void JoyCtrl::attach (const std::string& type, unsigned int i, int scale, const 
 //==============================================================================
 JoystickAgent::JoystickAgent(AgentBus& man) throw(AgentException)
 //==============================================================================
-    : IAgent(man), QThread(), _periodMs(MAX_PERIOD_MS), _exitFlag(true), _isConfigured(false)
+    : AgentThread(man), _periodMs(MAX_PERIOD_MS), _isConfigured(false)
 {
     HWND hWnd = 0;
 #ifdef _MSC_VER
@@ -258,50 +258,6 @@ void JoystickAgent::configure() throw(AgentException)
               << std::endl;
 #endif
 
-}
-
-//------------------------------------------------------------------------------
-bool JoystickAgent::isExitFlag() const
-//------------------------------------------------------------------------------
-{
-    bool rc;
-    _flagLock.lock();
-    rc = _exitFlag;
-    _flagLock.unlock();
-    return rc;
-}
-
-//------------------------------------------------------------------------------
-void JoystickAgent::setExitFlag(bool isExit)
-//------------------------------------------------------------------------------
-{
-    _flagLock.lock();
-    _exitFlag = isExit;
-    _flagLock.unlock();
-}
-
-//------------------------------------------------------------------------------
-void JoystickAgent::start() throw(AgentException)
-//------------------------------------------------------------------------------
-{
-    if( !_isConfigured )
-    {
-        throw AgentException(0, "[JoystickAgent::start] : Attempted to start without configuring");
-    }
-    setExitFlag(false);
-    QThread::start();
-    if( !QThread::isRunning() )
-    {
-        throw AgentException(0, "[JoystickAgent::start] : Error starting thread");
-    }
-}
-
-//------------------------------------------------------------------------------
-void JoystickAgent::stop() throw()
-//------------------------------------------------------------------------------
-{
-    setExitFlag(true);
-    QThread::wait();
 }
 
 //------------------------------------------------------------------------------

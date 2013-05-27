@@ -1,12 +1,14 @@
 TEMPLATE = subdirs
 CONFIG += ordered
-SUBDIRS += Agent Controller HMI tests AgentRunner JoystickAgent AgentExamples ControllerApp
+SUBDIRS += Agent Controller HMI tests AgentRunner JoystickAgent ControllerAgent AgentExamples
 
 tests.depends = Controller
 HMI.depends = Controller
-ControllerApp.depends = Controller
+ControllerAgent.depends = Controller
 
 OTHER_FILES += \
+    ugvapps.pri \
+    ugvlibs.pri \
     doc/doxygen/doxydoc.h \
     doc/doxygen/doxygen.cfg \
     etc/tasklist \

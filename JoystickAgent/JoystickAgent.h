@@ -19,9 +19,7 @@
 #endif
 
 
-#include "IAgent.h"
-#include <QThread>
-#include <QMutex>
+#include "AgentThread.h"
 #include <string>
 #include <vector>
 
@@ -74,7 +72,7 @@ private:
 ///
 /// Example program:
 /// \include JoystickSubscriber.cpp
-class UGV1JOYSTICKAGENT_DLL_API JoystickAgent : public IAgent, public QThread
+class UGV1JOYSTICKAGENT_DLL_API JoystickAgent : public AgentThread
 {
 public:
     static const int MAX_PERIOD_MS = 100;
@@ -83,19 +81,15 @@ public:
     JoystickAgent(AgentBus& man) throw(AgentException);
     virtual ~JoystickAgent();
     void configure() throw(AgentException);
-    void start() throw(AgentException);
-    void stop() throw();
+    bool isConfigured() { return _isConfigured; }
+    bool isRunning() { return QThread::isRunning(); }
 
 private:
     JoystickAgent(const JoystickAgent &);               //!< disable copy
     JoystickAgent &operator=(const JoystickAgent &);    //!< disable assignment
     void run();     //!< The handler thread function
-    bool isExitFlag() const;
-    void setExitFlag(bool isExit);
 private:
     int                     _periodMs;
-    bool                    _exitFlag;
-    mutable QMutex          _flagLock;
     bool                    _isConfigured;
     std::string             _lcmChannel;//!< publish on this channel
     Grape::SimpleJoystick*  _pJoystick;     //!< device

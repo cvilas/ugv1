@@ -1,12 +1,12 @@
 //==============================================================================
 // Project  : UGV1
 // Module   : Controller
-// File     : Controller.h
-// Brief    : UGV1 controller class
+// File     : RobotModel.h
+// Brief    : UGV1 robot model
 //==============================================================================
 
-#ifndef UGV1_CONTROLLER_H
-#define UGV1_CONTROLLER_H
+#ifndef UGV1_ROBOTMODEL_H
+#define UGV1_ROBOTMODEL_H
 
 #include "IoBoardModel.h"
 #include <QTimer>
@@ -14,9 +14,9 @@
 namespace Ugv1
 {
 
-/// \class Controller
+/// \class RobotModel
 /// \ingroup controller
-/// \brief UGV1 controller class.
+/// \brief UGV1 robot model.
 /*
  * Design notes:
  * setup() to configure devices and attach them to IO
@@ -25,7 +25,7 @@ namespace Ugv1
  * after exiting loop(), io outputs get written from devices
  * cleanup() to shutdown bits before exit
  */
-class UGV1CONTROLLER_DLL_API Controller : public QObject
+class UGV1CONTROLLER_DLL_API RobotModel : public QObject
 {
     Q_OBJECT
 public:
@@ -45,8 +45,8 @@ public:
     static const int LOWBATT_LOOP_UPDATE_TIME_MS = 1000;
 
 public:
-    Controller(Grape::IPort& transport);
-    ~Controller();
+    RobotModel(Grape::IPort& transport);
+    ~RobotModel();
 
     // bumper switches
     bool isBumperPortActive() { return _model.getDigitalIn(BUMPER_PORT_DICHANNEL); }
@@ -69,7 +69,7 @@ public slots:
 private:
     IoBoardModel    _model;
     QTimer          _loopTimer;
-};// Controller
+};// RobotModel
 
 } // namespace Ugv1
 

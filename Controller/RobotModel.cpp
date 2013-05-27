@@ -1,50 +1,50 @@
 //==============================================================================
 // Project  : UGV1
 // Module   : controller
-// File     : Controller.cpp
+// File     : RobotModel.cpp
 //==============================================================================
 
-#include "Controller.h"
+#include "RobotModel.h"
 
 namespace Ugv1
 {
 
 //==============================================================================
-Controller::Controller(Grape::IPort& transport)
+RobotModel::RobotModel(Grape::IPort& transport)
 //==============================================================================
     : _model(transport)
 {
 }
 
 //-----------------------------------------------------------------------------
-Controller::~Controller()
+RobotModel::~RobotModel()
 //-----------------------------------------------------------------------------
 {
 }
 
 //-----------------------------------------------------------------------------
-void Controller::setup() throw(ControllerException)
+void RobotModel::setup() throw(ControllerException)
 //-----------------------------------------------------------------------------
 {
     QObject::connect(&_loopTimer, SIGNAL(timeout()), this, SLOT(loop()));
 }
 
 //-----------------------------------------------------------------------------
-void Controller::start()
+void RobotModel::start()
 //-----------------------------------------------------------------------------
 {
     _loopTimer.start(DEFAULT_LOOP_UPDATE_TIME_MS);
 }
 
 //-----------------------------------------------------------------------------
-void Controller::stop()
+void RobotModel::stop()
 //-----------------------------------------------------------------------------
 {
     _loopTimer.stop();
 }
 
 //-----------------------------------------------------------------------------
-void Controller::loop() throw(ControllerException)
+void RobotModel::loop() throw(ControllerException)
 //-----------------------------------------------------------------------------
 {
     _model.readInputs();
@@ -79,7 +79,7 @@ void Controller::loop() throw(ControllerException)
 }
 
 //-----------------------------------------------------------------------------
-void Controller::teardown() throw()
+void RobotModel::teardown() throw()
 //-----------------------------------------------------------------------------
 {
     stop();
