@@ -19,11 +19,13 @@ HEADERS += \
     IAgent.h \
     AgentBus.h \
     agent_common.h \
-    AgentMessenger.h
+    AgentMessenger.h \
+    AgentThread.h
 SOURCES += \
     IAgent.cpp \
     AgentBus.cpp \
-    AgentMessenger.cpp
+    AgentMessenger.cpp \
+    AgentThread.cpp
 win32:SOURCES +=
 unix:SOURCES +=
 win32:LIBS +=

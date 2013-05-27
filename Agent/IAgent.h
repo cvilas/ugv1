@@ -46,6 +46,7 @@ public:
     /// and initialise the node. The agent shouldn't start processing
     /// until start() is called.
     virtual void configure() throw(AgentException) = 0;
+    virtual bool isConfigured() = 0;
 
     /// Initiate node data processing and return immediately.
     /// The actual data processing itself may happen else where (eg. a separate
@@ -54,6 +55,9 @@ public:
 
     /// Stop processing.
     virtual void stop() throw() = 0;
+
+    /// \return true if the agent event processing is active
+    virtual bool isRunning() = 0;
 
 protected:
     IAgent(AgentBus& man) throw(AgentException);

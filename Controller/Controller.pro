@@ -23,7 +23,7 @@ HEADERS += IoBoard.h \
     IoBoardMessage_rs485.h \
     IoBoardMessage_servo.h \
     IoBoardModel.h \
-    Controller.h \
+    RobotModel.h \
 	ControllerException.h \
     controller_common.h
 SOURCES += IoBoard.cpp \
@@ -33,7 +33,7 @@ SOURCES += IoBoard.cpp \
     IoBoardMessage_motor.cpp \
     IoBoardMessage_servo.cpp \
     IoBoardModel.cpp \
-    Controller.cpp \
+    RobotModel.cpp \
 	ControllerException.cpp
 win32:SOURCES += 
 unix:SOURCES += 
