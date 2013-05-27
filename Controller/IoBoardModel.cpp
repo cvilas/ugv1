@@ -30,37 +30,12 @@ IoBoardModel::IoBoardModel(Grape::IPort& transport)
     }
 
     constructMessageMap();
-    setConfigDefaults();
 }
 
 //-----------------------------------------------------------------------------
 IoBoardModel::~IoBoardModel()
 //-----------------------------------------------------------------------------
 {}
-
-//-----------------------------------------------------------------------------
-void IoBoardModel::setConfigDefaults()
-//-----------------------------------------------------------------------------
-{
-    /// - All 11 digital lines are configured as inputs
-    /// - encoder ppr = 13
-    /// - gear ratio = 51:1
-    /// - wheel perimeter = 430 mm
-    /// - motor drive mode = speed control
-    /// - p,i,d gains = 10,30,1
-
-    for(unsigned int i = 0; i < 11; ++i)
-    {
-        setConfigDioMode(i, IoBoardModel::INPUT_MODE);
-    }
-    setConfigEncoderPPR(13);
-    setConfigMotorGearRatio(510);
-    setConfigWheelPerimeter(430);
-    setConfigMotorDriveMode(IoBoardModel::SPEED_CONTROL);
-    setConfigPGain(10);
-    setConfigIGain(30);
-    setConfigDGain(1);
-}
 
 //-----------------------------------------------------------------------------
 void IoBoardModel::setConfigDioMode(unsigned int channel, IoBoardModel::DioMode mode)
@@ -257,7 +232,7 @@ unsigned char IoBoardModel::getSettingServoPosition(unsigned int channel)
 }
 
 //-----------------------------------------------------------------------------
-void IoBoardModel::setMotorSpeed(unsigned int channel, int cmps)
+void IoBoardModel::setWheelSpeed(unsigned int channel, int cmps)
 //-----------------------------------------------------------------------------
 {
     SetMotorDriveModeCommand* pModeCmd = dynamic_cast<SetMotorDriveModeCommand*>(_commandMap[IoBoardMessage::SET_MOTOR_DRIVEMODE]);
@@ -273,7 +248,7 @@ void IoBoardModel::setMotorSpeed(unsigned int channel, int cmps)
 }
 
 //-----------------------------------------------------------------------------
-int IoBoardModel::getSettingMotorSpeed(unsigned int channel)
+int IoBoardModel::getSettingWheelSpeed(unsigned int channel)
 //-----------------------------------------------------------------------------
 {
     SetMotorDriveModeCommand* pModeCmd = dynamic_cast<SetMotorDriveModeCommand*>(_commandMap[IoBoardMessage::SET_MOTOR_DRIVEMODE]);
@@ -310,7 +285,7 @@ unsigned short IoBoardModel::getAnalogCountIn(unsigned int channel)
 }
 
 //-----------------------------------------------------------------------------
-int IoBoardModel::getMotorSpeed(unsigned int channel)
+int IoBoardModel::getWheelSpeed(unsigned int channel)
 //-----------------------------------------------------------------------------
 {
     int sign = ((_isMotorRespDirFwd[channel])?(1):(-1));
@@ -437,7 +412,7 @@ void IoBoardModel::writeOutputs(bool forceAll) throw(ControllerException)
     bool doEncoderReset = false;
     for(int i = 0;i < 2; ++i)
     {
-        _isMotorCmdDirFwd[i] = (getSettingMotorSpeed(i) >= 0);
+        _isMotorCmdDirFwd[i] = (getSettingWheelSpeed(i) >= 0);
         if( _isMotorCmdDirFwd[i] != _wasMotorCmdDirFwd[i] )
         {
             doEncoderReset = true;

@@ -5,9 +5,9 @@
 //==============================================================================
 
 #include "ControllerAgent.h"
-#include "Ugv1Messages/JoyMessage.hpp"
 #include "timing/Timer.h"
 #include "AgentBus.h"
+#include <QDateTime>
 #include <iostream>
 #include <sstream>
 
@@ -25,7 +25,11 @@ IAgent* createAgent(AgentBus& man)
 //==============================================================================
 ControllerAgent::ControllerAgent(AgentBus& man) throw(AgentException)
 //==============================================================================
-    : AgentThread(man), _periodMs(MAX_PERIOD_MS), _isConfigured(false)
+    : AgentThread(man),
+      _periodMs(MAX_PERIOD_MS),
+      _isConfigured(false),
+      _robotModel(_serialPort),
+      _pJoySubscription(NULL)
 {
 }
 
@@ -46,19 +50,17 @@ void ControllerAgent::configure() throw(AgentException)
     /*
       // Relevant sections of config file for the Joystick node
 
-        <Messenger Url="udpm://239.255.76.67:7667?ttl=1">
-            <Message Channel="JOYSTICK" Type="JoyMessage"></Message>
-        </Messenger>
+        <MessageBus Url="udpm://239.255.76.67:7667?ttl=1">
+            <Channel Name="JOYSTICK" Type="JoyMessage"></Channel>
+            <Channel Name="ODOMETRY" Type="OdometryMessage"></Channel>
+        </MessageBus>
 
-        <JoystickAgent>
-            <DevicePort>/dev/input/js0</DevicePort>
-            <Publish0>JOYSTICK</Publish0>
-            <UpdateIntervalMs>20</UpdateIntervalMs>
-            <AxisDeadZoneRange>2000</AxisDeadZoneRange>
-            <SurgeControl ControlType="AXIS" Index="1" Scale="-1"></SurgeControl>
-            <YawControl ControlType="AXIS" Index="2" Scale="-1"></YawControl>
-            <DeadMansHandle ControlType="BUTTON" Index="0"></DeadMansHandle>
-        </JoystickAgent>
+        <ControllerAgent>
+            <SerialPort>/dev/ttyUSB0</SerialPort>
+            <JoystickChannel>JOYSTICK</JoystickChannel>
+            <OdometryChannel>ODOMETRY</OdometryChannel>
+            <UpdateIntervalMs>10</UpdateIntervalMs>
+        </ControllerAgent>
 
     */
 
@@ -66,14 +68,15 @@ void ControllerAgent::configure() throw(AgentException)
     QDomDocument& config = bus.getConfig();
 
     // look for joystick node
-    QDomNodeList nodeList = config.documentElement().elementsByTagName("JoystickAgent");
+    QDomNodeList nodeList = config.documentElement().elementsByTagName("ControllerAgent");
     if( nodeList.isEmpty() )
     {
-        throw ConfigException(0,"[JoystickAgent::configure] No joystick configuration found");
+        throw ConfigException(0,"[ControllerAgent::configure] No ControllerAgent configuration found");
     }
 
     _periodMs = MAX_PERIOD_MS;
-    _lcmChannel.clear();
+    _odometryChannel.clear();
+    _joystickChannel.clear();
 
     // first read off entries to get joystick connection info
     QDomNode pEntries = nodeList.at(0).toElement().firstChild();
@@ -81,37 +84,66 @@ void ControllerAgent::configure() throw(AgentException)
     {
         QDomElement peData = pEntries.toElement();
         QString tagName = peData.tagName();
-        if( tagName == "DevicePort" ) { _jsPort = peData.text().toStdString(); }
-        if( tagName == "Publish0" ) { _lcmChannel = peData.text().toStdString(); }
+        if( tagName == "SerialPort" ) { _serialPort.setPortName(peData.text().toStdString()); }
+        if( tagName == "JoystickChannel" ) { _joystickChannel = peData.text().toStdString(); }
+        if( tagName == "OdometryChannel" ) { _odometryChannel = peData.text().toStdString(); }
         pEntries = pEntries.nextSibling();
     }
 
-    if( _jsPort.length() == 0 )
+    if( _serialPort.getPortName().empty() )
     {
-        throw ConfigException(0, "[JoystickAgent::configure] : Port not set");
+        throw ConfigException(0, "[ControllerAgent::configure] : Serial port not set");
     }
-    if( _lcmChannel.empty() )
+    if( _joystickChannel.empty() )
     {
-        throw ConfigException(0, "[JoystickAgent::configure] : Message channel not set");
+        throw ConfigException(0, "[ControllerAgent::configure] : Joystick channel not set");
+    }
+    if( _odometryChannel.empty() )
+    {
+        throw ConfigException(0, "[ControllerAgent::configure] : Odometry channel not set");
     }
 
-    if( bus.getMessageType(_lcmChannel) != Ugv1Messages::JoyMessage::getTypeName() )
+    if( bus.getMessageType(_joystickChannel) != Ugv1Messages::JoyMessage::getTypeName() )
     {
         std::ostringstream str;
-        str << "[JoystickAgent::configure] Type listed for Channel Name "
-                  << _lcmChannel << " (" << bus.getMessageType(_lcmChannel)
+        str << "[ControllerAgent::configure] Type listed for Channel Name "
+                  << _joystickChannel << " (" << bus.getMessageType(_joystickChannel)
                   << ") does not agree with implementation ("
                   << Ugv1Messages::JoyMessage::getTypeName() << ")";
         throw ConfigException(0, str.str());
     }
 
-    // connect to device
-    if( !_pJoystick->connect(_jsPort) )
+    if( bus.getMessageType(_odometryChannel) != Ugv1Messages::OdometryMessage::getTypeName() )
     {
         std::ostringstream str;
-        str << "[JoystickAgent::configure] Unable to connect to " << _jsPort;
+        str << "[ControllerAgent::configure] Type listed for Channel Name "
+                  << _odometryChannel << " (" << bus.getMessageType(_odometryChannel)
+                  << ") does not agree with implementation ("
+                  << Ugv1Messages::OdometryMessage::getTypeName() << ")";
+        throw ConfigException(0, str.str());
+    }
+
+    // connect to device
+    if( !_serialPort.open() )
+    {
+        std::ostringstream str;
+        str << "[ControllerAgent::configure] Unable to connect to " << _serialPort.getPortName();
         throw AgentException(0, str.str());
     }
+    if( !_serialPort.setBaudRate(Grape::SerialPort::B115200) )
+    {
+        std::ostringstream str;
+        str << "[ControllerAgent::configure] Unable to set baud rate for " << _serialPort.getPortName();
+        throw AgentException(0, str.str());
+    }
+
+    if( !_serialPort.setDataFormat(Grape::SerialPort::D8N1) )
+    {
+        std::ostringstream str;
+        str << "[ControllerAgent::configure] Unable to set format for " << _serialPort.getPortName();
+        throw AgentException(0, str.str());
+    }
+
 
     // read off all other entries
     pEntries = nodeList.at(0).toElement().firstChild();
@@ -126,132 +158,173 @@ void ControllerAgent::configure() throw(AgentException)
             if( (interval < 1) || (interval > MAX_PERIOD_MS) )
             {
                 std::ostringstream str;
-                str << "[JoystickAgent::configure] IntervalMs incorrect (range 1 - " << MAX_PERIOD_MS << ")";
+                str << "[ControllerAgent::configure] IntervalMs incorrect (range 1 - " << MAX_PERIOD_MS << ")";
                 throw ConfigException(0,str.str());
             }
             _periodMs = interval;
         }
 
-        if( tagName == "AxisDeadZoneRange" )
-        {
-            int deadZone = abs(peData.text().toInt());
-            if( !_pJoystick->setDeadZone(deadZone) )
-            {
-                std::cerr << "[JoystickAgent::configure] Unable to set dead zone = " << deadZone << std::endl;
-            }
-        }
-
-        if( tagName == "SurgeControl")
-        {
-            std::string type = peData.attribute("ControlType").toStdString();
-            unsigned int index = peData.attribute("Index").toUInt();
-            int scale = peData.attribute("Scale").toInt();
-            _surgeCtrl.attach(type, index, scale, *_pJoystick);
-        }
-
-        if( tagName == "YawControl" )
-        {
-            std::string type = peData.attribute("ControlType").toStdString();
-            unsigned int index = peData.attribute("Index").toUInt();
-            int scale = peData.attribute("Scale").toInt();
-            _yawCtrl.attach(type, index, scale, *_pJoystick);
-        }
-
-        if( tagName == "DeadMansHandle" )
-        {
-            std::string type = peData.attribute("ControlType").toStdString();
-            unsigned int index = peData.attribute("Index").toUInt();
-            int scale = peData.attribute("Scale", "1").toInt();
-            _deadMansCtrl.attach(type, index, scale, *_pJoystick);
-        }
-
         pEntries = pEntries.nextSibling();
     }
 
-    if( !_surgeCtrl.isValid() )
+    // configure the drive
+    _modelLock.lock();
+    _robotModel.configureDriveControl();
+    _modelLock.unlock();
+
+    // set up subscription to command channel
+    _pJoySubscription = getBus().getMessenger()->subscribe(_joystickChannel, &ControllerAgent::onJoystick, this, 1);
+    if( !_pJoySubscription )
     {
-        throw ConfigException(0, "[JoystickAgent::configure] : Surge control not assigned");
+        std::ostringstream str;
+        str << "[ControllerAgent::configure] Unable to subscribe to " << _joystickChannel << " channel";
+        throw ConfigException(0,str.str());
     }
-    if( !_yawCtrl.isValid() )
-    {
-        throw ConfigException(0, "[JoystickAgent::configure] : Yaw control not assigned");
-    }
-    if( !_deadMansCtrl.isValid() )
-    {
-        throw ConfigException(0, "[JoystickAgent::configure] : Dead Man's handle not assigned");
-    }
+
     _isConfigured = true;
 
 #ifdef _DEBUG
-    std::cout << "[JoystickAgent::configure] Configured "
-              << _pJoystick->getName() << " to publish every "
-              << _periodMs << " ms on channel " << _lcmChannel
-              << std::endl;
+    std::cout << "[ControllerAgent::configure] Configured. Publish every " << _periodMs << " ms" << std::endl;
 #endif
 
 }
 
 //------------------------------------------------------------------------------
-void ControllerAgent::run()
+void ControllerAgent::stop() throw()
 //------------------------------------------------------------------------------
 {
-    Ugv1Messages::JoyMessage message;
+    if( _pJoySubscription )
+    {
+        getBus().getMessenger()->unsubscribe(_pJoySubscription);
+    }
+    AgentThread::stop();
+    _serialPort.close();
+}
+
+//------------------------------------------------------------------------------
+void ControllerAgent::run() throw(AgentException)
+//------------------------------------------------------------------------------
+{   
+    Ugv1Messages::OdometryMessage odoMsg;
+
     AgentMessenger* pMessenger = getBus().getMessenger();
+
     Grape::Timer timer;
     long long periodNs = _periodMs * 1000 * 1000;
     timer.start(periodNs, false);
 
     while( !isExitFlag() )
     {
-        message.uTime = -1;
-        message.rawSurgeRate = 0;
-        message.rawYawRate = 0;
 
         // wait
         timer.timedWait(periodNs);
 
-        // read joystick
-        if( _pJoystick->update() && _isConfigured )
+        // ------------ read inputs -------------------
+        _modelLock.lock();
+
+        // update model with inputs
+        _robotModel.readInputs();
+
+        odoMsg.uTime = 1000 * QDateTime::currentMSecsSinceEpoch(); // not exactly the time when data was read, but close enough
+        _robotModel.getChassisVelocity(odoMsg.translationVelocity, odoMsg.rotationVelocity);
+
+        // update local copies of model data
+        int translationVelocity = 0;
+        int rotationVelocity = 0;
+        _robotModel.getSettingChassisVelocity(translationVelocity, rotationVelocity);
+        bool isBatteryLow = _robotModel.isBatteryLow();
+        bool isBumped = _robotModel.isAnyBumperActive();
+
+        _modelLock.unlock();
+
+        // ------------ process commands and sensors -------------------
+
+        // Check battery voltage. If low,
+        // - disable devices that consumer power (drive motor)
+        // - turn off non-essential services
+
+        //if( isBatteryLow )
+        //{
+        //    // stop motors
+        //    translationVelocity = 0;
+        //    rotationVelocity = 0;
+        //}
+
+        //  Allow only backward motion if any bumpers are active
+        if( isBumped )
         {
-            // translate
-            const Grape::SimpleJoystick::JoystickState& state = _pJoystick->getState();
-            message.uTime = 1000 * state.ms;
-            message.rawSurgeRate = (_surgeCtrl.isValid() ? _surgeCtrl.value() : 0);
-            message.rawYawRate = (_yawCtrl.isValid() ? _yawCtrl.value() : 0);
-            message.deadMansHandle = (_deadMansCtrl.isValid() ? (_deadMansCtrl.value() != 0) : false);
+            if( translationVelocity > 0 ) translationVelocity = 0;
         }
 
-        // unable to read JS
-        else
-        {
-            std::cerr << "[JoystickAgent] update failed" << std::endl;
+        // ------------ write outputs -------------------
 
-            // attempt a reconnect
-            if( _pJoystick->connect(_jsPort) )
-            {
-                std::cerr << "[JoystickAgent] Reconnected" << std::endl;
-            }
-        }
+        _modelLock.lock();
 
-        // publish (will send zeroes if joystick update failed)
+        _robotModel.setChassisVelocity(translationVelocity,rotationVelocity);
+        _robotModel.writeOutputs();
+
+        _modelLock.unlock();
+
+        // publish odometry
         if( pMessenger )
         {
-            if( !pMessenger->publish(_lcmChannel, &message) )
+            if( !pMessenger->publish(_odometryChannel, &odoMsg) )
             {
                 std::ostringstream str;
-                str << "[JoystickAgent] Publish error on channel " << _lcmChannel;
+                str << "[ControllerAgent] Publish error on channel " << _odometryChannel;
                 throw AgentException(0, str.str());
             }
+#ifdef _DEBUG
+            std::cout << "[ControllerAgent] " << _odometryChannel << " "
+                      << odoMsg.uTime << " "
+                      << odoMsg.translationVelocity << " "
+                      << odoMsg.rotationVelocity << std::endl;
+#endif
         }
 
-#ifdef _DEBUG
-    std::cout << "[JoystickAgent] ["
-              << message.uTime << "] ("
-              << message.rawSurgeRate << ", "
-              << message.rawYawRate << ") "
-              << (int)message.deadMansHandle << std::endl;
-#endif
     } // while
+}
+
+//------------------------------------------------------------------------------
+void ControllerAgent::onJoystick(const lcm::ReceiveBuffer* rBuf,
+                               const std::string& channel,
+                               const Ugv1Messages::JoyMessage* pMsg)
+//------------------------------------------------------------------------------
+{
+    rBuf = rBuf;
+
+    if( channel != _joystickChannel )
+    {
+        return;
+    }
+
+
+    /// \todo
+    /// - scale joystick velocity inputs as appropriate
+    /// - do mode selection based on joystick button state
+
+    _commandLock.lock();
+
+    _commandMsg.uTime = 1000 * QDateTime::currentMSecsSinceEpoch();
+    _commandMsg.desiredModeId = 0;
+    _commandMsg.surgeSpeed = (100 * pMsg->rawSurgeRate)/32767;
+    _commandMsg.yawSpeed = (100 * pMsg->rawYawRate)/32767;
+
+    // apply command
+    _modelLock.lock();
+    _robotModel.setChassisVelocity(_commandMsg.surgeSpeed, _commandMsg.yawSpeed);
+    _modelLock.unlock();
+
+    _commandLock.unlock();
+/*
+#ifdef _DEBUG
+    std::cout << "[ControllerAgent] "
+              << _commandMsg.uTime << " "
+              << _commandMsg.desiredModeId << " "
+              << _commandMsg.surgeSpeed << " "
+              << _commandMsg.yawSpeed << std::endl;
+#endif
+*/
 }
 
 } // namespace Ugv1

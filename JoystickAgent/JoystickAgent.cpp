@@ -115,13 +115,13 @@ void JoystickAgent::configure() throw(AgentException)
     /*
       // Relevant sections of config file for the Joystick node
 
-        <Messenger Url="udpm://239.255.76.67:7667?ttl=1">
-            <Message Channel="JOYSTICK" Type="JoyMessage"></Message>
-        </Messenger>
+        <MessageBus Url="udpm://239.255.76.67:7667?ttl=1">
+            <Channel Name="JOYSTICK" Type="JoyMessage"></Channel>
+        </MessageBus>
 
         <JoystickAgent>
             <DevicePort>/dev/input/js0</DevicePort>
-            <Publish0>JOYSTICK</Publish0>
+            <JoystickChannel>JOYSTICK</JoystickChannel>
             <UpdateIntervalMs>20</UpdateIntervalMs>
             <AxisDeadZoneRange>2000</AxisDeadZoneRange>
             <SurgeControl ControlType="AXIS" Index="1" Scale="-1"></SurgeControl>
@@ -151,7 +151,7 @@ void JoystickAgent::configure() throw(AgentException)
         QDomElement peData = pEntries.toElement();
         QString tagName = peData.tagName();
         if( tagName == "DevicePort" ) { _jsPort = peData.text().toStdString(); }
-        if( tagName == "Publish0" ) { _lcmChannel = peData.text().toStdString(); }
+        if( tagName == "JoystickChannel" ) { _lcmChannel = peData.text().toStdString(); }
         pEntries = pEntries.nextSibling();
     }
 

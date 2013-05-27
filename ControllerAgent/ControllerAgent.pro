@@ -15,11 +15,11 @@ DEPENDPATH +=
 win32:DEFINES += UGV1AGENTLIB_DLL UGV1CONTROLLERAGENT_DLL UGV1CONTROLLERAGENT_DLL_EXPORT
 CONFIG(debug, release|debug) {
     DEFINES += _DEBUG
-    win32:LIBS += -lUgv1Agentd0
-    else:unix: LIBS += -lUgv1Agentd
+    win32:LIBS += -lUgv1Controllerd0 -lUgv1Agentd0
+    else:unix: LIBS += -lUgv1Controllerd -lUgv1Agentd
 } else {
-    win32:LIBS += -lUgv1Agent0
-    else:unix: LIBS += -lUgv1Agent
+    win32:LIBS += -lUgv1Controller0 -lUgv1Agent0
+    else:unix: LIBS += -lUgv1Controller -lUgv1Agent
 }
 
 HEADERS += \
@@ -27,10 +27,16 @@ HEADERS += \
 SOURCES += \
     ControllerAgent.cpp
 
-lcmgen.target = ControllerMessage
-lcmgen.commands = $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/JoyMessage.lcm
-QMAKE_EXTRA_TARGETS += lcmgen
-PRE_TARGETDEPS = $$lcmgen.target
+lcm_odomsg.target = OdometryMessage
+lcm_odomsg.commands = $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/OdometryMessage.lcm
+QMAKE_EXTRA_TARGETS += lcm_odomsg
+PRE_TARGETDEPS += $$lcm_odomsg.target
+
+lcm_cmdmsg.target = CommandMessage
+lcm_cmdmsg.commands = $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/CommandMessage.lcm
+QMAKE_EXTRA_TARGETS += lcm_cmdmsg
+PRE_TARGETDEPS += $$lcm_cmdmsg.target
 
 OTHER_FILES += \
-    JoyMessage.lcm
+    OdometryMessage.lcm \
+    CommandMessage.lcm

@@ -161,17 +161,17 @@ void MainWindow::onTimer()
         _pUi->motor0Current->setText(QString::number(_model.getMotorCurrent(0)));
         _pUi->motor1Current->setText(QString::number(_model.getMotorCurrent(1)));
 
-        _pUi->motor0Speed->setText(QString::number(_model.getMotorSpeed(0)));
-        _pUi->motor1Speed->setText(QString::number(_model.getMotorSpeed(1)));
+        _pUi->motor0Speed->setText(QString::number(_model.getWheelSpeed(0)));
+        _pUi->motor1Speed->setText(QString::number(_model.getWheelSpeed(1)));
 
         _pUi->encoder0->setText(QString::number(_model.getMotorEncoder(0)));
         _pUi->encoder1->setText(QString::number(_model.getMotorEncoder(1)));
 
-        _model.setMotorSpeed(0, _pUi->motor0dial->value());
-        _model.setMotorSpeed(1, _pUi->motor1dial->value());
+        _model.setWheelSpeed(0, _pUi->motor0dial->value());
+        _model.setWheelSpeed(1, _pUi->motor1dial->value());
 
-        _pUi->speed0set->display( _model.getSettingMotorSpeed(0) );
-        _pUi->speed1set->display( _model.getSettingMotorSpeed(1) );
+        _pUi->speed0set->display( _model.getSettingWheelSpeed(0) );
+        _pUi->speed1set->display( _model.getSettingWheelSpeed(1) );
 
         _model.writeOutputs(false);
 

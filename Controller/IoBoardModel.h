@@ -90,16 +90,6 @@ public:
     ///             negative number for infinite wait.
     void setResponseTimeOut(int ms) { _board.setResponseTimeOut(ms); }
 
-    /// Set default configuration parameters.
-    /// - All 11 digital lines are configured as inputs
-    /// - encoder ppr = 13
-    /// - gear ratio = 51:1
-    /// - wheel perimeter = 430 mm
-    /// - motor drive mode = speed control
-    /// - p,i,d gains = 10,30,1 respectively
-    /// \see writeOutputs
-    void setConfigDefaults();
-
     /// Configure digital pins as input, output or servo lines.
     /// \param channel  IO pin in range 0 - 10. Note that only pins 0 - 7
     ///                 are configurable in servo mode.
@@ -165,13 +155,13 @@ public:
     void setServoPosition(unsigned int channel, unsigned char degrees, unsigned char speed=0xFF);
     unsigned char getSettingServoPosition(unsigned int channel);
 
-    /// Set motor drive signal.
+    /// Set wheel drive signal.
     /// \param channel Motor number. Range 0 - 1.
     /// \param cmps If in speed control mode, this is speed in cm/sec.
     ///             If in direct power mode, this is percentage power in range - 100 to 100.
     /// \see writeOutputs
-    void setMotorSpeed(unsigned int channel, int cmps);
-    int getSettingMotorSpeed(unsigned int channel);
+    void setWheelSpeed(unsigned int channel, int cmps);
+    int getSettingWheelSpeed(unsigned int channel);
 
     // --------------- inputs ---------------------
 
@@ -187,9 +177,9 @@ public:
     /// \see readInputs
     unsigned short getAnalogCountIn(unsigned int channel);
 
-    /// Get motor speed. The output is 0 if the motors are configured in direct power mode.
+    /// Get wheel speed in cm/s. The output is 0 if the motors are configured in direct power mode.
     /// \see readInputs
-    int getMotorSpeed(unsigned int channel);
+    int getWheelSpeed(unsigned int channel);
 
     /// \return motor current consumption in mA.
     /// \see readInputs

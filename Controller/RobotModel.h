@@ -9,7 +9,6 @@
 #define UGV1_ROBOTMODEL_H
 
 #include "IoBoardModel.h"
-#include <QMutex>
 
 namespace Ugv1
 {
@@ -17,13 +16,9 @@ namespace Ugv1
 /// \class RobotModel
 /// \ingroup controller
 /// \brief UGV1 robot model.
-/*
- * Design notes:
- * setup() to configure devices and attach them to IO
- * loop() called at a specific frequency in a separate thread.
- * teardown() to shutdown bits before exit
- */
-class UGV1CONTROLLER_DLL_API RobotModel
+///
+/// This class extends the IoBoardModel class to implement models for kinematics, on-board sensors and actuators
+class UGV1CONTROLLER_DLL_API RobotModel : public IoBoardModel
 {
 public:
     // device mappings
@@ -49,33 +44,33 @@ public:
     static const int ENCODER_PPR = 13;
 
 public:
-    RobotModel(IoBoardModel& model);
+    RobotModel(Grape::IPort& transport);
     ~RobotModel();
 
-    // bumper switches
+    // -------------- bumper switches ---------------
     bool isBumperPortActive();
     bool isBumperMiddleActive();
     bool isBumperStbdActive();
     bool isAnyBumperActive();
 
-    // battery monitor
+    // -------------- battery monitor ---------------
     // todo: getBatteryLevelPercent
     unsigned short getBatteryVoltageCount();
     bool isBatteryLow();
 
-    // kinematics
+    // -------------- kinematics ---------------
     /// Set kinematic velocity of the vehicle
     /// \param cmps Translational velocity in centi-meters/sec
     /// \param crps Rotational velocity in centi-radians/sec (resolution is about 7 centiradians/sec)
     void setChassisVelocity(int cmps, int crps);
+    void getSettingChassisVelocity(int&cmps, int& crps);
+    void getChassisVelocity(int&cmps, int& crps);
 
-    void setup() throw(ControllerException);
-    void loop() throw(ControllerException);
-    void teardown() throw(/*nothing*/);
+    /// Helper function to set all drive train parameters.
+    void configureDriveControl() throw(ControllerException);
 
 private:
-    mutable QMutex  _lock;
-    IoBoardModel&   _model;
+
 };// RobotModel
 
 } // namespace Ugv1

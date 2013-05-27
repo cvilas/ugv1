@@ -20,8 +20,13 @@
 
 
 #include "AgentThread.h"
-#include <string>
-#include <vector>
+#include "RobotModel.h"
+#include "SerialPort.h"
+#include "AgentMessenger.h"
+#include "Ugv1Messages/JoyMessage.hpp"
+#include "Ugv1Messages/OdometryMessage.hpp"
+#include "Ugv1Messages/CommandMessage.hpp"
+#include <QMutex>
 
 namespace Ugv1
 {
@@ -40,17 +45,30 @@ public:
     ControllerAgent(AgentBus& man) throw(AgentException);
     virtual ~ControllerAgent();
     void configure() throw(AgentException);
-    bool isConfigured();
-    bool isRunning();
+    bool isConfigured() { return _isConfigured; }
+    bool isRunning() { return QThread::isRunning(); }
+    void stop() throw();
 
 private:
     ControllerAgent(const ControllerAgent &);               //!< disable copy
     ControllerAgent &operator=(const ControllerAgent &);    //!< disable assignment
-    void run();
-
+    void run() throw(AgentException);
+    void onJoystick(const lcm::ReceiveBuffer* rBuf, const std::string& channel, const Ugv1Messages::JoyMessage* pMsg);
 private:
-    int                     _periodMs;
-    bool                    _isConfigured;
+    int     _periodMs;
+    bool    _isConfigured;
+
+    Grape::SerialPort   _serialPort;
+    RobotModel          _robotModel;
+    QMutex              _modelLock;
+
+    lcm::Subscription*              _pJoySubscription;
+    Ugv1Messages::CommandMessage    _commandMsg;
+    QMutex                          _commandLock;
+
+    std::string _odometryChannel;
+    std::string _joystickChannel;
+
 }; // ControllerAgent
 
 

@@ -10,10 +10,11 @@ namespace Ugv1
 {
 
 //==============================================================================
-RobotModel::RobotModel(IoBoardModel& model)
+RobotModel::RobotModel(Grape::IPort& transport)
 //==============================================================================
-    : _model(model)
+    : IoBoardModel(transport)
 {
+    configureDriveControl();
 }
 
 //-----------------------------------------------------------------------------
@@ -26,56 +27,35 @@ RobotModel::~RobotModel()
 bool RobotModel::isBumperPortActive()
 //-----------------------------------------------------------------------------
 {
-    bool b = false;
-    _lock.lock();
-    b = _model.getDigitalIn(BUMPER_PORT_DICHANNEL);
-    _lock.unlock();
-    return b;
+    return getDigitalIn(BUMPER_PORT_DICHANNEL);
 }
 
 //-----------------------------------------------------------------------------
 bool RobotModel::isBumperMiddleActive()
 //-----------------------------------------------------------------------------
 {
-    bool b = false;
-    _lock.lock();
-    b = _model.getDigitalIn(BUMPER_MID_DICHANNEL);
-    _lock.unlock();
-    return b;}
+    return getDigitalIn(BUMPER_MID_DICHANNEL);
+}
 
 //-----------------------------------------------------------------------------
 bool RobotModel::isBumperStbdActive()
 //-----------------------------------------------------------------------------
 {
-    bool b = false;
-    _lock.lock();
-    b = _model.getDigitalIn(BUMPER_STBD_DICHANNEL);
-    _lock.unlock();
-    return b;
+    return getDigitalIn(BUMPER_STBD_DICHANNEL);
 }
 
 //-----------------------------------------------------------------------------
 bool RobotModel::isAnyBumperActive()
 //-----------------------------------------------------------------------------
 {
-    bool b = false;
-    _lock.lock();
-    b = _model.getDigitalIn(BUMPER_PORT_DICHANNEL)
-            || _model.getDigitalIn(BUMPER_MID_DICHANNEL)
-            || _model.getDigitalIn(BUMPER_STBD_DICHANNEL);
-    _lock.unlock();
-    return b;
+    return isBumperPortActive() || isBumperMiddleActive() || isBumperStbdActive();
 }
 
 //-----------------------------------------------------------------------------
 unsigned short RobotModel::getBatteryVoltageCount()
 //-----------------------------------------------------------------------------
 {
-    unsigned short v;
-    _lock.lock();
-    v = _model.getAnalogCountIn(BATTV_AICHANNEL);
-    _lock.unlock();
-    return v;
+    return getAnalogCountIn(BATTV_AICHANNEL);
 }
 
 //-----------------------------------------------------------------------------
@@ -93,69 +73,41 @@ void RobotModel::setChassisVelocity(int cmps, int crps)
     int vr = cmps + wr;
     int vl = cmps - wr;
 
-    _lock.lock();
-    _model.setMotorSpeed(0, vl);
-    _model.setMotorSpeed(1, vr);
-    _lock.unlock();
+    setWheelSpeed(MOTOR_PORT_CHANNEL, vl);
+    setWheelSpeed(MOTOR_STBD_CHANNEL, vr);
 }
 
 //-----------------------------------------------------------------------------
-void RobotModel::setup() throw(ControllerException)
+void RobotModel::getSettingChassisVelocity(int&cmps, int& crps)
 //-----------------------------------------------------------------------------
 {
-    _lock.lock();
-    _model.setConfigEncoderPPR(ENCODER_PPR);
-    _model.setConfigMotorGearRatio(WHEEL_GEAR_RATIO);
-    _model.setConfigWheelPerimeter(WHEEL_PERIMETER_MM);
-    _model.setConfigPGain(DEFAULT_PID_PGAIN);
-    _model.setConfigIGain(DEFAULT_PID_IGAIN);
-    _model.setConfigDGain(DEFAULT_PID_DGAIN);
-    _model.setConfigMotorDriveMode(IoBoardModel::SPEED_CONTROL);
-    _lock.unlock();
+    int vl = getSettingWheelSpeed(MOTOR_PORT_CHANNEL);
+    int vr = getSettingWheelSpeed(MOTOR_STBD_CHANNEL);
+    cmps = (vl + vr)/2;
+    crps = (1000 * (vr - vl))/WHEEL_BASE_MM;
 }
 
 //-----------------------------------------------------------------------------
-void RobotModel::loop() throw(ControllerException)
+void RobotModel::getChassisVelocity(int& cmps, int& crps)
 //-----------------------------------------------------------------------------
 {
-    _lock.lock();
-    _model.readInputs();
-    _lock.unlock();
-
-    // Make local copy IO that will be modified. Will apply these atomically
-    // to the board in the end
-    int motorSpeedPort = _model.getSettingMotorSpeed(MOTOR_PORT_CHANNEL);
-    int motorSpeedStbd = _model.getSettingMotorSpeed(MOTOR_STBD_CHANNEL);
-
-    // Check battery voltage. If low,
-    // - disallow devices that consumer power (drive motor)
-    // - turn of non-essential services
-    if( isBatteryLow() )
-    {
-        // stop motors
-        motorSpeedPort = 0;
-        motorSpeedStbd = 0;
-    }
-
-    //  Allow only backward motion if any bumpers are active
-    if( isAnyBumperActive() )
-    {
-        if( motorSpeedPort > 0 ) motorSpeedPort = 0;
-        if( motorSpeedStbd > 0 ) motorSpeedStbd = 0;
-    }
-
-    // lock and update outputs
-    _lock.lock();
-    _model.setMotorSpeed(MOTOR_PORT_CHANNEL, motorSpeedPort);
-    _model.setMotorSpeed(MOTOR_STBD_CHANNEL, motorSpeedStbd);
-    _model.writeOutputs();
-    _lock.unlock();
+    int vl = getWheelSpeed(MOTOR_PORT_CHANNEL);
+    int vr = getWheelSpeed(MOTOR_STBD_CHANNEL);
+    cmps = (vl + vr)/2;
+    crps = (1000 * (vr - vl))/WHEEL_BASE_MM;
 }
 
 //-----------------------------------------------------------------------------
-void RobotModel::teardown() throw()
+void RobotModel::configureDriveControl() throw(ControllerException)
 //-----------------------------------------------------------------------------
 {
+    setConfigEncoderPPR(ENCODER_PPR);
+    setConfigMotorGearRatio(WHEEL_GEAR_RATIO);
+    setConfigWheelPerimeter(WHEEL_PERIMETER_MM);
+    setConfigPGain(DEFAULT_PID_PGAIN);
+    setConfigIGain(DEFAULT_PID_IGAIN);
+    setConfigDGain(DEFAULT_PID_DGAIN);
+    setConfigMotorDriveMode(IoBoardModel::SPEED_CONTROL);
 }
 
 } // Ugv1
