@@ -9,7 +9,7 @@
 #define UGV1_ROBOTMODEL_H
 
 #include "IoBoardModel.h"
-#include <QTimer>
+#include <QMutex>
 
 namespace Ugv1
 {
@@ -21,13 +21,10 @@ namespace Ugv1
  * Design notes:
  * setup() to configure devices and attach them to IO
  * loop() called at a specific frequency in a separate thread.
- * before entering loop(), io input state is updated and device states are updated as configured
- * after exiting loop(), io outputs get written from devices
- * cleanup() to shutdown bits before exit
+ * teardown() to shutdown bits before exit
  */
-class UGV1CONTROLLER_DLL_API RobotModel : public QObject
+class UGV1CONTROLLER_DLL_API RobotModel
 {
-    Q_OBJECT
 public:
     // device mappings
     static const unsigned int BUMPER_PORT_DICHANNEL = 8;
@@ -41,36 +38,46 @@ public:
 
     // control settings
     static const unsigned short MIN_BATTERY_VOLTAGE_COUNT = 0xFFF; //todo: set this to 11v equivalent
-    static const int DEFAULT_LOOP_UPDATE_TIME_MS = 10;
-    static const int LOWBATT_LOOP_UPDATE_TIME_MS = 1000;
+    static const int DEFAULT_PID_PGAIN = 10;
+    static const int DEFAULT_PID_IGAIN = 30;
+    static const int DEFAULT_PID_DGAIN = 1;
+
+    // kinematics
+    static const int WHEEL_BASE_MM = 285;
+    static const int WHEEL_PERIMETER_MM = 430;
+    static const int WHEEL_GEAR_RATIO = 510;
+    static const int ENCODER_PPR = 13;
 
 public:
-    RobotModel(Grape::IPort& transport);
+    RobotModel(IoBoardModel& model);
     ~RobotModel();
 
     // bumper switches
-    bool isBumperPortActive() { return _model.getDigitalIn(BUMPER_PORT_DICHANNEL); }
-    bool isBumperMiddleActive() { return _model.getDigitalIn(BUMPER_MID_DICHANNEL); }
-    bool isBumperStbdActive() { return _model.getDigitalIn(BUMPER_STBD_DICHANNEL); }
-    bool isAnyBumperActive() { return isBumperPortActive() || isBumperMiddleActive() || isBumperStbdActive(); }
+    bool isBumperPortActive();
+    bool isBumperMiddleActive();
+    bool isBumperStbdActive();
+    bool isAnyBumperActive();
 
     // battery monitor
     // todo: getBatteryLevelPercent
-    unsigned short getBatteryVoltageCount() { return _model.getAnalogCountIn(BATTV_AICHANNEL); }
-    bool isBatteryLow() { return getBatteryVoltageCount() < MIN_BATTERY_VOLTAGE_COUNT; }
+    unsigned short getBatteryVoltageCount();
+    bool isBatteryLow();
 
-    void start();
-    void stop();
+    // kinematics
+    /// Set kinematic velocity of the vehicle
+    /// \param cmps Translational velocity in centi-meters/sec
+    /// \param crps Rotational velocity in centi-radians/sec (resolution is about 7 centiradians/sec)
+    void setChassisVelocity(int cmps, int crps);
 
-public slots:
     void setup() throw(ControllerException);
     void loop() throw(ControllerException);
     void teardown() throw(/*nothing*/);
+
 private:
-    IoBoardModel    _model;
-    QTimer          _loopTimer;
+    mutable QMutex  _lock;
+    IoBoardModel&   _model;
 };// RobotModel
 
 } // namespace Ugv1
 
-#endif // UGV1_CONTROLLER_H
+#endif // UGV1_ROBOTMODEL_H
