@@ -101,6 +101,7 @@ void RobotModel::getChassisVelocity(int& cmps, int& crps)
 void RobotModel::configureDriveControl() throw(ControllerException)
 //-----------------------------------------------------------------------------
 {
+    setConfigDioMode(BUMPER_PORT_DICHANNEL, Ugv1::IoBoardModel::INPUT_MODE);
     setConfigEncoderPPR(ENCODER_PPR);
     setConfigMotorGearRatio(WHEEL_GEAR_RATIO);
     setConfigWheelPerimeter(WHEEL_PERIMETER_MM);

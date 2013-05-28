@@ -66,8 +66,8 @@ public:
     void getSettingChassisVelocity(int&cmps, int& crps);
     void getChassisVelocity(int&cmps, int& crps);
 
-    /// Helper function to set all drive train parameters.
-    void configureDriveControl() throw(ControllerException);
+    /// Helper function to configure io board channels and parameters.
+    void configureIoBoard() throw(ControllerException);
 
 private:
 
