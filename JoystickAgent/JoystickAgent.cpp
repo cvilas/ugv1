@@ -314,11 +314,11 @@ void JoystickAgent::run()
         }
 
 #ifdef _DEBUG
-    std::cout << "[JoystickAgent] ["
-              << message.uTime << "] ("
-              << message.rawSurgeRate << ", "
-              << message.rawYawRate << ") "
-              << (int)message.deadMansHandle << std::endl;
+        std::cout << "[JoystickAgent] " << _lcmChannel << " "
+                  << message.uTime << " ("
+                  << message.rawSurgeRate << ", "
+                  << message.rawYawRate << ") "
+                  << (int)message.deadMansHandle << std::endl;
 #endif
     } // while
 }

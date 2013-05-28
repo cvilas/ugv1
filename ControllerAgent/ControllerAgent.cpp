@@ -167,8 +167,9 @@ void ControllerAgent::configure() throw(AgentException)
         pEntries = pEntries.nextSibling();
     }
 
-    // configure the drive
+    // configure the robot model
     _modelLock.lock();
+    _robotModel.setResponseTimeOut(5000);
     _robotModel.configureDriveControl();
     _modelLock.unlock();
 
@@ -305,12 +306,14 @@ void ControllerAgent::onJoystick(const lcm::ReceiveBuffer* rBuf,
 
     _commandLock.lock();
 
+    bool isDead = (pMsg->deadMansHandle == 0);
     _commandMsg.uTime = 1000 * QDateTime::currentMSecsSinceEpoch();
     _commandMsg.desiredModeId = 0;
-    _commandMsg.surgeSpeed = (100 * pMsg->rawSurgeRate)/32767;
-    _commandMsg.yawSpeed = (100 * pMsg->rawYawRate)/32767;
+    _commandMsg.surgeSpeed = (isDead ? 0 : (100 * pMsg->rawSurgeRate)/32767);
+    _commandMsg.yawSpeed = (isDead ? 0 : (100 * pMsg->rawYawRate)/32767);
 
     // apply command
+    /// \todo: this needs to be in main control loop with safeguards for broken joystick agent
     _modelLock.lock();
     _robotModel.setChassisVelocity(_commandMsg.surgeSpeed, _commandMsg.yawSpeed);
     _modelLock.unlock();
@@ -318,7 +321,7 @@ void ControllerAgent::onJoystick(const lcm::ReceiveBuffer* rBuf,
     _commandLock.unlock();
 /*
 #ifdef _DEBUG
-    std::cout << "[ControllerAgent] "
+    std::cout << "[ControllerAgent] COMMAND "
               << _commandMsg.uTime << " "
               << _commandMsg.desiredModeId << " "
               << _commandMsg.surgeSpeed << " "
