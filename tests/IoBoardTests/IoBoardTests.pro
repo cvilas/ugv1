@@ -9,5 +9,4 @@ CONFIG   -= app_bundle
 win32: DEFINES += GRAPE_DLL UGV1VEHICLELIB_DLL
 
 SOURCES += IoBoard_tests.cpp
-DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
