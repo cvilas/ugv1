@@ -227,20 +227,16 @@ void ControllerAgent::run() throw(AgentException)
         bool isBatteryLow = _robotModel.isBatteryLow();
         bool isBumped = _robotModel.isAnyBumperActive();
 
+        int translationCommand = 0;
+        int rotationCommand = 0;
+        _robotModel.getSettingChassisVelocity(translationCommand, rotationCommand);
+
         /// \todo
         /// update health message
 
         _modelLock.unlock();
 
         // ------------ process commands and sensors -------------------
-
-        // prepare motion command
-        _commandLock.lock();
-        int translationVelocity = _commandMsg.surgeSpeed;
-        int rotationVelocity = _commandMsg.yawSpeed;
-        _commandMsg.surgeSpeed = 0;
-        _commandMsg.yawSpeed = 0;
-        _commandLock.unlock();
 
         // Check battery voltage. If low,
         // - disable devices that consumer power (drive motor)
@@ -256,14 +252,14 @@ void ControllerAgent::run() throw(AgentException)
         // If bumpers are active, allow only backward motion
         if( isBumped )
         {
-            if( translationVelocity > 0 ) translationVelocity = 0;
+            if( translationCommand > 0 ) translationCommand = 0;
         }
 
         // ------------ write outputs to board -------------------
 
         _modelLock.lock();
 
-        _robotModel.setChassisVelocity(translationVelocity,rotationVelocity);
+        _robotModel.setChassisVelocity(translationCommand,rotationCommand);
         _robotModel.writeOutputs();
 
         _modelLock.unlock();
@@ -314,14 +310,21 @@ void ControllerAgent::onJoystick(const lcm::ReceiveBuffer* rBuf,
     /// - scale joystick velocity inputs as appropriate
     /// - do mode selection based on joystick button state
 
-    _commandLock.lock();
-
     bool isDead = (pMsg->deadMansHandle == 0);
-    _commandMsg.uTime = 1000 * QDateTime::currentMSecsSinceEpoch();
-    _commandMsg.desiredModeId = 0;
-    _commandMsg.surgeSpeed = (isDead ? 0 : (100 * pMsg->rawSurgeRate)/32767);
-    _commandMsg.yawSpeed = (isDead ? 0 : (100 * pMsg->rawYawRate)/32767);
+    int64_t uTime = 1000 * QDateTime::currentMSecsSinceEpoch();
+    int16_t desiredMode = 0;
+    int16_t surgeSpeed = (isDead ? 0 : (100 * pMsg->rawSurgeRate)/32767);
+    int16_t yawSpeed = (isDead ? 0 : (100 * pMsg->rawYawRate)/32767);
 
+    _modelLock.lock();
+    _robotModel.setChassisVelocity(surgeSpeed, yawSpeed);
+    _modelLock.unlock();
+
+    _commandLock.lock();
+    _commandMsg.uTime = uTime;
+    _commandMsg.desiredModeId = desiredMode;
+    _commandMsg.surgeSpeed = surgeSpeed;
+    _commandMsg.yawSpeed = yawSpeed;
     _commandLock.unlock();
 
 /*
