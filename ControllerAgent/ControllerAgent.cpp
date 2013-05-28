@@ -235,7 +235,6 @@ void ControllerAgent::run() throw(AgentException)
         _robotModel.getSettingChassisVelocity(translationVelocity, rotationVelocity);
         bool isBatteryLow = _robotModel.isBatteryLow();
         bool isBumped = _robotModel.isAnyBumperActive();
-        std::cout << (int)_robotModel.isBumperPortActive() << " " << (int)_robotModel.isBumperMiddleActive() << " " << _robotModel.isBumperStbdActive() <<std::endl;
 
         _modelLock.unlock();
 
