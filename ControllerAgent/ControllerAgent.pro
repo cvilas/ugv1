@@ -37,6 +37,12 @@ lcm_cmdmsg.commands = $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/Com
 QMAKE_EXTRA_TARGETS += lcm_cmdmsg
 PRE_TARGETDEPS += $$lcm_cmdmsg.target
 
+lcm_healthmsg.target = HealthMessage
+lcm_healthmsg.commands = $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/HealthMessage.lcm
+QMAKE_EXTRA_TARGETS += lcm_healthmsg
+PRE_TARGETDEPS += $$lcm_healthmsg.target
+
 OTHER_FILES += \
     OdometryMessage.lcm \
-    CommandMessage.lcm
+    CommandMessage.lcm \
+    HealthMessage.lcm

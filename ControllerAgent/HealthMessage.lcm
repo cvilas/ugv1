@@ -1,0 +1,14 @@
+package Ugv1Messages;
+
+struct HealthMessage
+{
+    int64_t uTime;              /* Timestamp for this data in microseconds. */
+    int32_t batteryPercent;     /* Battery level in percentage */
+    int32_t reserved;           /* */
+}
+
+/*
+   Note: size of message in bits must be integral multiple of 64. This
+   avoids bit packing issues when messaging across hosts. Fields must be
+   integer types because that's what Command2String and String2Command expects.
+*/

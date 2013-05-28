@@ -20,13 +20,9 @@ Objective: Teleoperation within the local wireless network
     - Confifrm motor speed responses are accurate
 
 - RobotController
-    - Implement timed loop
-    - Implement software safety interlocks - bumper sensors, proximity sensors
-    - Implement HMI Server
-        - TCP or UDP (user selectable)
-        - Accepts DesiredState from HMI, replies with CurrentState
-        - Resets DesiredState motor power after timeout with HMI and stops processing further inputs
-    - Deploy controller on Android 
+    - Mode selection control
+    - Battery monitor
+    - Health messages
 
 - HMI
     - Desktop based HMI
@@ -45,12 +41,10 @@ Objective: Teleoperation within the local wireless network
 - Ligting pack
     - Blue undercarriage lights
     - White LED head lamp
-    - Blinking direction indicator LEDs
+    - RGB mood light (show battery power status, health)
 
 - Battery voltage monitor circuit
-
 - Horn/multitone alarm
-
 - Racer stripes
 	
 - Mechanical

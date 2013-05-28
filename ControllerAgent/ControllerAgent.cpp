@@ -59,6 +59,7 @@ void ControllerAgent::configure() throw(AgentException)
             <SerialPort>/dev/ttyUSB0</SerialPort>
             <JoystickChannel>JOYSTICK</JoystickChannel>
             <OdometryChannel>ODOMETRY</OdometryChannel>
+            <HealthChannel>HEALTH</HealthChannel>
             <UpdateIntervalMs>10</UpdateIntervalMs>
         </ControllerAgent>
 
@@ -74,11 +75,11 @@ void ControllerAgent::configure() throw(AgentException)
         throw ConfigException(0,"[ControllerAgent::configure] No ControllerAgent configuration found");
     }
 
-    _periodMs = MAX_PERIOD_MS;
+    _periodMs = MAX_PERIOD_MS+1;
     _odometryChannel.clear();
     _joystickChannel.clear();
 
-    // first read off entries to get joystick connection info
+    // read configuration info
     QDomNode pEntries = nodeList.at(0).toElement().firstChild();
     while( !pEntries.isNull() )
     {
@@ -87,6 +88,8 @@ void ControllerAgent::configure() throw(AgentException)
         if( tagName == "SerialPort" ) { _serialPort.setPortName(peData.text().toStdString()); }
         if( tagName == "JoystickChannel" ) { _joystickChannel = peData.text().toStdString(); }
         if( tagName == "OdometryChannel" ) { _odometryChannel = peData.text().toStdString(); }
+        if( tagName == "HealthChannel" ) { _healthChannel = peData.text().toStdString(); }
+        if( tagName == "UpdateIntervalMs" ) { _periodMs = abs(peData.text().toInt()); }
         pEntries = pEntries.nextSibling();
     }
 
@@ -123,6 +126,16 @@ void ControllerAgent::configure() throw(AgentException)
         throw ConfigException(0, str.str());
     }
 
+    if( bus.getMessageType(_healthChannel) != Ugv1Messages::HealthMessage::getTypeName() )
+    {
+        std::ostringstream str;
+        str << "[ControllerAgent::configure] Type listed for Channel Name "
+                  << _healthChannel << " (" << bus.getMessageType(_healthChannel)
+                  << ") does not agree with implementation ("
+                  << Ugv1Messages::HealthMessage::getTypeName() << ")";
+        throw ConfigException(0, str.str());
+    }
+
     // connect to device
     if( !_serialPort.open() )
     {
@@ -144,27 +157,11 @@ void ControllerAgent::configure() throw(AgentException)
         throw AgentException(0, str.str());
     }
 
-
-    // read off all other entries
-    pEntries = nodeList.at(0).toElement().firstChild();
-    while( !pEntries.isNull() )
+    if( (_periodMs < 1) || (_periodMs > MAX_PERIOD_MS) )
     {
-        QDomElement peData = pEntries.toElement();
-        QString tagName = peData.tagName();
-
-        if( tagName == "UpdateIntervalMs" )
-        {
-            int interval = abs(peData.text().toInt());
-            if( (interval < 1) || (interval > MAX_PERIOD_MS) )
-            {
-                std::ostringstream str;
-                str << "[ControllerAgent::configure] IntervalMs incorrect (range 1 - " << MAX_PERIOD_MS << ")";
-                throw ConfigException(0,str.str());
-            }
-            _periodMs = interval;
-        }
-
-        pEntries = pEntries.nextSibling();
+        std::ostringstream str;
+        str << "[ControllerAgent::configure] Agent update period not set or incorrect (range 1 - " << MAX_PERIOD_MS << ")";
+        throw ConfigException(0,str.str());
     }
 
     // configure the robot model
@@ -173,7 +170,7 @@ void ControllerAgent::configure() throw(AgentException)
     _robotModel.configureIoBoard();
     _modelLock.unlock();
 
-    // set up subscription to command channel
+    // set up subscription to joystick stream
     _pJoySubscription = getBus().getMessenger()->subscribe(_joystickChannel, &ControllerAgent::onJoystick, this, 1);
     if( !_pJoySubscription )
     {
@@ -207,6 +204,7 @@ void ControllerAgent::run() throw(AgentException)
 //------------------------------------------------------------------------------
 {   
     Ugv1Messages::OdometryMessage odoMsg;
+    Ugv1Messages::HealthMessage healthMsg;
 
     AgentMessenger* pMessenger = getBus().getMessenger();
 
@@ -220,25 +218,29 @@ void ControllerAgent::run() throw(AgentException)
         // wait
         timer.timedWait(periodNs);
 
-        // ------------ read inputs -------------------
+        // ------------ read inputs from board -------------------
         _modelLock.lock();
 
-        // update model with inputs
         _robotModel.readInputs();
-
         odoMsg.uTime = 1000 * QDateTime::currentMSecsSinceEpoch(); // not exactly the time when data was read, but close enough
         _robotModel.getChassisVelocity(odoMsg.translationVelocity, odoMsg.rotationVelocity);
-
-        // update local copies of model data
-        int translationVelocity = 0;
-        int rotationVelocity = 0;
-        _robotModel.getSettingChassisVelocity(translationVelocity, rotationVelocity);
         bool isBatteryLow = _robotModel.isBatteryLow();
         bool isBumped = _robotModel.isAnyBumperActive();
+
+        /// \todo
+        /// update health message
 
         _modelLock.unlock();
 
         // ------------ process commands and sensors -------------------
+
+        // prepare motion command
+        _commandLock.lock();
+        int translationVelocity = _commandMsg.surgeSpeed;
+        int rotationVelocity = _commandMsg.yawSpeed;
+        _commandMsg.surgeSpeed = 0;
+        _commandMsg.yawSpeed = 0;
+        _commandLock.unlock();
 
         // Check battery voltage. If low,
         // - disable devices that consumer power (drive motor)
@@ -251,13 +253,13 @@ void ControllerAgent::run() throw(AgentException)
         //    rotationVelocity = 0;
         //}
 
-        //  Allow only backward motion if any bumpers are active
+        // If bumpers are active, allow only backward motion
         if( isBumped )
         {
             if( translationVelocity > 0 ) translationVelocity = 0;
         }
 
-        // ------------ write outputs -------------------
+        // ------------ write outputs to board -------------------
 
         _modelLock.lock();
 
@@ -266,13 +268,21 @@ void ControllerAgent::run() throw(AgentException)
 
         _modelLock.unlock();
 
-        // publish odometry
+        // ------------ publish data streams -------------------
+
         if( pMessenger )
         {
             if( !pMessenger->publish(_odometryChannel, &odoMsg) )
             {
                 std::ostringstream str;
                 str << "[ControllerAgent] Publish error on channel " << _odometryChannel;
+                throw AgentException(0, str.str());
+            }
+
+            if( !pMessenger->publish(_healthChannel, &healthMsg) )
+            {
+                std::ostringstream str;
+                str << "[ControllerAgent] Publish error on channel " << _healthChannel;
                 throw AgentException(0, str.str());
             }
 #ifdef _DEBUG
@@ -312,13 +322,8 @@ void ControllerAgent::onJoystick(const lcm::ReceiveBuffer* rBuf,
     _commandMsg.surgeSpeed = (isDead ? 0 : (100 * pMsg->rawSurgeRate)/32767);
     _commandMsg.yawSpeed = (isDead ? 0 : (100 * pMsg->rawYawRate)/32767);
 
-    // apply command
-    /// \todo: this needs to be in main control loop with safeguards for broken joystick agent
-    _modelLock.lock();
-    _robotModel.setChassisVelocity(_commandMsg.surgeSpeed, _commandMsg.yawSpeed);
-    _modelLock.unlock();
-
     _commandLock.unlock();
+
 /*
 #ifdef _DEBUG
     std::cout << "[ControllerAgent] COMMAND "

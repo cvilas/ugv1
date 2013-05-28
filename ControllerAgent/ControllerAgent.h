@@ -26,6 +26,7 @@
 #include "Ugv1Messages/JoyMessage.hpp"
 #include "Ugv1Messages/OdometryMessage.hpp"
 #include "Ugv1Messages/CommandMessage.hpp"
+#include "Ugv1Messages/HealthMessage.hpp"
 #include <QMutex>
 
 namespace Ugv1
@@ -68,6 +69,7 @@ private:
 
     std::string _odometryChannel;
     std::string _joystickChannel;
+    std::string _healthChannel;
 
 }; // ControllerAgent
 

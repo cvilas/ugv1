@@ -141,10 +141,10 @@ void JoystickAgent::configure() throw(AgentException)
         throw ConfigException(0,"[JoystickAgent::configure] No joystick configuration found");
     }
 
-    _periodMs = MAX_PERIOD_MS;
+    _periodMs = MAX_PERIOD_MS+1;
     _lcmChannel.clear();
 
-    // first read off entries to get joystick connection info
+    // read configuration entries to get joystick connection info
     QDomNode pEntries = nodeList.at(0).toElement().firstChild();
     while( !pEntries.isNull() )
     {
@@ -152,6 +152,7 @@ void JoystickAgent::configure() throw(AgentException)
         QString tagName = peData.tagName();
         if( tagName == "DevicePort" ) { _jsPort = peData.text().toStdString(); }
         if( tagName == "JoystickChannel" ) { _lcmChannel = peData.text().toStdString(); }
+        if( tagName == "UpdateIntervalMs" ) { _periodMs = abs(peData.text().toInt()); }
         pEntries = pEntries.nextSibling();
     }
 
@@ -189,18 +190,6 @@ void JoystickAgent::configure() throw(AgentException)
         QDomElement peData = pEntries.toElement();
         QString tagName = peData.tagName();
 
-        if( tagName == "UpdateIntervalMs" )
-        {
-            int interval = abs(peData.text().toInt());
-            if( (interval < 1) || (interval > MAX_PERIOD_MS) )
-            {
-                std::ostringstream str;
-                str << "[JoystickAgent::configure] IntervalMs incorrect (range 1 - " << MAX_PERIOD_MS << ")";
-                throw ConfigException(0,str.str());
-            }
-            _periodMs = interval;
-        }
-
         if( tagName == "AxisDeadZoneRange" )
         {
             int deadZone = abs(peData.text().toInt());
@@ -237,6 +226,12 @@ void JoystickAgent::configure() throw(AgentException)
         pEntries = pEntries.nextSibling();
     }
 
+    if( (_periodMs < 1) || (_periodMs > MAX_PERIOD_MS) )
+    {
+        std::ostringstream str;
+        str << "[JoystickAgent::configure] Agent update period not set or incorrect (range 1 - " << MAX_PERIOD_MS << ")";
+        throw ConfigException(0,str.str());
+    }
     if( !_surgeCtrl.isValid() )
     {
         throw ConfigException(0, "[JoystickAgent::configure] : Surge control not assigned");
