@@ -89,7 +89,7 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Cont
 		_transport.flushRx();
 
 		std::ostringstream str;
-		str << __FUNCTION__ << ": Error or timeout waiting for response to message ID " 
+        str << "[IoBoard::send] : Error or timeout waiting for response to message ID "
 			<< cmd.getIdFromMessage() << ".";
         throw IoWaitException(0, str.str());
     }
@@ -98,7 +98,7 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Cont
     // until the entire message is available
     int nToRead = reply.getExpectedLength();
 
-    int nTries = 10;
+    int nTries = 100;
     int nAvailable = 0;
     while( (nAvailable < nToRead) && (nTries > 0) )
     {
@@ -108,7 +108,7 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Cont
 			_transport.flushRx();
 
 			std::ostringstream str;
-			str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() 
+            str << "[IoBoard::send] : For message ID " << cmd.getIdFromMessage()
 				<< " error checking read buffer for bytes available.";
             throw IoReadException(0, str.str());
         }
@@ -119,7 +119,7 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Cont
             _transport.flushRx();
 
 			std::ostringstream str;
-			str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() 
+            str << "[IoBoard::send] : For message ID " << cmd.getIdFromMessage()
 				<< ", full response not available after additional wait. Expected " << nToRead 
 				<< " bytes, got only " << nAvailable << ".";
             throw IoWaitException(0, str.str());
@@ -131,7 +131,7 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Cont
         _transport.flushRx();
 
 		std::ostringstream str;
-		str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() 
+        str << "[IoBoard::send] : For message ID " << cmd.getIdFromMessage()
 			<< ", read " << nRead << "/" << nToRead << " bytes.";
         throw IoReadException(0, str.str());
     }
@@ -152,7 +152,7 @@ void IoBoard::send(const IoBoardCommand& cmd) throw (ControllerException)
         _transport.flushTx();
 
 		std::ostringstream str;
-		str << __FUNCTION__ << ": For message ID " << cmd.getIdFromMessage() 
+        str << "[IoBoard::send] : For message ID " << cmd.getIdFromMessage()
 			<< ", wrote " << nWritten << "/" << nToWrite << " bytes.";
         throw IoWriteException(0, str.str());
     }
@@ -163,7 +163,7 @@ void IoBoard::send(const IoBoardCommand& cmd) throw (ControllerException)
 		_transport.flushTx();
 
 		std::ostringstream str;
-		str << __FUNCTION__ << ": Write operation didn't complete For message ID " 
+        str << "[IoBoard::send] : Write operation didn't complete For message ID "
 			<< cmd.getIdFromMessage() << ".";
         throw IoWaitException(0, str.str());
     }
