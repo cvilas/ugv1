@@ -14,10 +14,6 @@
 namespace Ugv1
 {
 
-/// \todo
-/// - Check encoder output and motor drive train parameters - encoder count seems to
-/// change faster than expected
-
 /// \class IoBoardModel
 /// \ingroup controller
 /// \brief IO state model
@@ -36,6 +32,9 @@ namespace Ugv1
 /// them to the board.
 /// - A get...() method do not return instantaneous state; they return state at the instant
 /// of last call to readInputs()
+/// \todo
+/// - Check encoder output and motor drive train parameters - encoder count seems to
+/// change faster than expected
 class UGV1CONTROLLER_DLL_API IoBoardModel
 {
 public:

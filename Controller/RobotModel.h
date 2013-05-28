@@ -17,7 +17,10 @@ namespace Ugv1
 /// \ingroup controller
 /// \brief UGV1 robot model.
 ///
-/// This class extends the IoBoardModel class to implement models for kinematics, on-board sensors and actuators
+/// This class extends the IoBoardModel class to implement models for kinematics,
+/// on-board sensors and actuators
+/// \todo
+/// - implement battery monitor functions
 class UGV1CONTROLLER_DLL_API RobotModel : public IoBoardModel
 {
 public:

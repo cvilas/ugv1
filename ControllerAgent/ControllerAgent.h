@@ -37,6 +37,10 @@ extern "C" { UGV1CONTROLLERAGENT_DLL_API IAgent* createAgent(AgentBus& man); }
 /// \class ControllerAgent
 /// \brief Main robot controller for UGV1
 ///
+/// \todo
+/// - Implement health message
+/// - Publish health message at a reduced rate
+/// - Implement a separate CommandAgent to read Joystick and translate them to control command
 class UGV1CONTROLLERAGENT_DLL_API ControllerAgent : public AgentThread
 {
 public:
