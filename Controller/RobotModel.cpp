@@ -14,7 +14,7 @@ RobotModel::RobotModel(Grape::IPort& transport)
 //==============================================================================
     : IoBoardModel(transport)
 {
-    configureDriveControl();
+    configureIoBoard();
 }
 
 //-----------------------------------------------------------------------------
@@ -98,9 +98,13 @@ void RobotModel::getChassisVelocity(int& cmps, int& crps)
 }
 
 //-----------------------------------------------------------------------------
-void RobotModel::configureDriveControl() throw(ControllerException)
+void RobotModel::configureIoBoard() throw(ControllerException)
 //-----------------------------------------------------------------------------
 {
+    setConfigDioMode(BUMPER_PORT_DICHANNEL, Ugv1::IoBoardModel::INPUT_MODE);
+    setConfigDioMode(BUMPER_STBD_DICHANNEL, Ugv1::IoBoardModel::INPUT_MODE);
+    setConfigDioMode(BUMPER_MID_DICHANNEL, Ugv1::IoBoardModel::INPUT_MODE);
+
     setConfigEncoderPPR(ENCODER_PPR);
     setConfigMotorGearRatio(WHEEL_GEAR_RATIO);
     setConfigWheelPerimeter(WHEEL_PERIMETER_MM);
