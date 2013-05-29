@@ -17,12 +17,17 @@ Objective: Teleoperation within the local wireless network
 	
 - IoBoardModel
     - Confirm encoder count is accurate
-    - Confifrm motor speed responses are accurate
+    - Confirm motor speed responses are accurate
 
 - RobotController
     - Mode selection control
     - Battery monitor
     - Health messages
+    - Sensor messages
+    - publish command messages
+
+- JoystickController
+    - Spline function to map axes inputs for smooth start about zero
 
 - HMI
     - Desktop based HMI
@@ -43,7 +48,7 @@ Objective: Teleoperation within the local wireless network
     - White LED head lamp
     - RGB mood light (show battery power status, health)
 
-- Battery voltage monitor circuit
+- Battery voltage monitor circuit (10-16V range)
 - Horn/multitone alarm
 - Racer stripes
 	
