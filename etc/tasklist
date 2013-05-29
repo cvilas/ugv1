@@ -5,8 +5,6 @@ Objective: Teleoperation within the local wireless network
 - purchases: 
     - USB to Serial that works on Samsung Galaxy2
     - Mounting box for Uno
-    - RS232 adapter
-    - Joystick for android device
 
 - Grape libs
     - Config
@@ -25,6 +23,8 @@ Objective: Teleoperation within the local wireless network
     - Health messages
     - Sensor messages
     - publish command messages
+    - optimise host for UDP multicast - http://lcm.googlecode.com/svn/www/reference/lcm/multicast.html
+    - Document the UDP multicast optimisation procedure in the Agent docs
 
 - JoystickController
     - Spline function to map axes inputs for smooth start about zero
