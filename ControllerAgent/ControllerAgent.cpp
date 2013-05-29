@@ -227,16 +227,25 @@ void ControllerAgent::run() throw(AgentException)
         bool isBatteryLow = _robotModel.isBatteryLow();
         bool isBumped = _robotModel.isAnyBumperActive();
 
-        int translationCommand = 0;
-        int rotationCommand = 0;
-        _robotModel.getSettingChassisVelocity(translationCommand, rotationCommand);
-
         /// \todo
         /// update health message
 
         _modelLock.unlock();
 
         // ------------ process commands and sensors -------------------
+
+        // motion command
+        int translationCommand = 0;
+        int rotationCommand = 0;
+        _commandLock.lock();
+        int64_t cmdTime = _commandMsg.uTime;
+        if( llabs(cmdTime - odoMsg.uTime) < 500000) // update only if command received with last 1/2 sec
+        {
+            translationCommand = _commandMsg.surgeSpeed;
+            rotationCommand = _commandMsg.yawSpeed;
+        }
+        _commandLock.unlock();
+
 
         // Check battery voltage. If low,
         // - disable devices that consumer power (drive motor)
@@ -315,10 +324,6 @@ void ControllerAgent::onJoystick(const lcm::ReceiveBuffer* rBuf,
     int16_t desiredMode = 0;
     int16_t surgeSpeed = (isDead ? 0 : (100 * pMsg->rawSurgeRate)/32767);
     int16_t yawSpeed = (isDead ? 0 : (100 * pMsg->rawYawRate)/32767);
-
-    _modelLock.lock();
-    _robotModel.setChassisVelocity(surgeSpeed, yawSpeed);
-    _modelLock.unlock();
 
     _commandLock.lock();
     _commandMsg.uTime = uTime;
