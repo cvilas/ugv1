@@ -283,13 +283,13 @@ void ControllerAgent::run() throw(AgentException)
                 str << "[ControllerAgent] Publish error on channel " << _odometryChannel;
                 throw AgentException(0, str.str());
             }
-
+/*
             if( !pMessenger->publish(_healthChannel, &healthMsg) )
             {
                 std::ostringstream str;
                 str << "[ControllerAgent] Publish error on channel " << _healthChannel;
                 throw AgentException(0, str.str());
-            }
+            }*/
 #ifdef _DEBUG
             std::cout << "[ControllerAgent] " << _odometryChannel << " "
                       << odoMsg.uTime << " "
