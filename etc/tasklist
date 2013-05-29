@@ -6,9 +6,9 @@ Objective: Teleoperation within the local wireless network
     - USB to Serial that works on Samsung Galaxy2
     - Mounting box for Uno
 
-- Grape libs
-    - Config
-    - Status (fixed size circular buffer to a message and code)
+- General
+    - Remove all explicit exception specifiers (throw() statement in function prototype). Document what is thrown instead
+    - For every function, document what may be thrown briefly (eg: Throws PortException)
 
 - IoBoard
     - timestamp message arrival time
