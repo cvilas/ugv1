@@ -1,8 +1,8 @@
 UGV1 Readme
 ------------
 
-UGV1 is an experimental mobile robot platform. I started building this robot to serve as a test-bed to experiment with
-mobile robot navigation and control algorithms. This is a project that is probably going to be eternally in work-in-
+UGV1 is an experimental mobile robot platform. This robot serves as my test-bed to experiment with mobile robot 
+navigation and control algorithms. This is a project that is probably going to be eternally in work-in-
 progress state.
 
 The primary hardware components are:
@@ -25,7 +25,8 @@ ported to it) can then be used to control the robot remotely.
 
 Unfortunately, the camera on the Nexus isn't supported in Ubuntu yet. I currently use an external USB camera for FPV 
 (using GoogleTalk - nothing fancy). This archive provides all the code necessary to get the robot up and running. My 
-preffered IDE is Qt Creator. You will need Qt5 and LCM to build on Unix systems. On windows, you will additionally require
-visual c++ (I use the freely available Microsoft Visual C++ 2010 Express - http://www.microsoft.com/visualstudio/en-gb/express) 
+preffered IDE is Qt Creator. External dependancies are Qt5 and LCM. You will also need to use my companion library
+Grape (https://github.com/cvilas/grape) which provides a few cross-platform generic functions. On windows, you will 
+additionally require Visual C++ (I use the freely available Microsoft Visual C++ 2010 Express - http://www.microsoft.com/visualstudio/en-gb/express) 
 
 Vilas Chitrakaran, May 2013
