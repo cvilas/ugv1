@@ -1,2 +1,31 @@
 UGV1 Readme
 ------------
+
+UGV1 is an experimental mobile robot platform. I started building this robot to serve as a test-bed to experiment with
+mobile robot navigation and control algorithms. This is a project that is probably going to be eternally in work-in-
+progress state.
+
+The primary hardware components are:
+1. DFRobot HCR mobile robot frame (http://www.dfrobot.com/index.php?route=product/product&path=37_111&product_id=63)
+2. DFRobot Sensor/motor driver board (http://www.dfrobot.com/index.php?route=product/product&path=51_105&product_id=99)
+3. Google Nexus7 tablet running Ubuntu 13.04 (https://wiki.ubuntu.com/Nexus7)
+
+The Nexus7 mounted on the robot serves as the control computer. I have a cheap 4-port USB hub plugged into the Nexus 
+(using a USB on-the-go cable) to hot-plug external IO. The Nexus communicates with the sensor/motor driver board via 
+it's RS232 port (I have a USB-to-serial adapter plugged into the USB hub to make this possible). On-board sensors 
+can be connected directly to the sensor/motor driver board - it provides 8 analogue inputs, 11 digital IO (8 of which 
+can be configured as PWM servo outputs), and provides i2c and RS485 interfaces.
+
+The software architecture consist of 'Agents' - independant nodes that implement computation and communication. Agents 
+communicate with each other over a local area network using UDP multicast (I use LCM - Light weight communication
+and marshelling - library for this. See http://lcm.googlecode.com/). The agent architecture allows distributed computing - 
+nodes be distributed across different bits of hardware as long as they are all on the same local area network. The Nexus
+runs the ControllerAgent, which controls the robot. A JoystickAgent on a laptop (or even an Android tablet, if LCM can be
+ported to it) can then be used to control the robot remotely.
+
+Unfortunately, the camera on the Nexus isn't supported in Ubuntu yet. I currently use an external USB camera for FPV 
+(using GoogleTalk - nothing fancy). This archive provides all the code necessary to get the robot up and running. My 
+preffered IDE is Qt Creator. You will need Qt5 and LCM to build on Unix systems. On windows, you will additionally require
+visual c++ (I use the freely available Microsoft Visual C++ 2010 Express - http://www.microsoft.com/visualstudio/en-gb/express) 
+
+Vilas Chitrakaran, May 2013
