@@ -435,7 +435,7 @@ void IoBoardModel::writeOutputs(bool forceAll) throw(ControllerException)
         }
 
         // wait
-        Grape::milliSleep(500);
+        Grape::milliSleep(100);
 
         // reset encoders
         _board.resetMotorEncoders();
