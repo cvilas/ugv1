@@ -8,7 +8,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TEMPLATE = app
 
 QT       += testlib
-QT       -= gui
 CONFIG   += console
 CONFIG   -= app_bundle
 
