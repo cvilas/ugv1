@@ -27,20 +27,18 @@ HEADERS += \
 SOURCES += \
     ControllerAgent.cpp
 
-lcm_odomsg.target = OdometryMessage
-lcm_odomsg.commands = $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/OdometryMessage.lcm
 QMAKE_EXTRA_TARGETS += lcm_odomsg
-PRE_TARGETDEPS += $$lcm_odomsg.target
+PRE_TARGETDEPS += lcm_odomsg
+lcm_odomsg.commands += $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/OdometryMessage.lcm
 
-lcm_cmdmsg.target = CommandMessage
-lcm_cmdmsg.commands = $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/CommandMessage.lcm
 QMAKE_EXTRA_TARGETS += lcm_cmdmsg
-PRE_TARGETDEPS += $$lcm_cmdmsg.target
+PRE_TARGETDEPS += lcm_cmdmsg
+lcm_cmdmsg.commands += $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/CommandMessage.lcm
 
-lcm_healthmsg.target = HealthMessage
-lcm_healthmsg.commands = $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/HealthMessage.lcm
 QMAKE_EXTRA_TARGETS += lcm_healthmsg
-PRE_TARGETDEPS += $$lcm_healthmsg.target
+PRE_TARGETDEPS += lcm_healthmsg
+lcm_healthmsg.commands += $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/HealthMessage.lcm
+
 
 OTHER_FILES += \
     OdometryMessage.lcm \

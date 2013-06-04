@@ -27,10 +27,9 @@ HEADERS += \
 SOURCES += \
     JoystickAgent.cpp
 
-lcm_jsmsg.target = JoyMessage
-lcm_jsmsg.commands = $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/JoyMessage.lcm
 QMAKE_EXTRA_TARGETS += lcm_jsmsg
-PRE_TARGETDEPS += $$lcm_jsmsg.target
+lcm_jsmsg.commands = $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/JoyMessage.lcm
+PRE_TARGETDEPS += lcm_jsmsg
 
 OTHER_FILES += \
     JoyMessage.lcm
