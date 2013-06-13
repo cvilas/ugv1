@@ -75,7 +75,7 @@ protected:
 /// \class IoBoardCommand
 /// \ingroup cont_comms
 /// \brief IO board command message builder. Base class for all IoBoard commands.
-/// \see IoBoardReply, IoBoardMessage
+/// \see IoBoardResponse, IoBoardMessage
 class UGV1CONTROLLER_DLL_API IoBoardCommand : public IoBoardMessage
 {
 public:
@@ -122,7 +122,6 @@ public:
 	/// - InvalidMessageHeaderException
 	/// - InvalidMessageChecksumException
 	/// - InvalidMessageIdException
-    /// \return true if the message format is correct
     void validate() throw(ControllerException);
 
     /// Implemented by derived classes.
