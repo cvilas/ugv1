@@ -12,7 +12,7 @@
 #include "IoBoardMessage_dio.h"
 #include "IoBoardMessage_motor.h"
 #include "IoBoardMessage_servo.h"
-#include "io/IPort.h"
+#include "io/IDataPort.h"
 
 namespace Ugv1
 {
@@ -41,10 +41,10 @@ public:
     ///                     See hardware manual for port settings to use.
     /// \note Response timeout period is set to 'infinite' by default.
     /// \see setResponseTimeOut.
-    IoBoard(Grape::IPort& transport);
+    IoBoard(Grape::IDataPort& transport);
 
     /// Destructor.
-    ~IoBoard();
+    ~IoBoard() throw();
 
     // ------------- Transport configuration ---------------
 
@@ -89,21 +89,21 @@ public:
 	/// - IoWaitException
 	/// - IoWriteException
 	/// - IoReadException
-    void send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(ControllerException);
+    void send(const IoBoardCommand& cmd, IoBoardResponse& reply);
 
 	/// Send command that generate a response from the IoBoard.
 	/// On error the following exceptions are thrown
 	/// - IoWaitException
 	/// - IoWriteException
-    void send(const IoBoardCommand& cmd) throw(ControllerException);
+    void send(const IoBoardCommand& cmd);
 
 private:
     IoBoard(const IoBoard&); // disable copy
     IoBoard& operator=(const IoBoard&); // disable assignment
 
 private:
-    Grape::IPort&   _transport;
-    int             _timeoutMs; //!< wait timeout for response from hardware
+    Grape::IDataPort&   _transport;
+    int                 _timeoutMs; //!< wait timeout for response from hardware
 }; //IoBoard
 
 } // namespace Ugv1

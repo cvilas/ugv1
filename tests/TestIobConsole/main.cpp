@@ -16,26 +16,15 @@ int main(int argc, char *argv[])
     Grape::SerialPort port;
     Ugv1::IoBoard iob(port);
 
-    iob.setResponseTimeOut(5000);
-    port.setPortName("/dev/ttyUSB0");
-
-    if( !port.open() ) {
-        std::cerr << port.lastError.getMessage() << std::endl;
-        return -1;
-    }
-
-    if( !port.setDataFormat(Grape::SerialPort::D8N1) ) {
-        std::cerr << port.lastError.getMessage() << std::endl;
-        return -1;
-    }
-
-    if( !port.setBaudRate(Grape::SerialPort::B115200) ) {
-        std::cerr << port.lastError.getMessage() << std::endl;
-        return -1;
-    }
-
     try
     {
+
+        iob.setResponseTimeOut(5000);
+        port.setPortName("/dev/ttyUSB0");
+        port.open();
+        port.setDataFormat(Grape::SerialPort::D8N1);
+        port.setBaudRate(Grape::SerialPort::B115200);
+
         // version
         Ugv1::ReadBoardVersionResponse version;
         iob.getVersion(version);
@@ -67,7 +56,7 @@ int main(int argc, char *argv[])
         }
         std::cout << std::endl;
     }
-    catch(Ugv1::ControllerException& ex )
+    catch(Grape::Exception& ex )
     {
         std::cerr << ex.what() << std::endl;
         return -1;

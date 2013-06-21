@@ -77,7 +77,7 @@ void JoyCtrl::attach (const std::string& type, unsigned int i, int scale, const 
 }
 
 //==============================================================================
-JoystickAgent::JoystickAgent(AgentBus& man) throw(AgentException)
+JoystickAgent::JoystickAgent(AgentBus& man)
 //==============================================================================
     : AgentThread(man), _periodMs(MAX_PERIOD_MS), _isConfigured(false)
 {
@@ -93,7 +93,7 @@ JoystickAgent::JoystickAgent(AgentBus& man) throw(AgentException)
 }
 
 //------------------------------------------------------------------------------
-JoystickAgent::~JoystickAgent()
+JoystickAgent::~JoystickAgent() throw()
 //------------------------------------------------------------------------------
 {
     stop();
@@ -101,7 +101,7 @@ JoystickAgent::~JoystickAgent()
 }
 
 //------------------------------------------------------------------------------
-void JoystickAgent::configure() throw(AgentException)
+void JoystickAgent::configure()
 //------------------------------------------------------------------------------
 {
     stop();

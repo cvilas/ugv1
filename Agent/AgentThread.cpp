@@ -11,14 +11,14 @@ namespace Ugv1
 {
 
 //==============================================================================
-AgentThread::AgentThread(AgentBus& man) throw(AgentException)
+AgentThread::AgentThread(AgentBus& man)
 //==============================================================================
     : IAgent(man), QThread(), _exitFlag(true)
 {
 }
 
 //------------------------------------------------------------------------------
-AgentThread::~AgentThread()
+AgentThread::~AgentThread() throw()
 //------------------------------------------------------------------------------
 {
     stop();
@@ -45,7 +45,7 @@ void AgentThread::setExitFlag(bool isExit)
 }
 
 //------------------------------------------------------------------------------
-void AgentThread::start() throw(AgentException)
+void AgentThread::start()
 //------------------------------------------------------------------------------
 {
     if( !isConfigured() )

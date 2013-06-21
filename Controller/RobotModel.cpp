@@ -10,7 +10,7 @@ namespace Ugv1
 {
 
 //==============================================================================
-RobotModel::RobotModel(Grape::IPort& transport)
+RobotModel::RobotModel(Grape::IDataPort& transport)
 //==============================================================================
     : IoBoardModel(transport)
 {

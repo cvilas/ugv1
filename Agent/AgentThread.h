@@ -20,10 +20,10 @@ namespace Ugv1
 class UGV1AGENTLIB_DLL_API AgentThread : public IAgent, public QThread
 {
 public:
-    AgentThread(AgentBus& man) throw(AgentException);
-    virtual ~AgentThread();
+    AgentThread(AgentBus& man);
+    virtual ~AgentThread() throw();
 
-    void start() throw(AgentException); //!< Run run() in separate thread
+    void start(); //!< Run run() in separate thread
     void stop() throw();                //!< Set flag for run() to exit
 
 protected:

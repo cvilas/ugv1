@@ -47,9 +47,9 @@ public:
     static const int MAX_PERIOD_MS = 100;
 
 public:
-    ControllerAgent(AgentBus& man) throw(AgentException);
-    virtual ~ControllerAgent();
-    void configure() throw(AgentException);
+    ControllerAgent(AgentBus& man);
+    virtual ~ControllerAgent() throw();
+    void configure();
     bool isConfigured() { return _isConfigured; }
     bool isRunning() { return QThread::isRunning(); }
     void stop() throw();
@@ -57,7 +57,7 @@ public:
 private:
     ControllerAgent(const ControllerAgent &);               //!< disable copy
     ControllerAgent &operator=(const ControllerAgent &);    //!< disable assignment
-    void run() throw(AgentException);
+    void run();
     void onJoystick(const lcm::ReceiveBuffer* rBuf, const std::string& channel, const Ugv1Messages::JoyMessage* pMsg);
 private:
     int     _periodMs;

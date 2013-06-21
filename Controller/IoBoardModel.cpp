@@ -10,7 +10,7 @@ namespace Ugv1
 {
 
 //==============================================================================
-IoBoardModel::IoBoardModel(Grape::IPort& transport)
+IoBoardModel::IoBoardModel(Grape::IDataPort& transport)
 //==============================================================================
     : _dioCmdChanged(true),
       _servoCmdChanged(true),

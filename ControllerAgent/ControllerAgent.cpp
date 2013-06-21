@@ -23,7 +23,7 @@ IAgent* createAgent(AgentBus& man)
 
 
 //==============================================================================
-ControllerAgent::ControllerAgent(AgentBus& man) throw(AgentException)
+ControllerAgent::ControllerAgent(AgentBus& man)
 //==============================================================================
     : AgentThread(man),
       _periodMs(MAX_PERIOD_MS),
@@ -34,14 +34,14 @@ ControllerAgent::ControllerAgent(AgentBus& man) throw(AgentException)
 }
 
 //------------------------------------------------------------------------------
-ControllerAgent::~ControllerAgent()
+ControllerAgent::~ControllerAgent() throw()
 //------------------------------------------------------------------------------
 {
     stop();
 }
 
 //------------------------------------------------------------------------------
-void ControllerAgent::configure() throw(AgentException)
+void ControllerAgent::configure()
 //------------------------------------------------------------------------------
 {
     stop();
@@ -137,25 +137,9 @@ void ControllerAgent::configure() throw(AgentException)
     }
 
     // connect to device
-    if( !_serialPort.open() )
-    {
-        std::ostringstream str;
-        str << "[ControllerAgent::configure] Unable to connect to " << _serialPort.getPortName();
-        throw AgentException(0, str.str());
-    }
-    if( !_serialPort.setBaudRate(Grape::SerialPort::B115200) )
-    {
-        std::ostringstream str;
-        str << "[ControllerAgent::configure] Unable to set baud rate for " << _serialPort.getPortName();
-        throw AgentException(0, str.str());
-    }
-
-    if( !_serialPort.setDataFormat(Grape::SerialPort::D8N1) )
-    {
-        std::ostringstream str;
-        str << "[ControllerAgent::configure] Unable to set format for " << _serialPort.getPortName();
-        throw AgentException(0, str.str());
-    }
+    _serialPort.open();
+    _serialPort.setBaudRate(Grape::SerialPort::B115200);
+    _serialPort.setDataFormat(Grape::SerialPort::D8N1);
 
     if( (_periodMs < 1) || (_periodMs > MAX_PERIOD_MS) )
     {
@@ -200,7 +184,7 @@ void ControllerAgent::stop() throw()
 }
 
 //------------------------------------------------------------------------------
-void ControllerAgent::run() throw(AgentException)
+void ControllerAgent::run()
 //------------------------------------------------------------------------------
 {   
     Ugv1Messages::OdometryMessage odoMsg;

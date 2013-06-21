@@ -78,7 +78,7 @@ public:
 public:
 
     /// Constructor initialises the state with default parameters.
-    IoBoardModel(Grape::IPort& transport);
+    IoBoardModel(Grape::IDataPort& transport);
 
     /// Destructor. Does nothing.
     ~IoBoardModel();

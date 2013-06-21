@@ -47,7 +47,7 @@ public:
     static const int ENCODER_PPR = 13;
 
 public:
-    RobotModel(Grape::IPort& transport);
+    RobotModel(Grape::IDataPort& transport);
     ~RobotModel();
 
     // -------------- bumper switches ---------------

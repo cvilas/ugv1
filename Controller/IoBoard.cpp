@@ -5,19 +5,20 @@
 //==============================================================================
 
 #include "IoBoard.h"
+#include <sstream>
 
 namespace Ugv1
 {
 
 //=============================================================================
-IoBoard::IoBoard(Grape::IPort& transport)
+IoBoard::IoBoard(Grape::IDataPort& transport)
 //=============================================================================
     : _transport(transport), _timeoutMs(-1)
 {
 }
 
 //-----------------------------------------------------------------------------
-IoBoard::~IoBoard()
+IoBoard::~IoBoard() throw()
 //-----------------------------------------------------------------------------
 {}
 
@@ -78,7 +79,7 @@ void IoBoard::resetMotorEncoders()
 }
 
 //-----------------------------------------------------------------------------
-void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(ControllerException)
+void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply)
 //-----------------------------------------------------------------------------
 {
     send(cmd);
@@ -125,7 +126,7 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Cont
             throw IoWaitException(0, str.str());
         }
     }
-    int nRead = _transport.read(reply);
+    int nRead = _transport.readAll(reply);
     if( nRead != nToRead )
     {
         _transport.flushRx();
@@ -141,7 +142,7 @@ void IoBoard::send(const IoBoardCommand& cmd, IoBoardResponse& reply) throw(Cont
 }
 
 //-----------------------------------------------------------------------------
-void IoBoard::send(const IoBoardCommand& cmd) throw (ControllerException)
+void IoBoard::send(const IoBoardCommand& cmd)
 //-----------------------------------------------------------------------------
 {
     // write message

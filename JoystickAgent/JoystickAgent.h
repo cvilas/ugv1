@@ -78,9 +78,9 @@ public:
     static const int MAX_PERIOD_MS = 100;
 
 public:
-    JoystickAgent(AgentBus& man) throw(AgentException);
-    virtual ~JoystickAgent();
-    void configure() throw(AgentException);
+    JoystickAgent(AgentBus& man);
+    virtual ~JoystickAgent() throw();
+    void configure();
     bool isConfigured() { return _isConfigured; }
     bool isRunning() { return QThread::isRunning(); }
 
