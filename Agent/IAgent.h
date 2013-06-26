@@ -40,18 +40,18 @@ UGV1AGENTLIB_DLL_API void deleteAgent(IAgent* ptr);
 class UGV1AGENTLIB_DLL_API IAgent
 {
 public:
-    virtual ~IAgent() {}
+    virtual ~IAgent() throw() {}
 
     /// Read the configuration object from the bus (getBus().getConfig())
     /// and initialise the node. The agent shouldn't start processing
     /// until start() is called.
-    virtual void configure() throw(AgentException) = 0;
+    virtual void configure() = 0;
     virtual bool isConfigured() = 0;
 
     /// Initiate node data processing and return immediately.
     /// The actual data processing itself may happen else where (eg. a separate
     /// thread).
-    virtual void start() throw(AgentException) = 0;
+    virtual void start() = 0;
 
     /// Stop processing.
     virtual void stop() throw() = 0;
