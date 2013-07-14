@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include "IAgent.h"
-#include <AgentBus.h>
+#include "Agent/AgentBus.h"
 #include <utils/consoleio.h>
 
 #include <QCoreApplication>

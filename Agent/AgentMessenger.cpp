@@ -6,6 +6,7 @@
 
 #include "AgentMessenger.h"
 #include <QDebug>
+#include <sys/select.h>
 #ifdef _MSC_VER
 #include <Windows.h>
 #endif

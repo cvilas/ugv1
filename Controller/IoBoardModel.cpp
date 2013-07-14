@@ -5,6 +5,7 @@
 //==============================================================================
 
 #include "IoBoardModel.h"
+#include "timing/grapetiming_common.h"
 
 namespace Ugv1
 {

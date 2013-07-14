@@ -2,7 +2,8 @@
 
 GRAPE_DIR = ../../grape
 win32:LCM_DIR = $${PWD}/ThirdParty/windows/lcm
-unix:LCM_DIR = /usr/local
+unix:!android: LCM_DIR = /usr/local
+android: LCM_DIR = $${PWD}/ThirdParty/android/lcm
 
 TEMPLATE = lib
 
@@ -29,15 +30,19 @@ build_pass:CONFIG(debug, release|debug) {
 DESTDIR = $${PWD}/lib
 DLLDESTDIR = $${PWD}/bin/
 
+LIBS += -L$${PWD}/lib/ -L$${GRAPE_DIR}/lib -L$${LCM_DIR}/lib
+
 DEFINES +=
 win32: DEFINES += GRAPECORE_DLL GRAPEIO_DLL UNICODE _UNICODE _CRT_SECURE_NO_WARNINGS
 CONFIG(debug, release|debug) {
     DEFINES += _DEBUG
     win32:LIBS += -lws2_32 -lUser32 -lGrapeTimingd0 -lGrapeCored0 -lGrapeIod0 -lGrapeUtilsd0 -llcm
-    else:unix: LIBS += -lGrapeIod -lGrapeTimingd -lGrapeCored -lGrapeUtilsd -llcm -lpthread -lrt
+    else:unix: LIBS += -lGrapeIod -lGrapeTimingd -lGrapeCored -lGrapeUtilsd -llcm
+    unix:!android: LIBS += -lpthread -lrt
 } else {
     win32:LIBS += -lws2_32 -lUser32 -lGrapeTiming0 -lGrapeCore0 -lGrapeIo0 -lGrapeUtils0 -llcm
-    else:unix: LIBS += -lGrapeIo -lGrapeTiming -lGrapeCore -lGrapeUtils -llcm -lpthread -lrt
+    else:unix: LIBS += -lGrapeIo -lGrapeTiming -lGrapeCore -lGrapeUtils -llcm
+    unix:!android: LIBS += -lpthread -lrt
 }
 
 # don't want linking against qtmain.lib
@@ -51,6 +56,3 @@ INCLUDEPATH += $${PWD} \
                 $${LCM_DIR}/include
 
 DEPENDPATH += ./
-
-LIBS += -L$${PWD}/lib/ -L$${GRAPE_DIR}/lib -L$${LCM_DIR}/lib
-
