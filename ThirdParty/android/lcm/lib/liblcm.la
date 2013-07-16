@@ -17,7 +17,7 @@ old_library=''
 inherited_linker_flags=' -pthread'
 
 # Libraries that this one depends upon.
-dependency_libs=' -L/home/vilas/Downloads/glib-2.28.1-android/lib -lgthread-2.0 -lglib-2.0'
+dependency_libs=' -L/opt/android/lib -lgthread-2.0 -lglib-2.0 -lintl -liconv -L/home/vilas/Programs/glib-2.28.1-android/lib -L/home/vilas/Programs/android/android-ndk-r8e/platforms/android-14/arch-arm/usr/lib'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''

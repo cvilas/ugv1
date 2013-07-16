@@ -29,7 +29,7 @@ SOURCES += \
 
 QMAKE_EXTRA_TARGETS += lcm_jsmsg
 lcm_jsmsg.commands = $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/JoyMessage.lcm
-PRE_TARGETDEPS += lcm_jsmsg
+!android:PRE_TARGETDEPS += lcm_jsmsg
 
 OTHER_FILES += \
     JoyMessage.lcm

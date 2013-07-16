@@ -28,15 +28,15 @@ SOURCES += \
     ControllerAgent.cpp
 
 QMAKE_EXTRA_TARGETS += lcm_odomsg
-PRE_TARGETDEPS += lcm_odomsg
+!android:PRE_TARGETDEPS += lcm_odomsg
 lcm_odomsg.commands += $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/OdometryMessage.lcm
 
 QMAKE_EXTRA_TARGETS += lcm_cmdmsg
-PRE_TARGETDEPS += lcm_cmdmsg
+!android:PRE_TARGETDEPS += lcm_cmdmsg
 lcm_cmdmsg.commands += $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/CommandMessage.lcm
 
 QMAKE_EXTRA_TARGETS += lcm_healthmsg
-PRE_TARGETDEPS += lcm_healthmsg
+!android:PRE_TARGETDEPS += lcm_healthmsg
 lcm_healthmsg.commands += $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/HealthMessage.lcm
 
 
