@@ -1,23 +1,41 @@
 Tasklist for UGV1
 
-Objective: Teleoperation within the local wireless network
+Objectives:
+    (1) Teleoperation within the local wireless network
+    (2) Robot controller running Android
+    (3) Remote controller on laptop running windows or linux
 
-- purchases: 
-    - Mounting box for Uno
+Development tasks
+=================
 
-- General
-    - Remove all explicit exception specifiers (throw() statement in function prototype). Document what is thrown instead
-    - For every function, document what may be thrown briefly (eg: Throws PortException)
+Hardware
+--------
 
+- Undercarriage RGB mood light (show battery power status, health)
+- DFRobot URM04 ultrasonic sensors x 6
+- Battery voltage monitor circuit (10-16V range)
+- Racer stripes
+- Pan/tilt camera head
+
+Software
+--------
 - IoBoard
     - timestamp message arrival time, especially for odometry messages
-	
+
 - IoBoardModel
     - Confirm encoder count is accurate
     - Do not reset encoder count when motor changes direction. Just count down.
-    - Confirm motor speed responses are accurate
+    - Experimentally verify motor speed responses are accurate
 
-- RobotController
+- Fix issues
+    - Encoder does not reset to 0 on reset command
+    - Encoder does not change when wheel back-driven
+
+- JoystickController
+    - Spline function to map axes inputs for smooth start about zero
+    - Support for DFRbobot WiFi joystick
+
+- Robot controller
     - Derive AgentMessenger from AgentThread
     - Tune PID control
     - Mode selection control
@@ -28,35 +46,31 @@ Objective: Teleoperation within the local wireless network
     - optimise host for UDP multicast - http://lcm.googlecode.com/svn/www/reference/lcm/multicast.html
     - Document the UDP multicast optimisation procedure in the Agent docs
 
-- JoystickController
-    - Spline function to map axes inputs for smooth start about zero
+- Decision point: Android or separate computer board for onboard control
+
+- Camera controller agent
+    - Connect and initialise external webcam
+    - publish compressed streaming video
+
+- Camera viewer agent
+    - Display streaming video
+
+
+- Onboard controller agent app
+    - Controller configuration page
+    - subscribe to health messages and display stats (battery level, etc)
+    - subscribe to sensor messages and display state (sensor activation, etc)
+    - who is in control (remote console IP and name)
 
 - HMI
     - Desktop based HMI
-    - Android HMI (phone, tablet)
-    - Arduino HMI
-    - Joystick-to-drive signal adapter
-    - Trial Google Hangout for audio-visual comms
+    - display health messages
+    - display sensor messages
+    - who am i (negotiate remote controller connection)
 
-- Issues
-    - Encoder does not reset to 0 on reset command
-    - Encoder does not change when wheel back-driven
-
-- Hangout API mods
-    - Customise Hangout to transport control and status messages
-
-- Ligting pack
-    - Blue undercarriage lights
-    - White LED head lamp
-    - RGB mood light (show battery power status, health)
-
-- Battery voltage monitor circuit (10-16V range)
-- Horn/multitone alarm
-- Racer stripes
-- Pan/tilt camera head
-	
-- Mechanical
-    - Mount joystick securely in a box
+- General
+    - Remove all explicit exception specifiers (throw() statement in function prototype). Document what is thrown instead
+    - For every function, document what may be thrown briefly (eg: Throws PortException)
 
 - Webpage
 	- Videos, pictures, source code
