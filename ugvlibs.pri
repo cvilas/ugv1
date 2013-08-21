@@ -1,9 +1,9 @@
 # Common settings for UGV1 project libraries
 
 GRAPE_DIR = ../../grape
-win32:LCM_DIR = $${PWD}/ThirdParty/windows/lcm
-unix:!android: LCM_DIR = /usr/local
-android: LCM_DIR = $${PWD}/ThirdParty/android/lcm
+win32:THIRD_PARTY_LIBS = $${PWD}/ThirdParty/windows
+unix:!android: THIRD_PARTY_LIBS = /usr/local
+android: THIRD_PARTY_LIBS = $${PWD}/ThirdParty/android
 
 TEMPLATE = lib
 
@@ -30,7 +30,7 @@ build_pass:CONFIG(debug, release|debug) {
 DESTDIR = $${PWD}/lib
 DLLDESTDIR = $${PWD}/bin/
 
-LIBS += -L$${PWD}/lib/ -L$${GRAPE_DIR}/lib -L$${LCM_DIR}/lib
+LIBS += -L$${PWD}/lib/ -L$${GRAPE_DIR}/lib -L$${THIRD_PARTY_LIBS}/lib
 
 DEFINES +=
 win32: DEFINES += GRAPECORE_DLL GRAPEIO_DLL UNICODE _UNICODE _CRT_SECURE_NO_WARNINGS
@@ -53,6 +53,6 @@ INCLUDEPATH += $${PWD} \
                 $${GRAPE_DIR} \
                 $${GRAPE_DIR}/core \
                 $${GRAPE_DIR}/io \
-                $${LCM_DIR}/include
+                $${THIRD_PARTY_LIBS}/include
 
 DEPENDPATH += ./

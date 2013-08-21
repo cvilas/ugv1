@@ -1,9 +1,9 @@
 # Common settings for UGV1 project libraries
 
 GRAPE_DIR = ../../grape
-win32:LCM_DIR = $${PWD}/ThirdParty/windows/lcm
-unix:!android: LCM_DIR = /usr/local
-android: LCM_DIR = $${PWD}/ThirdParty/android/lcm
+win32:THIRD_PARTY_LIBS = $${PWD}/ThirdParty/windows
+unix:!android: THIRD_PARTY_LIBS = /usr/local
+android: THIRD_PARTY_LIBS = $${PWD}/ThirdParty/android
 
 QT       += core gui xml
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -26,9 +26,9 @@ INCLUDEPATH += $${PWD} \
                 $${GRAPE_DIR} \
                 $${GRAPE_DIR}/core \
                 $${GRAPE_DIR}/io \
-                $${LCM_DIR}/include
-DEPENDPATH += $$PWD/../ $${GRAPE_DIR} $${LCM_DIR}/include
-LIBS += -L$${PWD}/lib/ -L$${GRAPE_DIR}/lib -L$${LCM_DIR}/lib
+                $${THIRD_PARTY_LIBS}/include
+DEPENDPATH += $$PWD/../ $${GRAPE_DIR} $${THIRD_PARTY_LIBS}/include
+LIBS += -L$${PWD}/lib/ -L$${GRAPE_DIR}/lib -L$${THIRD_PARTY_LIBS}/lib
 
 DEFINES +=
 win32: DEFINES += GRAPECORE_DLL GRAPEIO_DLL UGV1AGENTLIB_DLL UGV1CONTROLLER_DLL UNICODE _UNICODE _CRT_SECURE_NO_WARNINGS
