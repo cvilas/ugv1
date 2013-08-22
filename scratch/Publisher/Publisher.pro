@@ -59,7 +59,7 @@ CONFIG(debug, release|debug) {
     android: LIBS += -lglib-2.0 -liconv -lintl
 } else {
     win32:LIBS += -lUgv1Agent0 -lws2_32 -lUser32 -lGrapeCore0
-    else:unix: LIBS += -lUgv1Agent -lGrapeCore -llcm -lglib-2.0
+    else:unix: LIBS += -lUgv1Agent -lGrapeCore -llcm
     unix:!android: LIBS += -lpthread -lrt
     android: LIBS += -lglib-2.0 -liconv -lintl
 }
