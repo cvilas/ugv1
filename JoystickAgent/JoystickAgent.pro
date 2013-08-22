@@ -28,7 +28,7 @@ SOURCES += \
     JoystickAgent.cpp
 
 QMAKE_EXTRA_TARGETS += lcm_jsmsg
-lcm_jsmsg.commands = $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/JoyMessage.lcm
+lcm_jsmsg.commands = $${THIRD_PARTY_LIBS}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/JoyMessage.lcm
 !android:PRE_TARGETDEPS += lcm_jsmsg
 
 OTHER_FILES += \

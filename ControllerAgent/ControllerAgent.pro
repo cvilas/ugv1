@@ -29,15 +29,15 @@ SOURCES += \
 
 QMAKE_EXTRA_TARGETS += lcm_odomsg
 !android:PRE_TARGETDEPS += lcm_odomsg
-lcm_odomsg.commands += $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/OdometryMessage.lcm
+lcm_odomsg.commands += $${THIRD_PARTY_LIBS}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/OdometryMessage.lcm
 
 QMAKE_EXTRA_TARGETS += lcm_cmdmsg
 !android:PRE_TARGETDEPS += lcm_cmdmsg
-lcm_cmdmsg.commands += $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/CommandMessage.lcm
+lcm_cmdmsg.commands += $${THIRD_PARTY_LIBS}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/CommandMessage.lcm
 
 QMAKE_EXTRA_TARGETS += lcm_healthmsg
 !android:PRE_TARGETDEPS += lcm_healthmsg
-lcm_healthmsg.commands += $${LCM_DIR}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/HealthMessage.lcm
+lcm_healthmsg.commands += $${THIRD_PARTY_LIBS}/bin/lcm-gen --cpp-hpath $$PWD/../ -x $$PWD/HealthMessage.lcm
 
 
 OTHER_FILES += \
