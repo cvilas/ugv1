@@ -54,12 +54,14 @@ build_pass:CONFIG(debug, release|debug) {
 CONFIG(debug, release|debug) {
     DEFINES += _DEBUG
     win32:LIBS += -lws2_32 -lUser32 -lGrapeCored0 -lUgv1Agentd0
-    else:unix: LIBS += -lUgv1Agentd -lGrapeCored -llcm -lglib-2.0 -liconv -lintl
+    else:unix: LIBS += -lUgv1Agentd -lGrapeCored -llcm
     unix:!android: LIBS += -lpthread -lrt
+    android: LIBS += -lglib-2.0 -liconv -lintl
 } else {
     win32:LIBS += -lUgv1Agent0 -lws2_32 -lUser32 -lGrapeCore0
-    else:unix: LIBS += -lUgv1Agent -lGrapeCore -llcm -lglib-2.0 -liconv -lintl
+    else:unix: LIBS += -lUgv1Agent -lGrapeCore -llcm
     unix:!android: LIBS += -lpthread -lrt
+    android: LIBS += -lglib-2.0 -liconv -lintl
 }
 
 # don't want linking against qtmain.lib
