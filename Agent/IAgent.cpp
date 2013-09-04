@@ -16,6 +16,7 @@ void deleteAgent(IAgent* ptr)
     if( ptr )
     {
         delete ptr;
+        ptr = NULL;
     }
 }
 
