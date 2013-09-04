@@ -44,10 +44,12 @@ CONFIG(debug, release|debug) {
     win32:LIBS += -lws2_32 -lUser32 -lUgv1Controllerd0 -lGrapeTimingd0 -lGrapeCored0 -lGrapeIod0 -lGrapeUtilsd0 -lUgv1Agentd0
     else:unix: LIBS += -lUgv1Agentd -lUgv1Controllerd -lGrapeIod -lGrapeTimingd -lGrapeCored -lGrapeUtilsd -llcm
     unix:!android: LIBS += -lpthread -lrt
+    android: LIBS += -lglib-2.0 -liconv -lintl
 } else {
     win32:LIBS += -lUgv1Agent0 -lws2_32 -lUser32 -lUgv1Controller0 -lGrapeTiming0 -lGrapeCore0 -lGrapeIo0 -lGrapeUtils0
     else:unix: LIBS += -lUgv1Agent -lUgv1Controller -lGrapeIo -lGrapeTiming -lGrapeCore -lGrapeUtils -llcm
     unix:!android: LIBS += -lpthread -lrt
+    android: LIBS += -lglib-2.0 -liconv -lintl
 }
 
 # don't want linking against qtmain.lib
